@@ -1,15 +1,15 @@
 ﻿using Mvx.ApiClient.Interfaces;
 using Mvx.ApiClient.Models;
-using Mvx.HttpClientProviderLib;
-using System.Net.Http.Json;
+using Mvx.ApiClient.Models.Network;
+using Mvx.HttpClientProvider;
 
 namespace Mvx.ApiClient.Services;
 
-internal class NetworkService : INetworkService
+public class NetworkService : INetworkService
 {
     private readonly HttpClient _httpClient;
 
-    public NetworkService(HttpClient httpClient)
+    public NetworkService()
     {
         _httpClient = HttpClientFactory.CreateClient();
     }
@@ -18,8 +18,23 @@ internal class NetworkService : INetworkService
     {
         var requestUri = "/stats";
 
-        var response = await _httpClient.GetFromJsonAsync<Stats>(requestUri, JsonSerializerConfig.DefaultOptions);
+        var response = await _httpClient.GetWithQueryParametersAsync<Stats>(requestUri);
 
-        return response;
+        return response; 
+    }
+    
+    public Task<Economics> GetEconomics()
+    {
+        throw new NotImplementedException();
+    }
+    
+    public Task<NetworkConstants> GetNetworkConstants()
+    {
+        throw new NotImplementedException();
+    }
+    
+    public Task<About> GetAbout()
+    {
+        throw new NotImplementedException();
     }
 }
