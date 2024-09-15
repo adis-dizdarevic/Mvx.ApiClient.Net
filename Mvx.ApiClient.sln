@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvx.ApiClient", "src\Mvx.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvx.ApiClient.Test", "tests\Mvx.ApiClient.Test\Mvx.ApiClient.Test.csproj", "{E86654B3-EB45-455E-82D7-98A6C7B05452}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvx.HttpClientProviderLib", "src\Mvx.HttpClientProviderLib\Mvx.HttpClientProviderLib.csproj", "{E517FCE2-4AA7-41F1-81BC-F3826245AC9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvx.HttpClientProvider", "src\Mvx.HttpClientProvider\Mvx.HttpClientProvider.csproj", "{E517FCE2-4AA7-41F1-81BC-F3826245AC9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

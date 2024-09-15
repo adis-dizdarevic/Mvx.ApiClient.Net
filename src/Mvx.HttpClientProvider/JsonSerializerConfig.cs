@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Mvx.HttpClientProviderLib;
+namespace Mvx.HttpClientProvider;
 
 public static class JsonSerializerConfig
 {
