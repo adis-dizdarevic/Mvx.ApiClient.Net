@@ -1,17 +1,18 @@
 using Mvx.ApiClient.Interfaces;
+using Mvx.ApiClient.Interfaces.Clients;
 using Mvx.ApiClient.Models;
 using Mvx.ApiClient.Models.Network;
 using NSubstitute;
 
 namespace Mvx.ApiClient.Test;
 
-public class NetworkServiceTest
+public class NetworkClientTest
 {
-    private readonly INetworkService _networkService;
+    private readonly INetworkClient _networkClient;
 
-    public NetworkServiceTest()
+    public NetworkClientTest()
     {
-        _networkService = Substitute.For<INetworkService>();
+        _networkClient = Substitute.For<INetworkClient>();
     }
 
     [Fact]
@@ -30,10 +31,10 @@ public class NetworkServiceTest
             5_000_000
         );
 
-        _networkService.GetNetworkStats().Returns(Task.FromResult(expectedResult));
+        _networkClient.GetNetworkStats().Returns(Task.FromResult(expectedResult));
         
         // act
-        var result = await _networkService.GetNetworkStats();
+        var result = await _networkClient.GetNetworkStats();
 
         // assert
         Assert.Equal(expectedResult.Accounts, result.Accounts);

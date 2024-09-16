@@ -1,15 +1,16 @@
 ﻿using Mvx.ApiClient.Interfaces;
+using Mvx.ApiClient.Interfaces.Clients;
 using Mvx.ApiClient.Models;
 using Mvx.ApiClient.Models.Network;
 using Mvx.HttpClientProvider;
 
 namespace Mvx.ApiClient.Services;
 
-public class NetworkService : INetworkService
+public class NetworkClient : INetworkClient
 {
     private readonly HttpClient _httpClient;
 
-    public NetworkService()
+    public NetworkClient()
     {
         _httpClient = HttpClientFactory.CreateClient();
     }
