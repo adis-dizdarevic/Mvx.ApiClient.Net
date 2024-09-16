@@ -1,8 +1,8 @@
 ﻿using Mvx.ApiClient.Models.Network;
 
-namespace Mvx.ApiClient.Interfaces;
+namespace Mvx.ApiClient.Interfaces.Clients;
 
-public interface INetworkService
+public interface INetworkClient : IMvxApiClient
 {
     /// <summary>
     /// Returns general network statistics

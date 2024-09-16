@@ -46,7 +46,7 @@ public static class HttpClientFactory
         {
             queryParameters.Add("fields", string.Join(",", fields));
         }
-
+        
         if (!string.IsNullOrEmpty(extract))
         {
             queryParameters.Add("extract", extract);
