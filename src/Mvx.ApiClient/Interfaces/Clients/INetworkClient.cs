@@ -2,7 +2,7 @@
 
 namespace Mvx.ApiClient.Interfaces.Clients;
 
-public interface INetworkClient : IMvxApiClient
+public interface INetworkClient
 {
     /// <summary>
     /// Returns general network statistics
