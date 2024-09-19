@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Mvx.ApiClient.Clients;
+using Mvx.ApiClient.Exceptions;
 using Mvx.ApiClient.Interfaces;
 using Mvx.ApiClient.Interfaces.Clients;
-using Mvx.ApiClient.Services;
+using System.Net.Mime;
+using System.Text.Json;
 
 namespace Mvx.ApiClient.ExtensionMethods;
 
@@ -9,8 +12,47 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMvxApiClient(this IServiceCollection services)
     {
-        services.AddTransient<INetworkClient, NetworkClient>();
+        services.AddTransient<ErrorHandler>();
 
+        services.AddHttpClient("MvxApiClient", client =>
+        {
+            client.BaseAddress = new Uri("https://api.multiversx.com");
+            client.DefaultRequestHeaders.Add("Accept", MediaTypeNames.Application.Json);
+        }).AddHttpMessageHandler<ErrorHandler>();
+
+        services.AddTransient<INetworkClient>(provider =>
+        {
+            var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+
+            return new NetworkClient(httpClientFactory.CreateClient("MvxApiClient"));
+        });
+        
+        services.AddTransient<IMvxApiClient>(provider =>
+        {
+            var networkClient = provider.GetRequiredService<INetworkClient>();
+
+            return new MvxApiClient(networkClient);
+        });
+        
         return services;
+    }
+
+    private class ErrorHandler : DelegatingHandler
+    {
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var response = await base.SendAsync(request, cancellationToken);
+
+            if ((int)response.StatusCode >= 400 && (int)response.StatusCode < 500)
+            {
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+                var errorDetails = JsonSerializer.Deserialize<MvxApiException>(content);
+                
+                throw new MvxApiException(errorDetails.Message, errorDetails.Error, errorDetails.StatusCode);
+            }
+
+            return response;
+        }
     }
 }
