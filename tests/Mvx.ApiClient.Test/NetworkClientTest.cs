@@ -1,3 +1,4 @@
+using Mvx.ApiClient.Dtos;
 using Mvx.ApiClient.Interfaces;
 using Mvx.ApiClient.Interfaces.Clients;
 using Mvx.ApiClient.Models;
@@ -46,41 +47,5 @@ public class NetworkClientTest
         Assert.Equal(expectedResult.ScResults, result.ScResults);
         Assert.Equal(expectedResult.Shards, result.Shards);
         Assert.Equal(expectedResult.Transactions, result.Transactions);
-    }
-
-    [Fact]
-    public async void GetNetworkStats_WithSpecificFields_ReturnsResponseWithOnlyRequestedFields()
-    {
-        // arrange
-        
-        
-        // act
-        
-        
-        // assert
-    }
-    
-    [Fact]
-    public async void GetNetworkStats_WithExtractParameter_ReturnsExtractedFieldOnly()
-    {
-        // arrange
-        
-        
-        // act
-        
-        
-        // assert
-    }
-    
-    [Fact]
-    public async void GetNetworkStats_WithLimitAndOffset_ReturnsPagedResponse()
-    {
-        // arrange
-        
-        
-        // act
-        
-        
-        // assert
     }
 }

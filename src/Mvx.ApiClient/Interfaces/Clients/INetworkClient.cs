@@ -1,34 +1,38 @@
-﻿using Mvx.ApiClient.Models.Network;
+﻿using Mvx.ApiClient.Dtos;
+using Mvx.ApiClient.Models.Network;
 
 namespace Mvx.ApiClient.Interfaces.Clients;
 
+/// <summary>
+/// Client for retrieving information about the current network
+/// </summary>
 public interface INetworkClient
 {
     /// <summary>
     /// Returns general network statistics
     /// </summary>
-    /// <param name="limit">The number of items to retrieve</param>
-    /// <param name="offset">The number of items to skip</param>
-    /// <param name="fields">The specific fields to retrieve</param>
-    /// <param name="extract">The scalar value to extract</param>
-    /// <returns></returns>
-    Task<Stats> GetNetworkStats();
+    /// <param name="dataSelection">The fields to retrieve from the response</param>
+    /// <returns>A <see cref="Stats"/> object containing network statistics</returns>
+    Task<Stats> GetNetworkStats(DataSelectionDto? dataSelection = null);
     
     /// <summary>
     /// Returns general economics information
     /// </summary>
-    /// <returns></returns>
-    Task<Economics> GetEconomics();
+    /// <param name="dataSelection">The fields to retrieve from the response</param>
+    /// <returns>A <see cref="Economics"/> object containing economics information</returns>
+    Task<Economics> GetEconomics(DataSelectionDto? dataSelection = null);
     
     /// <summary>
     /// Returns network-specific constants that can be used to automatically configure dapps
     /// </summary>
-    /// <returns></returns>
-    Task<NetworkConstants> GetNetworkConstants();
+    /// <param name="dataSelection">The fields to retrieve from the response</param>
+    /// <returns>A <see cref="NetworkConstants"/> object containing network-specific constants</returns>
+    Task<NetworkConstants> GetNetworkConstants(DataSelectionDto? dataSelection = null);
     
     /// <summary>
     /// Returns general information about API deployment
     /// </summary>
-    /// <returns></returns>
-    Task<About> GetAbout();
+    /// <param name="dataSelection">The fields to retrieve from the response</param>
+    /// <returns>A <see cref="About"/> object containing general information about API deployment</returns>
+    Task<About> GetAbout(DataSelectionDto? dataSelection = null);
 }

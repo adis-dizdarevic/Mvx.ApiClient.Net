@@ -8,7 +8,6 @@ public class MvxApiException : Exception
         StatusCode = statusCode;
     }
     
-    public string Message { get; set; }
     public string Error { get; set; }
     public int StatusCode { get; set; }
 }

@@ -1,6 +1,7 @@
-﻿using Mvx.ApiClient.Interfaces.Clients;
+﻿using Mvx.ApiClient.Dtos;
+using Mvx.ApiClient.ExtensionMethods;
+using Mvx.ApiClient.Interfaces.Clients;
 using Mvx.ApiClient.Models.Network;
-using System.Net.Http.Json;
 
 namespace Mvx.ApiClient.Clients;
 
@@ -13,39 +14,43 @@ public class NetworkClient : INetworkClient
         _httpClient = httpClient;
     }
 
-    public async Task<Stats> GetNetworkStats()
+    /// <inheritdoc/>
+    public async Task<Stats> GetNetworkStats(DataSelectionDto? dataSelectionDto = null)
     {
         const string requestUri = "/stats";
 
-        var result = await _httpClient.GetFromJsonAsync<Stats>(requestUri);
+        var result = await _httpClient.GetWithQueryParametersAsync<Stats>(requestUri, new QueryParametersDto { Data = dataSelectionDto });
 
-        return result!;
+        return result;
     }
     
-    public async Task<Economics> GetEconomics()
+    /// <inheritdoc/>
+    public async Task<Economics> GetEconomics(DataSelectionDto? dataSelectionDto = null)
     {
         const string requestUri = "/economics";
 
-        var result = await _httpClient.GetFromJsonAsync<Economics>(requestUri);
+        var result = await _httpClient.GetWithQueryParametersAsync<Economics>(requestUri, new QueryParametersDto { Data = dataSelectionDto });
 
-        return result!;
+        return result;
     }
     
-    public async Task<NetworkConstants> GetNetworkConstants()
+    /// <inheritdoc/>
+    public async Task<NetworkConstants> GetNetworkConstants(DataSelectionDto? dataSelectionDto = null)
     {
         const string requestUri = "/constants";
         
-        var result = await _httpClient.GetFromJsonAsync<NetworkConstants>(requestUri);
+        var result = await _httpClient.GetWithQueryParametersAsync<NetworkConstants>(requestUri, new QueryParametersDto { Data = dataSelectionDto });
 
-        return result!;
+        return result;
     }
     
-    public async Task<About> GetAbout()
+    /// <inheritdoc/>
+    public async Task<About> GetAbout(DataSelectionDto? dataSelectionDto = null)
     {
         const string requestUri = "/about";
         
-        var result = await _httpClient.GetFromJsonAsync<About>(requestUri);
+        var result = await _httpClient.GetWithQueryParametersAsync<About>(requestUri, new QueryParametersDto { Data = dataSelectionDto });
 
-        return result!;
+        return result;
     }
 }
