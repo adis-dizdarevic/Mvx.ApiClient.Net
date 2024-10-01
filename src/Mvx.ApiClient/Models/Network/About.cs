@@ -3,15 +3,15 @@
 /// <summary>
 /// General information about API deployment
 /// </summary>
-/// <param name="AppVersion"></param>
-/// <param name="PluginsVersion"></param>
-/// <param name="Network"></param>
-/// <param name="Cluster"></param>
-/// <param name="Version"></param>
-/// <param name="IndexerVersion"></param>
-/// <param name="GatewayVersion"></param>
-/// <param name="ScamEngineVersion"></param>
-/// <param name="Features"></param>
+/// <param name="AppVersion">The current app version</param>
+/// <param name="PluginsVersion">The current plugin version</param>
+/// <param name="Network">The current network</param>
+/// <param name="Cluster">The current cluster</param>
+/// <param name="Version">The current version</param>
+/// <param name="IndexerVersion">The current indexer version</param>
+/// <param name="GatewayVersion">The current gateway version</param>
+/// <param name="ScamEngineVersion">The current scam engine version</param>
+/// <param name="Features">The current available features</param>
 public record About
 (
     string? AppVersion,

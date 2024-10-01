@@ -1,4 +1,5 @@
-﻿using Mvx.ApiClient.Interfaces;
+﻿using Mvx.ApiClient.Enums;
+using Mvx.ApiClient.Interfaces;
 using Mvx.ApiClient.Interfaces.Clients;
 
 namespace Mvx.ApiClient.Clients;

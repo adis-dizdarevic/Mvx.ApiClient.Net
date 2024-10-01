@@ -7,24 +7,29 @@ namespace Mvx.ApiClient.ExtensionMethods;
 
 internal static class HttpClientExtensions
 {
-    internal static async Task<T> GetWithQueryParametersAsync<T>(this HttpClient httpClient, string requestUri, QueryParametersDto? queryParameters = null)
+    internal static async Task<T> GetWithQueryParametersAsync<T>(this HttpClient httpClient, string requestPath, QueryParametersDto? queryParameters = null)
     {
-        requestUri = BuildRequestUri(requestUri, queryParameters);
+        var requestUri = BuildRequestUri(httpClient.BaseAddress!, requestPath, queryParameters);
         var response = await httpClient.GetFromJsonAsync<T>(requestUri, DefaultJsonSerializerOptions);
+
+        if (response is null)
+        {
+            throw new HttpRequestException($"No response data or could not deserialize to type {typeof(T)}");
+        }
 
         return response;
     }
 
-    internal static string BuildRequestUri(string requestUri, QueryParametersDto? queryParameters = null)
+    internal static Uri BuildRequestUri(Uri baseAddress, string requestPath, QueryParametersDto? queryParameters = null)
     {
         var queryDictionary = new Dictionary<string, string>();
         
-        if (queryParameters?.Pagination is { Limit: not null })
+        if (queryParameters?.Pagination?.Limit is not null)
         {
             queryDictionary.Add("size", queryParameters.Pagination.Limit.Value.ToString());
         }
 
-        if (queryParameters?.Pagination is { Offset: not null })
+        if (queryParameters?.Pagination?.Offset is not null)
         {
             queryDictionary.Add("from", queryParameters.Pagination.Offset.Value.ToString());
         }
@@ -40,8 +45,9 @@ internal static class HttpClientExtensions
         }
         
         var queryString = string.Join("&", queryDictionary.Select(param => $"{param.Key}={param.Value}"));
-        requestUri = string.IsNullOrEmpty(queryString) ? requestUri : $"{requestUri}?{queryString}";
-
+        var fullUri = string.IsNullOrEmpty(queryString) ? requestPath : $"{requestPath}?{queryString}";
+        var requestUri = new Uri(baseAddress, fullUri);
+        
         return requestUri;
     }
     

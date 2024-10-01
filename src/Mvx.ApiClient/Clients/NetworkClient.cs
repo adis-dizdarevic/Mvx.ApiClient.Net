@@ -17,9 +17,9 @@ public class NetworkClient : INetworkClient
     /// <inheritdoc/>
     public async Task<Stats> GetNetworkStats(DataSelectionDto? dataSelectionDto = null)
     {
-        const string requestUri = "/stats";
+        const string requestPath = "/stats";
 
-        var result = await _httpClient.GetWithQueryParametersAsync<Stats>(requestUri, new QueryParametersDto { Data = dataSelectionDto });
+        var result = await _httpClient.GetWithQueryParametersAsync<Stats>(requestPath, new QueryParametersDto { Data = dataSelectionDto });
 
         return result;
     }
@@ -27,9 +27,9 @@ public class NetworkClient : INetworkClient
     /// <inheritdoc/>
     public async Task<Economics> GetEconomics(DataSelectionDto? dataSelectionDto = null)
     {
-        const string requestUri = "/economics";
+        const string requestPath = "/economics";
 
-        var result = await _httpClient.GetWithQueryParametersAsync<Economics>(requestUri, new QueryParametersDto { Data = dataSelectionDto });
+        var result = await _httpClient.GetWithQueryParametersAsync<Economics>(requestPath, new QueryParametersDto { Data = dataSelectionDto });
 
         return result;
     }
@@ -37,9 +37,9 @@ public class NetworkClient : INetworkClient
     /// <inheritdoc/>
     public async Task<NetworkConstants> GetNetworkConstants(DataSelectionDto? dataSelectionDto = null)
     {
-        const string requestUri = "/constants";
+        const string requestPath = "/constants";
         
-        var result = await _httpClient.GetWithQueryParametersAsync<NetworkConstants>(requestUri, new QueryParametersDto { Data = dataSelectionDto });
+        var result = await _httpClient.GetWithQueryParametersAsync<NetworkConstants>(requestPath, new QueryParametersDto { Data = dataSelectionDto });
 
         return result;
     }
@@ -47,9 +47,9 @@ public class NetworkClient : INetworkClient
     /// <inheritdoc/>
     public async Task<About> GetAbout(DataSelectionDto? dataSelectionDto = null)
     {
-        const string requestUri = "/about";
+        const string requestPath = "/about";
         
-        var result = await _httpClient.GetWithQueryParametersAsync<About>(requestUri, new QueryParametersDto { Data = dataSelectionDto });
+        var result = await _httpClient.GetWithQueryParametersAsync<About>(requestPath, new QueryParametersDto { Data = dataSelectionDto });
 
         return result;
     }
