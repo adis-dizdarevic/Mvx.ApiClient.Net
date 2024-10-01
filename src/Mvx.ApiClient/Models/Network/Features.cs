@@ -7,7 +7,7 @@
 /// <param name="Marketplace">Marketplace flag activation value</param>
 /// <param name="Exchange">Exchange flag activation value</param>
 /// <param name="DataApi">DataApi flag activation value</param>
-public abstract record Features
+public record Features
 (
     bool UpdateCollectionExtraDetails,
     bool Marketplace,

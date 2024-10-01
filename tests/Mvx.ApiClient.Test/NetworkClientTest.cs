@@ -1,7 +1,4 @@
-using Mvx.ApiClient.Dtos;
-using Mvx.ApiClient.Interfaces;
 using Mvx.ApiClient.Interfaces.Clients;
-using Mvx.ApiClient.Models;
 using Mvx.ApiClient.Models.Network;
 using NSubstitute;
 

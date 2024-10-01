@@ -19,7 +19,7 @@ public interface INetworkClient
     /// Returns general economics information
     /// </summary>
     /// <param name="dataSelection">The fields to retrieve from the response</param>
-    /// <returns>A <see cref="Economics"/> object containing economics information</returns>
+    /// <returns>An <see cref="Economics"/> object containing economics information</returns>
     Task<Economics> GetEconomics(DataSelectionDto? dataSelection = null);
     
     /// <summary>
@@ -33,6 +33,6 @@ public interface INetworkClient
     /// Returns general information about API deployment
     /// </summary>
     /// <param name="dataSelection">The fields to retrieve from the response</param>
-    /// <returns>A <see cref="About"/> object containing general information about API deployment</returns>
+    /// <returns>An <see cref="About"/> object containing general information about API deployment</returns>
     Task<About> GetAbout(DataSelectionDto? dataSelection = null);
 }
