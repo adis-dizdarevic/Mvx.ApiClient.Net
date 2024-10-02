@@ -14,7 +14,7 @@ public class NetworkClientTest
     }
 
     [Fact]
-    public async void GetNetworkStats_NoParameters_ReturnsFullResponse()
+    public async void GetNetworkStats_NoParameters_ReturnsExpectedRecord()
     {
         // arrange
         var expectedResult = new Stats(
@@ -44,5 +44,99 @@ public class NetworkClientTest
         Assert.Equal(expectedResult.ScResults, result.ScResults);
         Assert.Equal(expectedResult.Shards, result.Shards);
         Assert.Equal(expectedResult.Transactions, result.Transactions);
+    }
+    
+    [Fact]
+    public async void GetEconomics_NoParameters_ReturnsExpectedRecord()
+    {
+        // arrange
+        var expectedResult = new Economics(
+            2_500_000,
+            1_500_000,
+            1_000_000,
+            20.42,
+            1_000_000_000,
+            7.63,
+            8.14,
+            6.12,
+            200_000
+        );
+
+        _networkClient.GetEconomics().Returns(Task.FromResult(expectedResult));
+        
+        // act
+        var result = await _networkClient.GetEconomics();
+
+        // assert
+        Assert.Equal(expectedResult.TotalSupply, result.TotalSupply);
+        Assert.Equal(expectedResult.CirculatingSupply, result.CirculatingSupply);
+        Assert.Equal(expectedResult.Staked, result.Staked);
+        Assert.Equal(expectedResult.Price, result.Price);
+        Assert.Equal(expectedResult.MarketCap, result.MarketCap);
+        Assert.Equal(expectedResult.Apr, result.Apr);
+        Assert.Equal(expectedResult.TopUpApr, result.TopUpApr);
+        Assert.Equal(expectedResult.BaseApr, result.BaseApr);
+        Assert.Equal(expectedResult.TokenMarketCap, result.TokenMarketCap);
+    }
+    
+    [Fact]
+    public async void GetNetworkConstants_NoParameters_ReturnsExpectedRecord()
+    {
+        // arrange
+        var expectedResult = new NetworkConstants(
+            "MvxChain",
+            100_000,
+            50_000,
+            75_000,
+            1
+        );
+
+        _networkClient.GetNetworkConstants().Returns(Task.FromResult(expectedResult));
+        
+        // act
+        var result = await _networkClient.GetNetworkConstants();
+
+        // assert
+        Assert.Equal(expectedResult.ChainId, result.ChainId);
+        Assert.Equal(expectedResult.GasPerDataByte, result.GasPerDataByte);
+        Assert.Equal(expectedResult.MinGasLimit, result.MinGasLimit);
+        Assert.Equal(expectedResult.MinGasPrice, result.MinGasPrice);
+        Assert.Equal(expectedResult.MinTransactionVersion, result.MinTransactionVersion);
+    }
+    
+    [Fact]
+    public async void GetAbout_NoParameters_ReturnsExpectedRecord()
+    {
+        // arrange
+        var expectedResult = new About(
+            "1.5.0",
+            "1.2.0",
+            "MvX Network",
+            "cluster-1",
+            "2.5.3",
+            "2.1.1",
+            "2.0.4",
+            "1.0.2",
+            new Features(false, true, true, true)
+        );
+
+        _networkClient.GetAbout().Returns(Task.FromResult(expectedResult));
+        
+        // act
+        var result = await _networkClient.GetAbout();
+
+        // assert
+        Assert.Equal(expectedResult.AppVersion, result.AppVersion);
+        Assert.Equal(expectedResult.PluginsVersion, result.PluginsVersion);
+        Assert.Equal(expectedResult.Network, result.Network);
+        Assert.Equal(expectedResult.Cluster, result.Cluster);
+        Assert.Equal(expectedResult.Version, result.Version);
+        Assert.Equal(expectedResult.IndexerVersion, result.IndexerVersion);
+        Assert.Equal(expectedResult.GatewayVersion, result.GatewayVersion);
+        Assert.Equal(expectedResult.ScamEngineVersion, result.ScamEngineVersion);
+        Assert.Equal(expectedResult?.Features?.UpdateCollectionExtraDetails, result?.Features?.UpdateCollectionExtraDetails);
+        Assert.Equal(expectedResult?.Features?.Marketplace, result?.Features?.Marketplace);
+        Assert.Equal(expectedResult?.Features?.Exchange, result?.Features?.Exchange);
+        Assert.Equal(expectedResult?.Features?.DataApi, result?.Features?.DataApi);
     }
 }

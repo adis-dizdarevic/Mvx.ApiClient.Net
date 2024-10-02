@@ -7,6 +7,15 @@ namespace Mvx.ApiClient.ExtensionMethods;
 
 internal static class HttpClientExtensions
 {
+    /// <summary>
+    /// Gets the returned data
+    /// </summary>
+    /// <param name="httpClient">The HttpClient</param>
+    /// <param name="requestPath">The request path</param>
+    /// <param name="queryParameters">The query parameters to limit the returned data</param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="HttpRequestException"></exception>
     internal static async Task<T> GetWithQueryParametersAsync<T>(this HttpClient httpClient, string requestPath, QueryParametersDto? queryParameters = null)
     {
         var requestUri = BuildRequestUri(httpClient.BaseAddress!, requestPath, queryParameters);
@@ -20,6 +29,13 @@ internal static class HttpClientExtensions
         return response;
     }
 
+    /// <summary>
+    /// Builds the request uri based on the provided request path and query parameters
+    /// </summary>
+    /// <param name="baseAddress">The base address</param>
+    /// <param name="requestPath">The request path</param>
+    /// <param name="queryParameters">The query parameters</param>
+    /// <returns></returns>
     internal static Uri BuildRequestUri(Uri baseAddress, string requestPath, QueryParametersDto? queryParameters = null)
     {
         var queryDictionary = new Dictionary<string, string>();
