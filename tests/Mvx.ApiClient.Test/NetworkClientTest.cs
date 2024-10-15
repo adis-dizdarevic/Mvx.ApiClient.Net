@@ -17,7 +17,7 @@ public class NetworkClientTest
     public async void GetNetworkStats_NoParameters_ReturnsExpectedRecord()
     {
         // arrange
-        var expectedResult = new Stats(
+        var expectedResult = new StatsDto(
             1_000_000,
             250_000,
             1500,
@@ -29,10 +29,10 @@ public class NetworkClientTest
             5_000_000
         );
 
-        _networkClient.GetNetworkStats().Returns(Task.FromResult(expectedResult));
+        _networkClient.GetNetworkStatsAsync().Returns(Task.FromResult(expectedResult));
         
         // act
-        var result = await _networkClient.GetNetworkStats();
+        var result = await _networkClient.GetNetworkStatsAsync();
 
         // assert
         Assert.Equal(expectedResult.Accounts, result.Accounts);
@@ -50,7 +50,7 @@ public class NetworkClientTest
     public async void GetEconomics_NoParameters_ReturnsExpectedRecord()
     {
         // arrange
-        var expectedResult = new Economics(
+        var expectedResult = new EconomicsDto(
             2_500_000,
             1_500_000,
             1_000_000,
@@ -62,10 +62,10 @@ public class NetworkClientTest
             200_000
         );
 
-        _networkClient.GetEconomics().Returns(Task.FromResult(expectedResult));
+        _networkClient.GetEconomicsAsync().Returns(Task.FromResult(expectedResult));
         
         // act
-        var result = await _networkClient.GetEconomics();
+        var result = await _networkClient.GetEconomicsAsync();
 
         // assert
         Assert.Equal(expectedResult.TotalSupply, result.TotalSupply);
@@ -83,7 +83,7 @@ public class NetworkClientTest
     public async void GetNetworkConstants_NoParameters_ReturnsExpectedRecord()
     {
         // arrange
-        var expectedResult = new NetworkConstants(
+        var expectedResult = new NetworkConstantsDto(
             "MvxChain",
             100_000,
             50_000,
@@ -91,10 +91,10 @@ public class NetworkClientTest
             1
         );
 
-        _networkClient.GetNetworkConstants().Returns(Task.FromResult(expectedResult));
+        _networkClient.GetNetworkConstantsAsync().Returns(Task.FromResult(expectedResult));
         
         // act
-        var result = await _networkClient.GetNetworkConstants();
+        var result = await _networkClient.GetNetworkConstantsAsync();
 
         // assert
         Assert.Equal(expectedResult.ChainId, result.ChainId);
@@ -108,7 +108,7 @@ public class NetworkClientTest
     public async void GetAbout_NoParameters_ReturnsExpectedRecord()
     {
         // arrange
-        var expectedResult = new About(
+        var expectedResult = new AboutDto(
             "1.5.0",
             "1.2.0",
             "MvX Network",
@@ -117,13 +117,13 @@ public class NetworkClientTest
             "2.1.1",
             "2.0.4",
             "1.0.2",
-            new Features(false, true, true, true)
+            new FeaturesDto(false, true, true, true)
         );
 
-        _networkClient.GetAbout().Returns(Task.FromResult(expectedResult));
+        _networkClient.GetAboutAsync().Returns(Task.FromResult(expectedResult));
         
         // act
-        var result = await _networkClient.GetAbout();
+        var result = await _networkClient.GetAboutAsync();
 
         // assert
         Assert.Equal(expectedResult.AppVersion, result.AppVersion);

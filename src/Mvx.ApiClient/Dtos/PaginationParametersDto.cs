@@ -3,7 +3,7 @@
 /// <summary>
 /// Dto for handling pagination parameters
 /// </summary>
-public class PaginationParametersDto
+public sealed class PaginationParametersDto
 {
     /// <summary>
     /// The number of items to retrieve

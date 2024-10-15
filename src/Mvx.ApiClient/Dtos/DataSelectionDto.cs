@@ -3,7 +3,7 @@
 /// <summary>
 /// Dto for selecting specific fields and/or extracting scalar values from the response
 /// </summary>
-public class DataSelectionDto
+public sealed class DataSelectionDto
 {
     /// <summary>
     /// The specific fields to retrieve

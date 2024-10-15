@@ -13,13 +13,14 @@ internal static class HttpClientExtensions
     /// <param name="httpClient">The HttpClient</param>
     /// <param name="requestPath">The request path</param>
     /// <param name="queryParameters">The query parameters to limit the returned data</param>
+    /// <param name="cancellationToken">The cancellation token</param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
     /// <exception cref="HttpRequestException"></exception>
-    internal static async Task<T> GetWithQueryParametersAsync<T>(this HttpClient httpClient, string requestPath, QueryParametersDto? queryParameters = null)
+    internal static async Task<T> GetWithQueryParametersAsync<T>(this HttpClient httpClient, string requestPath, QueryParametersDto? queryParameters = null, CancellationToken cancellationToken = default)
     {
         var requestUri = BuildRequestUri(httpClient.BaseAddress!, requestPath, queryParameters);
-        var response = await httpClient.GetFromJsonAsync<T>(requestUri, DefaultJsonSerializerOptions);
+        var response = await httpClient.GetFromJsonAsync<T>(requestUri, DefaultJsonSerializerOptions, cancellationToken);
 
         if (response is null)
         {
@@ -34,7 +35,7 @@ internal static class HttpClientExtensions
     /// </summary>
     /// <param name="baseAddress">The base address</param>
     /// <param name="requestPath">The request path</param>
-    /// <param name="queryParameters">The query parameters</param>
+    /// <param name="queryParameters">The query parameters to limit the returned data</param>
     /// <returns></returns>
     internal static Uri BuildRequestUri(Uri baseAddress, string requestPath, QueryParametersDto? queryParameters = null)
     {

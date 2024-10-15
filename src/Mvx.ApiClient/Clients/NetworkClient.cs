@@ -5,7 +5,7 @@ using Mvx.ApiClient.Models.Network;
 
 namespace Mvx.ApiClient.Clients;
 
-public class NetworkClient : INetworkClient
+public sealed class NetworkClient : INetworkClient
 {
     private readonly HttpClient _httpClient;
 
@@ -13,43 +13,31 @@ public class NetworkClient : INetworkClient
     {
         _httpClient = httpClient;
     }
-
-    /// <inheritdoc/>
-    public async Task<Stats> GetNetworkStats(DataSelectionDto? dataSelectionDto = null)
+    
+    public async Task<StatsDto> GetNetworkStatsAsync(DataSelectionDto? dataSelectionDto = null, CancellationToken cancellationToken = default)
     {
-        const string requestPath = "/stats";
-
-        var result = await _httpClient.GetWithQueryParametersAsync<Stats>(requestPath, new QueryParametersDto { Data = dataSelectionDto });
+        var result = await _httpClient.GetWithQueryParametersAsync<StatsDto>(EndpointPaths.NetworkStats, new QueryParametersDto { Data = dataSelectionDto }, cancellationToken);
 
         return result;
     }
     
-    /// <inheritdoc/>
-    public async Task<Economics> GetEconomics(DataSelectionDto? dataSelectionDto = null)
+    public async Task<EconomicsDto> GetEconomicsAsync(DataSelectionDto? dataSelectionDto = null, CancellationToken cancellationToken = default)
     {
-        const string requestPath = "/economics";
-
-        var result = await _httpClient.GetWithQueryParametersAsync<Economics>(requestPath, new QueryParametersDto { Data = dataSelectionDto });
+        var result = await _httpClient.GetWithQueryParametersAsync<EconomicsDto>(EndpointPaths.NetworkEconomics, new QueryParametersDto { Data = dataSelectionDto }, cancellationToken);
 
         return result;
     }
     
-    /// <inheritdoc/>
-    public async Task<NetworkConstants> GetNetworkConstants(DataSelectionDto? dataSelectionDto = null)
+    public async Task<NetworkConstantsDto> GetNetworkConstantsAsync(DataSelectionDto? dataSelectionDto = null, CancellationToken cancellationToken = default)
     {
-        const string requestPath = "/constants";
-        
-        var result = await _httpClient.GetWithQueryParametersAsync<NetworkConstants>(requestPath, new QueryParametersDto { Data = dataSelectionDto });
+        var result = await _httpClient.GetWithQueryParametersAsync<NetworkConstantsDto>(EndpointPaths.NetworkConstants, new QueryParametersDto { Data = dataSelectionDto }, cancellationToken);
 
         return result;
     }
     
-    /// <inheritdoc/>
-    public async Task<About> GetAbout(DataSelectionDto? dataSelectionDto = null)
+    public async Task<AboutDto> GetAboutAsync(DataSelectionDto? dataSelectionDto = null, CancellationToken cancellationToken = default)
     {
-        const string requestPath = "/about";
-        
-        var result = await _httpClient.GetWithQueryParametersAsync<About>(requestPath, new QueryParametersDto { Data = dataSelectionDto });
+        var result = await _httpClient.GetWithQueryParametersAsync<AboutDto>(EndpointPaths.NetworkAbout, new QueryParametersDto { Data = dataSelectionDto }, cancellationToken);
 
         return result;
     }

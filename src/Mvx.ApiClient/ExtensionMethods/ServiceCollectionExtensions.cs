@@ -2,7 +2,6 @@
 using Mvx.ApiClient.Clients;
 using Mvx.ApiClient.Enums;
 using Mvx.ApiClient.Exceptions;
-using Mvx.ApiClient.Interfaces;
 using Mvx.ApiClient.Interfaces.Clients;
 using System.Net.Mime;
 using System.Text.Json;
@@ -21,12 +20,20 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<ErrorHandler>();
         
-        RegisterClient<INetworkClient, NetworkClient>(services, networkType);
+        var baseAddress = networkType switch
+        {
+            NetworkType.Mainnet => Constants.BaseAddressMainnetApi,
+            NetworkType.Testnet => Constants.BaseAddressTestnetApi,
+            NetworkType.Devnet => Constants.BaseAddressDevnetApi,
+            _ => throw new ArgumentOutOfRangeException(nameof(networkType), $"Unexpected network type: {networkType}")
+        };
+        
+        RegisterClient<INetworkClient, NetworkClient>(services, baseAddress);
 
         services.AddTransient<IMvxApiClient>(provider =>
         {
             var networkClient = provider.GetRequiredService<INetworkClient>();
-
+            
             return new MvxApiClient(networkClient);
         });
         
@@ -37,22 +44,14 @@ public static class ServiceCollectionExtensions
     /// Registers a custom client
     /// </summary>
     /// <param name="services">The service collection</param>
-    /// <param name="networkType">The type of network to connect to</param>
+    /// <param name="baseAddress">The base address of the client</param>
     /// <typeparam name="TClientInterface">The client interface</typeparam>
     /// <typeparam name="TClientImplementation">The client implementation</typeparam>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the type of network is not valid</exception>
-    private static void RegisterClient<TClientInterface, TClientImplementation>(this IServiceCollection services, NetworkType networkType)
+    private static void RegisterClient<TClientInterface, TClientImplementation>(this IServiceCollection services, string baseAddress)
         where TClientInterface : class
         where TClientImplementation : class, TClientInterface
     {
-        var baseAddress = networkType switch
-        {
-            NetworkType.Mainnet => Constants.BaseAddressMainnetApi,
-            NetworkType.Testnet => Constants.BaseAddressTestnetApi,
-            NetworkType.Devnet => Constants.BaseAddressDevnetApi,
-            _ => throw new ArgumentOutOfRangeException(nameof(networkType), $"Unexpected network type: {networkType}")
-        };
-
         services.AddHttpClient<TClientInterface, TClientImplementation>(client =>
         {
             client.BaseAddress = new Uri(baseAddress);
