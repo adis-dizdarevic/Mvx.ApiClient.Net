@@ -3,7 +3,7 @@
 /// <summary>
 /// Dto for specifying optional parameters in API queries
 /// </summary>
-public class QueryParametersDto
+public sealed class QueryParametersDto
 {
     /// <summary>
     /// The number of items to retrieve and skip

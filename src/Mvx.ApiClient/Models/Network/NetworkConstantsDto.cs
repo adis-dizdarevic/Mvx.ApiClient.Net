@@ -8,7 +8,7 @@
 /// <param name="MinGasLimit">Minimum gas limit</param>
 /// <param name="MinGasPrice">Minimum gas price</param>
 /// <param name="MinTransactionVersion">Minimum transaction version</param>
-public record NetworkConstants
+public record NetworkConstantsDto
 (
     string ChainId,
     long GasPerDataByte,

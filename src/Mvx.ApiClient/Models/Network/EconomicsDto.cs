@@ -12,7 +12,7 @@
 /// <param name="TopUpApr">The current topup apr of EGLD</param>
 /// <param name="BaseApr">The current base apr of EGLD</param>
 /// <param name="TokenMarketCap">The current token marketcap</param>
-public record Economics
+public record EconomicsDto
 (
     long TotalSupply,
     long CirculatingSupply,

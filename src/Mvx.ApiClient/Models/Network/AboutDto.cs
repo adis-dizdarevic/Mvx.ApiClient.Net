@@ -12,7 +12,7 @@
 /// <param name="GatewayVersion">The current gateway version</param>
 /// <param name="ScamEngineVersion">The current scam engine version</param>
 /// <param name="Features">The current available features</param>
-public record About
+public record AboutDto
 (
     string? AppVersion,
     string? PluginsVersion,
@@ -22,5 +22,5 @@ public record About
     string IndexerVersion,
     string GatewayVersion,
     string ScamEngineVersion,
-    Features? Features
+    FeaturesDto? Features
 );
