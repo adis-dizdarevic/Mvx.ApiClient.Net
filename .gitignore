@@ -387,7 +387,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-.idea/
+.idea
 [Pp]ackages/
 Thumbs.db
 Desktop.ini
