@@ -5,7 +5,7 @@ using Mvx.ApiClient.Net.Models.Network;
 
 namespace Mvx.ApiClient.Net.Clients;
 
-public sealed class NetworkClient : INetworkClient
+internal sealed class NetworkClient : INetworkClient
 {
     private readonly HttpClient _httpClient;
 

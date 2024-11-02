@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions
         {
             var networkClient = provider.GetRequiredService<INetworkClient>();
             
-            return new MvxApiClient(networkClient);
+            return new MvxApiClient(networkType, networkClient);
         });
         
         return services;
@@ -60,22 +60,21 @@ public static class ServiceCollectionExtensions
         .AddHttpMessageHandler<ErrorHandler>();
     }
 
-    private class ErrorHandler : DelegatingHandler
+    internal sealed class ErrorHandler : DelegatingHandler
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var response = await base.SendAsync(request, cancellationToken);
 
-            if ((int)response.StatusCode >= 400 && (int)response.StatusCode < 500)
+            if ((int)response.StatusCode >= 200 && (int)response.StatusCode < 300)
             {
-                var content = await response.Content.ReadAsStringAsync(cancellationToken);
-
-                var errorDetails = JsonSerializer.Deserialize<MvxApiException>(content)!;
-                
-                throw new MvxApiException(errorDetails.Message, errorDetails.Error, errorDetails.StatusCode);
+                return response;
             }
 
-            return response;
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+            var errorDetails = JsonSerializer.Deserialize<MvxApiException>(content)!;
+                
+            throw new MvxApiException(errorDetails.Message, errorDetails.Error, errorDetails.StatusCode);
         }
     }
 }

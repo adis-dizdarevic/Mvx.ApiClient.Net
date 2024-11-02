@@ -3,11 +3,11 @@
 /// <summary>
 /// 
 /// </summary>
-/// <param name="UpdateCollectionExtraDetails">Update Collection extra details flag activation value</param>
+/// <param name="UpdateCollectionExtraDetails">Update collection extra details flag activation value</param>
 /// <param name="Marketplace">Marketplace flag activation value</param>
 /// <param name="Exchange">Exchange flag activation value</param>
 /// <param name="DataApi">DataApi flag activation value</param>
-public record FeaturesDto
+public sealed record FeaturesDto
 (
     bool UpdateCollectionExtraDetails,
     bool Marketplace,

@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Mvx.ApiClient.Net.Interfaces.Clients;
 using Mvx.ApiClient.Net.Models.Network;
 using NSubstitute;
@@ -6,15 +7,15 @@ namespace Mvx.ApiClient.Net.Test;
 
 public class NetworkClientTest
 {
-    private readonly INetworkClient _networkClient;
+    private readonly IMvxApiClient _mvxApiClient;
 
     public NetworkClientTest()
     {
-        _networkClient = Substitute.For<INetworkClient>();
+        _mvxApiClient = Substitute.For<IMvxApiClient>();
     }
 
     [Fact]
-    public async void GetNetworkStats_NoParameters_ReturnsExpectedRecord()
+    public async Task GetNetworkStats_NoParameters_ReturnsExpectedRecord()
     {
         // arrange
         var expectedResult = new StatsDto(
@@ -29,25 +30,25 @@ public class NetworkClientTest
             5_000_000
         );
 
-        _networkClient.GetNetworkStatsAsync().Returns(Task.FromResult(expectedResult));
+        _mvxApiClient.Network.GetNetworkStatsAsync().Returns(Task.FromResult(expectedResult));
         
         // act
-        var result = await _networkClient.GetNetworkStatsAsync();
+        var result = await _mvxApiClient.Network.GetNetworkStatsAsync();
 
         // assert
-        Assert.Equal(expectedResult.Accounts, result.Accounts);
-        Assert.Equal(expectedResult.Blocks, result.Blocks);
-        Assert.Equal(expectedResult.Epoch, result.Epoch);
-        Assert.Equal(expectedResult.RefreshRate, result.RefreshRate);
-        Assert.Equal(expectedResult.RoundsPassed, result.RoundsPassed);
-        Assert.Equal(expectedResult.RoundsPerEpoch, result.RoundsPerEpoch);
-        Assert.Equal(expectedResult.ScResults, result.ScResults);
-        Assert.Equal(expectedResult.Shards, result.Shards);
-        Assert.Equal(expectedResult.Transactions, result.Transactions);
+        result.Accounts.Should().Be(expectedResult.Accounts);
+        result.Blocks.Should().Be(expectedResult.Blocks);
+        result.Epoch.Should().Be(expectedResult.Epoch);
+        result.RefreshRate.Should().Be(expectedResult.RefreshRate);
+        result.RoundsPassed.Should().Be(expectedResult.RoundsPassed);
+        result.RoundsPerEpoch.Should().Be(expectedResult.RoundsPerEpoch);
+        result.ScResults.Should().Be(expectedResult.ScResults);
+        result.Shards.Should().Be(expectedResult.Shards);
+        result.Transactions.Should().Be(expectedResult.Transactions);
     }
     
     [Fact]
-    public async void GetEconomics_NoParameters_ReturnsExpectedRecord()
+    public async Task GetEconomics_NoParameters_ReturnsExpectedRecord()
     {
         // arrange
         var expectedResult = new EconomicsDto(
@@ -62,25 +63,25 @@ public class NetworkClientTest
             200_000
         );
 
-        _networkClient.GetEconomicsAsync().Returns(Task.FromResult(expectedResult));
+        _mvxApiClient.Network.GetEconomicsAsync().Returns(Task.FromResult(expectedResult));
         
         // act
-        var result = await _networkClient.GetEconomicsAsync();
+        var result = await _mvxApiClient.Network.GetEconomicsAsync();
 
         // assert
-        Assert.Equal(expectedResult.TotalSupply, result.TotalSupply);
-        Assert.Equal(expectedResult.CirculatingSupply, result.CirculatingSupply);
-        Assert.Equal(expectedResult.Staked, result.Staked);
-        Assert.Equal(expectedResult.Price, result.Price);
-        Assert.Equal(expectedResult.MarketCap, result.MarketCap);
-        Assert.Equal(expectedResult.Apr, result.Apr);
-        Assert.Equal(expectedResult.TopUpApr, result.TopUpApr);
-        Assert.Equal(expectedResult.BaseApr, result.BaseApr);
-        Assert.Equal(expectedResult.TokenMarketCap, result.TokenMarketCap);
+        expectedResult.TotalSupply.Should().Be(result.TotalSupply);
+        expectedResult.CirculatingSupply.Should().Be(result.CirculatingSupply);
+        expectedResult.Staked.Should().Be(result.Staked);
+        expectedResult.Price.Should().Be(result.Price);
+        expectedResult.MarketCap.Should().Be(result.MarketCap);
+        expectedResult.Apr.Should().Be(result.Apr);
+        expectedResult.TopUpApr.Should().Be(result.TopUpApr);
+        expectedResult.BaseApr.Should().Be(result.BaseApr);
+        expectedResult.TokenMarketCap.Should().Be(result.TokenMarketCap);
     }
     
     [Fact]
-    public async void GetNetworkConstants_NoParameters_ReturnsExpectedRecord()
+    public async Task GetNetworkConstants_NoParameters_ReturnsExpectedRecord()
     {
         // arrange
         var expectedResult = new NetworkConstantsDto(
@@ -91,21 +92,21 @@ public class NetworkClientTest
             1
         );
 
-        _networkClient.GetNetworkConstantsAsync().Returns(Task.FromResult(expectedResult));
+        _mvxApiClient.Network.GetNetworkConstantsAsync().Returns(Task.FromResult(expectedResult));
         
         // act
-        var result = await _networkClient.GetNetworkConstantsAsync();
+        var result = await _mvxApiClient.Network.GetNetworkConstantsAsync();
 
         // assert
-        Assert.Equal(expectedResult.ChainId, result.ChainId);
-        Assert.Equal(expectedResult.GasPerDataByte, result.GasPerDataByte);
-        Assert.Equal(expectedResult.MinGasLimit, result.MinGasLimit);
-        Assert.Equal(expectedResult.MinGasPrice, result.MinGasPrice);
-        Assert.Equal(expectedResult.MinTransactionVersion, result.MinTransactionVersion);
+        expectedResult.ChainId.Should().Be(result.ChainId);
+        expectedResult.GasPerDataByte.Should().Be(result.GasPerDataByte);
+        expectedResult.MinGasLimit.Should().Be(result.MinGasLimit);
+        expectedResult.MinGasPrice.Should().Be(result.MinGasPrice);
+        expectedResult.MinTransactionVersion.Should().Be(result.MinTransactionVersion);
     }
     
     [Fact]
-    public async void GetAbout_NoParameters_ReturnsExpectedRecord()
+    public async Task GetAbout_NoParameters_ReturnsExpectedRecord()
     {
         // arrange
         var expectedResult = new AboutDto(
@@ -120,23 +121,23 @@ public class NetworkClientTest
             new FeaturesDto(false, true, true, true)
         );
 
-        _networkClient.GetAboutAsync().Returns(Task.FromResult(expectedResult));
+        _mvxApiClient.Network.GetAboutAsync().Returns(Task.FromResult(expectedResult));
         
         // act
-        var result = await _networkClient.GetAboutAsync();
+        var result = await _mvxApiClient.Network.GetAboutAsync();
 
         // assert
-        Assert.Equal(expectedResult.AppVersion, result.AppVersion);
-        Assert.Equal(expectedResult.PluginsVersion, result.PluginsVersion);
-        Assert.Equal(expectedResult.Network, result.Network);
-        Assert.Equal(expectedResult.Cluster, result.Cluster);
-        Assert.Equal(expectedResult.Version, result.Version);
-        Assert.Equal(expectedResult.IndexerVersion, result.IndexerVersion);
-        Assert.Equal(expectedResult.GatewayVersion, result.GatewayVersion);
-        Assert.Equal(expectedResult.ScamEngineVersion, result.ScamEngineVersion);
-        Assert.Equal(expectedResult?.Features?.UpdateCollectionExtraDetails, result?.Features?.UpdateCollectionExtraDetails);
-        Assert.Equal(expectedResult?.Features?.Marketplace, result?.Features?.Marketplace);
-        Assert.Equal(expectedResult?.Features?.Exchange, result?.Features?.Exchange);
-        Assert.Equal(expectedResult?.Features?.DataApi, result?.Features?.DataApi);
+        expectedResult.AppVersion.Should().Be(result.AppVersion);
+        expectedResult.PluginsVersion.Should().Be(result.PluginsVersion);
+        expectedResult.Network.Should().Be(result.Network);
+        expectedResult.Cluster.Should().Be(result.Cluster);
+        expectedResult.Version.Should().Be(result.Version);
+        expectedResult.IndexerVersion.Should().Be(result.IndexerVersion);
+        expectedResult.GatewayVersion.Should().Be(result.GatewayVersion);
+        expectedResult.ScamEngineVersion.Should().Be(result.ScamEngineVersion);
+        expectedResult.Features!.UpdateCollectionExtraDetails.Should().Be(result.Features!.UpdateCollectionExtraDetails);
+        expectedResult.Features!.Marketplace.Should().Be(result.Features!.Marketplace);
+        expectedResult.Features!.Exchange.Should().Be(result.Features!.Exchange);
+        expectedResult.Features!.DataApi.Should().Be(result.Features!.DataApi);
     }
 }

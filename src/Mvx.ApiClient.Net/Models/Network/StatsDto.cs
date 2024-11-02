@@ -12,7 +12,7 @@
 /// <param name="Shards">The number of shards</param>
 /// <param name="Transactions">The total number of transactions</param>
 /// <param name="ScResults">The total number of smart contract results</param>
-public record StatsDto(
+public sealed record StatsDto(
     long Accounts,
     long Blocks,
     int Epoch,
