@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvx.ApiClient.Net", "src\Mv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvx.ApiClient.Net.Test", "tests\Mvx.ApiClient.Net.Test\Mvx.ApiClient.Net.Test.csproj", "{E86654B3-EB45-455E-82D7-98A6C7B05452}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvx.ApiClient.Net.IT", "tests\Mvx.ApiClient.Net.IT\Mvx.ApiClient.Net.IT.csproj", "{8FB778ED-DA24-4123-955A-38A4413404A7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{E86654B3-EB45-455E-82D7-98A6C7B05452}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E86654B3-EB45-455E-82D7-98A6C7B05452}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E86654B3-EB45-455E-82D7-98A6C7B05452}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8FB778ED-DA24-4123-955A-38A4413404A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8FB778ED-DA24-4123-955A-38A4413404A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8FB778ED-DA24-4123-955A-38A4413404A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8FB778ED-DA24-4123-955A-38A4413404A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

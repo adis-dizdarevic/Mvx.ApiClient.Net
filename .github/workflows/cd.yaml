@@ -1,0 +1,71 @@
+name: Deployment
+
+on:
+  workflow_dispatch:
+  
+  push:
+    branches:
+      - main
+      - releases/*
+
+jobs: 
+  PublishToNuGet:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with: 
+          fetch-depth: 0
+      
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+          
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.0.0
+        with: 
+          versionSpec: 6.x
+      
+      - name: Set assembly version
+        id: version
+        uses: gittools/actions/gitversion/execute@v3.0.0
+        with: 
+          updateAssemblyInfo: true
+          useConfigFile: true
+          
+      - name: Install dependencies
+        run: dotnet restore
+        
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+        
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build
+        
+      - name: Pack NuGet package
+        run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.version.outputs.fullSemVer }}
+        
+      - name: Create Git Tag
+        run: |
+          git tag -a "v${{ steps.version.outputs.fullSemVer }}" -m "Release v${{ steps.version.outputs.fullSemVer }}"
+          git push origin "v${{ steps.version.outputs.fullSemVer }}"
+      
+      - name: Publish to NuGet
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+        env: 
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push "src\Mvx.ApiClient.Net\bin\Release\*.nupkg \
+            --api-key $NUGET_API_KEY \
+            --source https://api.nuget.org/v3/index.json
+          
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        with:
+          release_name: Release v${{ steps.version.outputs.fullSemVer }}
+          tag_name: v${{ steps.version.outputs.fullSemVer }}
+          body: Release of version ${{ steps.version.outputs.fullSemVer }}
+          draft: false
+          prerelease: ${{ startsWith(github.ref, 'refs/heads/releases/') }}
