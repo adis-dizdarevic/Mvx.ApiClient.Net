@@ -1,3 +1,4 @@
+next-version: 1.0.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{InformationalVersion}'
@@ -9,69 +10,48 @@ branches:
   main:
     regex: ^master$|^main$
     mode: ContinuousDelivery
-    tag: ''
+    label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
     is-release-branch: true
     
   release:
     regex: ^releases?[/-]
     mode: ContinuousDeployment
-    tag: beta
+    label: beta
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
     is-release-branch: false
     
   develop:
     regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
-    tag: alpha
+    label: alpha
     increment: Major
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
     is-release-branch: false
     
   support:
     regex: ^support[/-]
     mode: ContinuousDelivery
-    tag: ''
+    label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
     is-release-branch: true
     
   feature:
     regex: ^features?[/-]
     mode: ContinuousDeployment
-    tag: ''
+    label: ''
     increment: Inherit
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
     is-release-branch: false
     
   hotfix:
     regex: ^hotfix(es)?[/-]
     mode: ContinuousDeployment
-    tag: ''
+    label: ''
     increment: Inherit
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
     is-release-branch: false
     
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDeployment
-    tag: PullRequest
+    label: PullRequest
     increment: Inherit
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
     is-release-branch: false
