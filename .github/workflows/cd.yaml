@@ -33,10 +33,10 @@ jobs:
         id: version
         uses: gittools/actions/gitversion/execute@v3.0.0
           
-      - name: Create Git Tag
-        run: |
-          git tag -a "v${{ steps.version.outputs.fullSemVer }}" -m "Release v${{ steps.version.outputs.fullSemVer }}"
-          git push origin "v${{ steps.version.outputs.fullSemVer }}"
+#      - name: Create Git Tag
+#        run: |
+#          git tag -a "v${{ steps.version.outputs.fullSemVer }}" -m "Release v${{ steps.version.outputs.fullSemVer }}"
+#          git push origin "v${{ steps.version.outputs.fullSemVer }}"
           
       - name: Set assembly version
         uses: gittools/actions/gitversion/execute@v3.0.0
