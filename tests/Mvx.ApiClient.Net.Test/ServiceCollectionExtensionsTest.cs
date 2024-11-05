@@ -19,6 +19,7 @@ public class ServiceCollectionExtensionsTest
 
         // assert
         provider.Should().ContainSingle(sd => sd.ServiceType == typeof(IMvxApiClient) && sd.Lifetime == ServiceLifetime.Transient);
+        provider.Should().ContainSingle(sd => sd.ServiceType == typeof(IMexClient) && sd.Lifetime == ServiceLifetime.Transient);
         provider.Should().ContainSingle(sd => sd.ServiceType == typeof(INetworkClient) && sd.Lifetime == ServiceLifetime.Transient);
         provider.Should().ContainSingle(sd => sd.ServiceType == typeof(ServiceCollectionExtensions.ErrorHandler) && sd.Lifetime == ServiceLifetime.Transient);
     }
