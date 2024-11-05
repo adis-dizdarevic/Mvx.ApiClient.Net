@@ -1,57 +1,54 @@
-next-version: 1.0.0
+next-version: v1.0.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{InformationalVersion}'
 mode: ContinuousDelivery
 increment: Inherit
 tag-prefix: '[vV]'
-legacy-semver-padding: 4
-build-metadata-padding: 4
-commits-since-version-source-padding: 4
 
-branches:
+branches: 
   main:
     regex: ^master$|^main$
     mode: ContinuousDelivery
     label: ''
     increment: Patch
     is-release-branch: true
-  
+    
   release:
     regex: ^releases?[/-]
     mode: ContinuousDeployment
     label: beta
     increment: Patch
     is-release-branch: false
-  
+    
   develop:
     regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
     label: alpha
     increment: Minor
     is-release-branch: false
-  
+    
   support:
     regex: ^support[/-]
     mode: ContinuousDelivery
     label: ''
     increment: Patch
     is-release-branch: false
-  
+    
   feature:
     regex: ^features?[/-]
     mode: ContinuousDeployment
     label: feature
     increment: Inherit
     is-release-branch: false
-  
+    
   hotfix:
     regex: ^hotfix(es)?[/-]
     mode: ContinuousDeployment
     label: hotfix
     increment: Patch
     is-release-branch: false
-  
+    
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDeployment
