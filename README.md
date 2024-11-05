@@ -1,5 +1,23 @@
 # MultiversX ApiClient
 
+## Roadmap
+> [!IMPORTANT]
+> This project currently has several features under development. A new client is scheduled to be released with each minor update, with the goal of completing the entire roadmap by the end of 2024.
+
+- [x] Network Client
+- [x] Mex Client
+- [ ] Account Client
+- [ ] Block Client
+- [ ] Collection Client
+- [ ] NFT Client
+- [ ] Tags Client
+- [ ] Node Client
+- [ ] Provider Client
+- [ ] Token Client
+- [ ] Transaction Client
+- [ ] Marketplace Client
+- [ ] Delegation Client
+
 ## Introduction
 
 Mvx.ApiClient.Net is a C# wrapper for the MultiversX API, designed for querying data from the blockchain. It provides a simple and efficient interface to interact with the API, making it easy to retrieve relevant information for your applications. The client is built with performance and scalability in mind, allowing developers to easily integrate with the MultiversX network.

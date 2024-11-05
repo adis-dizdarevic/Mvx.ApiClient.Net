@@ -28,13 +28,15 @@ public static class ServiceCollectionExtensions
             _ => throw new ArgumentOutOfRangeException(nameof(networkType), $"Unexpected network type: {networkType}")
         };
         
+        RegisterClient<IMexClient, MexClient>(services, baseAddress);
         RegisterClient<INetworkClient, NetworkClient>(services, baseAddress);
 
         services.AddTransient<IMvxApiClient>(provider =>
         {
+            var mexClient = provider.GetRequiredService<IMexClient>();
             var networkClient = provider.GetRequiredService<INetworkClient>();
             
-            return new MvxApiClient(networkType, networkClient);
+            return new MvxApiClient(networkType, mexClient, networkClient);
         });
         
         return services;
