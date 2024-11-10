@@ -18,8 +18,8 @@ branches:
     regex: ^releases?[/-]
     mode: ContinuousDeployment
     label: beta
-    increment: Patch
-    is-release-branch: false
+    increment: Minor
+    is-release-branch: true
     
   develop:
     regex: ^dev(elop)?(ment)?$
