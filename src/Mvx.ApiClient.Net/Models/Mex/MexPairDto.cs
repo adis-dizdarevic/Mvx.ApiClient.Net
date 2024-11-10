@@ -99,6 +99,9 @@ public record MexPairDto(
     [property: JsonPropertyName("tradesCount")]
     long TradesCount,
     
+    [property: JsonPropertyName("tradesCount24h")]
+    long PreviousTradesCount,
+    
     [property: JsonPropertyName("deployedAt")]
     long DeployedAt
 );
