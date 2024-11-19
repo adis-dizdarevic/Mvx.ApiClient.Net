@@ -7,7 +7,7 @@
 - [x] Network Client
 - [x] Mex Client
 - [ ] Account Client
-- [ ] Block Client
+- [x] Block Client
 - [ ] Collection Client
 - [ ] NFT Client
 - [ ] Tags Client
