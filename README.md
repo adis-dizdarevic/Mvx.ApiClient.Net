@@ -67,7 +67,7 @@ For more examples and advanced usage, consult the [docs](https://github.com/adis
 ## Build and Test
 
 To build the project locally, ensure you have the following tools installed:
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET SDK 10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 After cloning the repository, you can build the project with `dotnet build` and run all tests with `dotnet test`
 
