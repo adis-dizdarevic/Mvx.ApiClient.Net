@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj" />
+  <Project Path="tests/Mvx.ApiClient.Net.Test/Mvx.ApiClient.Net.Test.csproj" />
+</Solution>
