@@ -1,5 +1,6 @@
-﻿using Mvx.ApiClient.Net.Dtos;
+using Mvx.ApiClient.Net.Dtos;
 using Mvx.ApiClient.Net.ExtensionMethods;
+using TUnit.Assertions;
 
 namespace Mvx.ApiClient.Net.Test;
 
@@ -8,36 +9,36 @@ public class HttpClientExtensionsTest
     private const string BaseAddress = "https://api.multivers.com";
     private const string RequestPath = "/MyRequestPath";
     private const string RequestUri = BaseAddress + RequestPath;
-    
-    [Fact]
-    public void BuildRequestUri_QueryParametersDtoIsNull_UseDefaultValues()
+
+    [Test]
+    public async Task BuildRequestUri_QueryParametersDtoIsNull_UseDefaultValues()
     {
         // arrange
         var expectedRequestUri = new Uri(RequestUri);
 
         // act
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri);
-        
+
         // assert
-        Assert.Equal(expectedRequestUri, result);
+        await Assert.That(result).IsEqualTo(expectedRequestUri);
     }
 
-    [Fact]
-    public void BuildRequestUri_QueryParametersDtoNewInstanceWithoutSettingsValues_UseDefaultValues()
+    [Test]
+    public async Task BuildRequestUri_QueryParametersDtoNewInstanceWithoutSettingsValues_UseDefaultValues()
     {
         // arrange
         var expectedRequestUri = new Uri(RequestUri);
         var data = new DataSelectionDto();
-        
+
         // act
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
-        
+
         // assert
-        Assert.Equal(expectedRequestUri, result);
+        await Assert.That(result).IsEqualTo(expectedRequestUri);
     }
-    
-    [Fact]
-    public void BuildRequestUri_QueryParametersDtoWithLimitAndOffset_ReturnsExpectedUri()
+
+    [Test]
+    public async Task BuildRequestUri_QueryParametersDtoWithLimitAndOffset_ReturnsExpectedUri()
     {
         // arrange
         var expectedRequestUri = new Uri($"{RequestUri}?size=15&from=0");
@@ -47,25 +48,25 @@ public class HttpClientExtensionsTest
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Pagination = pagination });
 
         // assert
-        Assert.Equal(expectedRequestUri, result);
+        await Assert.That(result).IsEqualTo(expectedRequestUri);
     }
-    
-    [Fact]
-    public void BuildRequestUri_QueryParametersDtoWithOneField_ReturnsExpectedUri()
+
+    [Test]
+    public async Task BuildRequestUri_QueryParametersDtoWithOneField_ReturnsExpectedUri()
     {
         // arrange
         var expectedRequestUri = new Uri($"{RequestUri}?fields=balance");
         var data = new DataSelectionDto { Fields = ["balance"] };
-        
+
         // act
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
 
         // assert
-        Assert.Equal(expectedRequestUri, result);
+        await Assert.That(result).IsEqualTo(expectedRequestUri);
     }
-    
-    [Fact]
-    public void BuildRequestUri_QueryParametersDtoWithThreeFields_ReturnsExpectedUri()
+
+    [Test]
+    public async Task BuildRequestUri_QueryParametersDtoWithThreeFields_ReturnsExpectedUri()
     {
         // arrange
         var expectedRequestUri = new Uri($"{RequestUri}?fields=balance,address,price");
@@ -75,25 +76,25 @@ public class HttpClientExtensionsTest
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
 
         // assert
-        Assert.Equal(expectedRequestUri, result);
+        await Assert.That(result).IsEqualTo(expectedRequestUri);
     }
-    
-    [Fact]
-    public void BuildRequestUri_QueryParametersDtoWithScalarValue_ReturnsExpectedUri()
+
+    [Test]
+    public async Task BuildRequestUri_QueryParametersDtoWithScalarValue_ReturnsExpectedUri()
     {
         // arrange
         var expectedRequestUri = new Uri($"{RequestUri}?extract=price");
         var data = new DataSelectionDto { Extract = "price" };
-        
+
         // act
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
-        
+
         // assert
-        Assert.Equal(expectedRequestUri, result);
+        await Assert.That(result).IsEqualTo(expectedRequestUri);
     }
-    
-    [Fact]
-    public void BuildRequestUri_QueryParametersDtoWithAllPropertiesSet_ReturnsExpectedUri()
+
+    [Test]
+    public async Task BuildRequestUri_QueryParametersDtoWithAllPropertiesSet_ReturnsExpectedUri()
     {
         // arrange
         var expectedRequestUri = new Uri($"{RequestUri}?size=100&from=25&fields=balance,address,price&extract=amount");
@@ -107,34 +108,34 @@ public class HttpClientExtensionsTest
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, dto);
 
         // assert
-        Assert.Equal(expectedRequestUri, result);
+        await Assert.That(result).IsEqualTo(expectedRequestUri);
     }
-    
-    [Fact]
-    public void BuildRequestUri_EmptyFieldsList_DoesNotAddFieldsToUri()
+
+    [Test]
+    public async Task BuildRequestUri_EmptyFieldsList_DoesNotAddFieldsToUri()
     {
         // arrange
         var expectedRequestUri = new Uri(RequestUri);
-        var data = new DataSelectionDto  { Fields = [] };
-        
+        var data = new DataSelectionDto { Fields = [] };
+
         // act
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
-        
+
         // assert
-        Assert.Equal(expectedRequestUri, result);
+        await Assert.That(result).IsEqualTo(expectedRequestUri);
     }
-    
-    [Fact]
-    public void BuildRequestUri_EmptyExtractString_DoesNotAddExtractToUri()
+
+    [Test]
+    public async Task BuildRequestUri_EmptyExtractString_DoesNotAddExtractToUri()
     {
         // arrange
         var expectedRequestUri = new Uri(RequestUri);
-        var data = new DataSelectionDto  { Extract = "" };
-        
+        var data = new DataSelectionDto { Extract = "" };
+
         // act
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
-        
+
         // assert
-        Assert.Equal(expectedRequestUri, result);
+        await Assert.That(result).IsEqualTo(expectedRequestUri);
     }
 }
