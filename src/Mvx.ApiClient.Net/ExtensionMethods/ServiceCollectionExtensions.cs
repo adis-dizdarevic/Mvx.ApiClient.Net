@@ -5,9 +5,13 @@ using Mvx.ApiClient.Net.Exceptions;
 using Mvx.ApiClient.Net.Interfaces.Clients;
 using System.Net.Mime;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Mvx.ApiClient.Net.ExtensionMethods;
 
+/// <summary>
+/// Extension methods for registering MultiversX API services.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
@@ -73,10 +77,39 @@ public static class ServiceCollectionExtensions
                 return response;
             }
 
+            var statusCode = (int)response.StatusCode;
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            var errorDetails = JsonSerializer.Deserialize<MvxApiException>(content)!;
-                
-            throw new MvxApiException(errorDetails.Message, errorDetails.Error, errorDetails.StatusCode);
+            var fallbackMessage = $"MultiversX API request failed with status code {statusCode} ({response.StatusCode}).";
+            var fallbackError = response.ReasonPhrase ?? response.StatusCode.ToString();
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                throw new MvxApiException(fallbackMessage, fallbackError, statusCode);
+            }
+
+            try
+            {
+                var errorDetails = JsonSerializer.Deserialize<ApiErrorResponse>(content, ErrorJsonSerializerOptions);
+                var message = string.IsNullOrWhiteSpace(errorDetails?.Message) ? fallbackMessage : errorDetails.Message;
+                var error = string.IsNullOrWhiteSpace(errorDetails?.Error) ? fallbackError : errorDetails.Error;
+                var apiStatusCode = errorDetails?.StatusCode is > 0 ? errorDetails.StatusCode : statusCode;
+
+                throw new MvxApiException(message, error, apiStatusCode, content);
+            }
+            catch (JsonException)
+            {
+                throw new MvxApiException($"{fallbackMessage} Response content: {content}", fallbackError, statusCode, content);
+            }
         }
+
+        private static JsonSerializerOptions ErrorJsonSerializerOptions { get; } = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        private sealed record ApiErrorResponse(
+            [property: JsonPropertyName("message")] string? Message,
+            [property: JsonPropertyName("error")] string? Error,
+            [property: JsonPropertyName("statusCode")] int StatusCode);
     }
 }

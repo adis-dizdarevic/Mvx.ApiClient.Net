@@ -1,19 +1,50 @@
-# Welcome to MkDocs
+# Mvx.ApiClient.Net
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Mvx.ApiClient.Net is a .NET wrapper around the public MultiversX API. The current scope is GET endpoints for network and xExchange data.
 
-# Test
+## Installation
 
-## Commands
+```bash
+dotnet add package Mvx.ApiClient.Net
+```
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+## Service Registration
 
-## Project layout
+```csharp
+using Mvx.ApiClient.Net.Enums;
+using Mvx.ApiClient.Net.ExtensionMethods;
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+services.AddMvxApiClient(NetworkType.Mainnet);
+```
+
+Supported networks:
+
+- `NetworkType.Mainnet` -> `https://api.multiversx.com`
+- `NetworkType.Testnet` -> `https://testnet-api.multiversx.com`
+- `NetworkType.Devnet` -> `https://devnet-api.multiversx.com`
+
+## Usage
+
+```csharp
+using Mvx.ApiClient.Net.Interfaces.Clients;
+using Mvx.ApiClient.Net.Models.Network;
+
+public sealed class BlockchainService
+{
+    private readonly IMvxApiClient _client;
+
+    public BlockchainService(IMvxApiClient client)
+    {
+        _client = client;
+    }
+
+    public Task<StatsDto> GetStatsAsync(CancellationToken cancellationToken)
+    {
+        return _client.Network.GetNetworkStatsAsync(cancellationToken: cancellationToken);
+    }
+}
+```
+
+## Notes
+
+The public MultiversX API is rate limited. This package does not add retry or rate-limit policies by default; consumers can configure resilience around `HttpClientFactory` in their application.

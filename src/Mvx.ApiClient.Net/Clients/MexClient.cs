@@ -36,7 +36,8 @@ internal sealed class MexClient : IMexClient
     public async Task<MexPairDto> GetMexPairAsync(string baseId, string quoteId, DataSelectionDto? dataSelection = null, CancellationToken cancellationToken = default)
     {
         var parameters = new QueryParametersDto { Data = dataSelection };
-        var result = await _httpClient.GetWithQueryParametersAsync<MexPairDto>(EndpointPaths.MexPairDetails, parameters, cancellationToken);
+        var path = string.Format(EndpointPaths.MexPairDetails, Uri.EscapeDataString(baseId), Uri.EscapeDataString(quoteId));
+        var result = await _httpClient.GetWithQueryParametersAsync<MexPairDto>(path, parameters, cancellationToken);
 
         return result;
     }
@@ -62,7 +63,8 @@ internal sealed class MexClient : IMexClient
     public async Task<MexTokenDto> GetMexTokenAsync(string identifier, DataSelectionDto? dataSelection = null, CancellationToken cancellationToken = default)
     {
         var parameters = new QueryParametersDto { Data = dataSelection };
-        var result = await _httpClient.GetWithQueryParametersAsync<MexTokenDto>(EndpointPaths.MexTokenDetails, parameters, cancellationToken);
+        var path = string.Format(EndpointPaths.MexTokenDetails, Uri.EscapeDataString(identifier));
+        var result = await _httpClient.GetWithQueryParametersAsync<MexTokenDto>(path, parameters, cancellationToken);
 
         return result;
     }

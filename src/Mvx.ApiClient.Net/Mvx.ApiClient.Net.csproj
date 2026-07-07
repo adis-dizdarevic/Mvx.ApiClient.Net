@@ -5,11 +5,18 @@
     <RootNamespace>Mvx.ApiClient.Net</RootNamespace>
     <Authors>Adis Dizdarevic</Authors>
     <Description>Mvx.ApiClient.Net is a C# wrapper for the MultiversX API, designed for querying data from the blockchain.</Description>
-    <PackageTags>multiversx;mvx;api;blockchain</PackageTags>
+    <PackageTags>multiversx;mvx;egld;api-client;blockchain</PackageTags>
     <PackageId>Mvx.ApiClient.Net</PackageId>
     <PackageProjectUrl>https://github.com/adis-dizdarevic/Mvx.ApiClient.Net</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/adis-dizdarevic/Mvx.ApiClient.Net.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>See CHANGELOG.md for release notes.</PackageReleaseNotes>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
   
   <ItemGroup>

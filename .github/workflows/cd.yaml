@@ -57,13 +57,13 @@ jobs:
           updateAssemblyInfo: true
 
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore Mvx.ApiClient.Net.slnx
 
       - name: Build solution
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build Mvx.ApiClient.Net.slnx --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-build
+        run: dotnet test Mvx.ApiClient.Net.slnx --configuration Release --no-build
 
       - name: Pack NuGet package
         if: ${{ inputs.packNuget }}

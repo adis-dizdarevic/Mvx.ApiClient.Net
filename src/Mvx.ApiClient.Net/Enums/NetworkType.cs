@@ -5,7 +5,18 @@
 /// </summary>
 public enum NetworkType
 {
+    /// <summary>
+    /// The MultiversX mainnet.
+    /// </summary>
     Mainnet,
+
+    /// <summary>
+    /// The MultiversX public testnet.
+    /// </summary>
     Testnet,
+
+    /// <summary>
+    /// The MultiversX public devnet.
+    /// </summary>
     Devnet
 }

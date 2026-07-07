@@ -28,6 +28,7 @@ namespace Mvx.ApiClient.Net.Models.Mex;
 /// <param name="HasFarms"></param>
 /// <param name="HasDualFarms"></param>
 /// <param name="TradesCount"></param>
+/// <param name="PreviousTradesCount"></param>
 /// <param name="DeployedAt"></param>
 public record MexPairDto(
     [property: JsonPropertyName("address")]
@@ -106,19 +107,59 @@ public record MexPairDto(
     long DeployedAt
 );
 
+/// <summary>
+/// xExchange pair state.
+/// </summary>
 public enum MexPairState
 {
+    /// <summary>
+    /// Active pair.
+    /// </summary>
     Active,
+
+    /// <summary>
+    /// Inactive pair.
+    /// </summary>
     Inactive,
+
+    /// <summary>
+    /// Paused pair.
+    /// </summary>
     Paused,
+
+    /// <summary>
+    /// Partially active pair.
+    /// </summary>
     Partial
 }
 
+/// <summary>
+/// xExchange pair category.
+/// </summary>
 public enum MexPairType
 {
+    /// <summary>
+    /// Core xExchange pair.
+    /// </summary>
     Core,
+
+    /// <summary>
+    /// Community xExchange pair.
+    /// </summary>
     Community,
+
+    /// <summary>
+    /// Ecosystem xExchange pair.
+    /// </summary>
     Ecosystem,
+
+    /// <summary>
+    /// Experimental xExchange pair.
+    /// </summary>
     Experimental,
+
+    /// <summary>
+    /// Unlisted xExchange pair.
+    /// </summary>
     Unlisted
 }

@@ -5,10 +5,10 @@ internal static class EndpointPaths
     internal const string MexEconomics = "/mex/economics";
     internal const string MexPairs = "/mex/pairs";
     internal const string MexPairsCount = "/mex/pairs/count";
-    internal const string MexPairDetails = "/mex/pairs";
+    internal const string MexPairDetails = "/mex/pairs/{0}/{1}";
     internal const string MexTokens = "/mex/tokens";
     internal const string MexTokensCount = "/mex/tokens/count";
-    internal const string MexTokenDetails = "/mex/tokens";
+    internal const string MexTokenDetails = "/mex/tokens/{0}";
     internal const string MexFarms = "/mex/farms";
     internal const string MexFarmsCount = "/mex/farms/count";
     

@@ -69,7 +69,7 @@ public class HttpClientExtensionsTest
     public async Task BuildRequestUri_QueryParametersDtoWithThreeFields_ReturnsExpectedUri()
     {
         // arrange
-        var expectedRequestUri = new Uri($"{RequestUri}?fields=balance,address,price");
+        var expectedRequestUri = new Uri($"{RequestUri}?fields=balance%2Caddress%2Cprice");
         var data = new DataSelectionDto { Fields = ["balance", "address", "price"] };
 
         // act
@@ -83,8 +83,8 @@ public class HttpClientExtensionsTest
     public async Task BuildRequestUri_QueryParametersDtoWithScalarValue_ReturnsExpectedUri()
     {
         // arrange
-        var expectedRequestUri = new Uri($"{RequestUri}?extract=price");
-        var data = new DataSelectionDto { Extract = "price" };
+        var expectedRequestUri = new Uri($"{RequestUri}?extract=price%2Fusd");
+        var data = new DataSelectionDto { Extract = "price/usd" };
 
         // act
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
@@ -97,11 +97,11 @@ public class HttpClientExtensionsTest
     public async Task BuildRequestUri_QueryParametersDtoWithAllPropertiesSet_ReturnsExpectedUri()
     {
         // arrange
-        var expectedRequestUri = new Uri($"{RequestUri}?size=100&from=25&fields=balance,address,price&extract=amount");
+        var expectedRequestUri = new Uri($"{RequestUri}?size=100&from=25&fields=balance%2Caddress%2Cprice&extract=amount%20value");
         var dto = new QueryParametersDto
         {
             Pagination = new PaginationParametersDto { Limit = 100, Offset = 25 },
-            Data = new DataSelectionDto { Fields = ["balance", "address", "price"], Extract = "amount" }
+            Data = new DataSelectionDto { Fields = ["balance", "address", "price"], Extract = "amount value" }
         };
 
         // act

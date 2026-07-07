@@ -61,7 +61,7 @@ internal static class HttpClientExtensions
             queryDictionary.Add("extract", queryParameters.Data.Extract);
         }
         
-        var queryString = string.Join("&", queryDictionary.Select(param => $"{param.Key}={param.Value}"));
+        var queryString = string.Join("&", queryDictionary.Select(param => $"{param.Key}={Uri.EscapeDataString(param.Value)}"));
         var fullUri = string.IsNullOrEmpty(queryString) ? requestPath : $"{requestPath}?{queryString}";
         var requestUri = new Uri(baseAddress, fullUri);
         

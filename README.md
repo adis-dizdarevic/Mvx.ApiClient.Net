@@ -2,7 +2,7 @@
 
 ## Roadmap
 > [!IMPORTANT]
-> This project currently has several features under development. A new client is scheduled to be released with each minor update, with the goal of completing the entire roadmap by the end of 2024.
+> This project currently focuses on GET endpoints exposed by the public MultiversX API. Additional clients are planned incrementally.
 
 - [x] Network Client
 - [x] Mex Client
@@ -22,6 +22,11 @@
 
 Mvx.ApiClient.Net is a C# wrapper for the MultiversX API, designed for querying data from the blockchain. It provides a simple and efficient interface to interact with the API, making it easy to retrieve relevant information for your applications. The client is built with performance and scalability in mind, allowing developers to easily integrate with the MultiversX network.
 
+The supported public API hosts are:
+- Mainnet: `https://api.multiversx.com`
+- Testnet: `https://testnet-api.multiversx.com`
+- Devnet: `https://devnet-api.multiversx.com`
+
 ## Getting started
 
 To integrate Mvx.ApiClient.Net into your C# application, follow these setup steps.
@@ -33,7 +38,9 @@ To integrate Mvx.ApiClient.Net into your C# application, follow these setup step
    
 2. Configuration: Configure the client by registering it with your application's `IServiceCollection`. Specify the desired network environment — Mainnet, Testnet or Devnet — during setup using the `AddMvxApiClient` extension method. This will register the required services.
    ```csharp
-   using Mvx.ApiClient.Net;
+   using Microsoft.Extensions.DependencyInjection;
+   using Mvx.ApiClient.Net.Enums;
+   using Mvx.ApiClient.Net.ExtensionMethods;
 
    public void ConfigureServices(IServiceCollection services)
    {
@@ -44,6 +51,8 @@ To integrate Mvx.ApiClient.Net into your C# application, follow these setup step
 
 3. Usage: With the client configured and registered, inject and use `IMvxApiClient` wherever you need access to the MultiversX API.
    ```csharp
+   using Mvx.ApiClient.Net.Interfaces.Clients;
+
    public class BlockchainService
    {
        private readonly IMvxApiClient _mvxApiClient;
@@ -62,14 +71,14 @@ To integrate Mvx.ApiClient.Net into your C# application, follow these setup step
    }
    ```
    
-For more examples and advanced usage, consult the [docs](https://github.com/adis-dizdarevic/Mvx.ApiClient.Net/wiki).
+The public MultiversX API is rate limited. See the official MultiversX API documentation for current limits and infrastructure details.
 
 ## Build and Test
 
 To build the project locally, ensure you have the following tools installed:
 - [.NET SDK 10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
 
-After cloning the repository, you can build the project with `dotnet build` and run all tests with `dotnet test`
+After cloning the repository, you can build the project with `dotnet build Mvx.ApiClient.Net.slnx` and run all tests with `dotnet test Mvx.ApiClient.Net.slnx`.
 
 ## Versioning
 
