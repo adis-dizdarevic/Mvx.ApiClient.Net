@@ -14,7 +14,10 @@ Copyright &copy; 2026 Adis Dizdarevic
 nav = [
   { "Home" = "index.md" },
   { "Getting Started" = "getting-started.md" },
+  { "Query Options" = "query-options.md" },
+  { "Error Handling" = "error-handling.md" },
   { "Clients" = "clients.md" },
+  { "Release Checklist" = "release-checklist.md" },
   { "Contributing" = "contributing.md" }
 ]
 

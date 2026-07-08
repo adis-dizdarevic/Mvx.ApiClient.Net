@@ -1,0 +1,50 @@
+name: Bug report
+description: Report a reproducible problem in Mvx.ApiClient.Net.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: "2.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Target framework
+      options:
+        - net8.0
+        - net10.0
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Include the smallest code sample or test that reproduces the issue.
+      render: csharp
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

@@ -25,6 +25,7 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);CS1572;CS1573;CS1574;CS1591</WarningsAsErrors>
   </PropertyGroup>
   
   <ItemGroup>

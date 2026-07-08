@@ -5,6 +5,31 @@ namespace Mvx.ApiClient.Net.Models.XExchange;
 /// <summary>
 /// xExchange pair.
 /// </summary>
+/// <param name="Address">The smart contract address of the pair.</param>
+/// <param name="Id">The pair identifier.</param>
+/// <param name="Symbol">The pair ticker symbol.</param>
+/// <param name="Name">The display name of the pair.</param>
+/// <param name="Price">The latest pair price reported by the API.</param>
+/// <param name="BasePreviousPrice">The base token price from the previous 24-hour window.</param>
+/// <param name="QuotePreviousPrice">The quote token price from the previous 24-hour window.</param>
+/// <param name="BaseId">The base token identifier.</param>
+/// <param name="BaseSymbol">The base token ticker symbol.</param>
+/// <param name="BaseName">The base token display name.</param>
+/// <param name="BasePrice">The latest base token price reported by the API.</param>
+/// <param name="QuoteId">The quote token identifier.</param>
+/// <param name="QuoteSymbol">The quote token ticker symbol.</param>
+/// <param name="QuoteName">The quote token display name.</param>
+/// <param name="QuotePrice">The latest quote token price reported by the API.</param>
+/// <param name="TotalValue">The total value locked in the pair.</param>
+/// <param name="Volume">The pair volume for the previous 24-hour window.</param>
+/// <param name="State">The current pair state.</param>
+/// <param name="Type">The pair category.</param>
+/// <param name="Exchange">The exchange name reported by the API.</param>
+/// <param name="HasFarms">A value indicating whether the pair has farms.</param>
+/// <param name="HasDualFarms">A value indicating whether the pair has dual farms.</param>
+/// <param name="TradesCount">The total number of recorded trades for the pair.</param>
+/// <param name="PreviousTradesCount">The number of recorded trades for the previous 24-hour window.</param>
+/// <param name="DeployedAt">The Unix timestamp at which the pair contract was deployed.</param>
 public sealed record XExchangePairDto(
     [property: JsonPropertyName("address")]
     string Address,

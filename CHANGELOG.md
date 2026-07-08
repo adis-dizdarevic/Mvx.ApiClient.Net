@@ -13,3 +13,6 @@
 - Added stricter library analyzers, a public API baseline file, a package consumer smoke test, and endpoint contribution guidance.
 - Replaced the MkDocs documentation layout with a Zensical docs tree under `docs/`.
 - Added a `.venv`-based docs build script and fixed the Zensical build command to run from `docs/`.
+- Expanded README and Zensical documentation with registration, query option, error handling, client coverage, and release checklist guidance.
+- Enforced public XML documentation warnings and filled missing public API documentation details.
+- Added contributor, security, issue template, and pull request template governance files.

@@ -1,133 +1,154 @@
-# MultiversX ApiClient
+# Mvx.ApiClient.Net
 
-## Roadmap
-> [!IMPORTANT]
-> This project currently focuses on GET endpoints exposed by the public MultiversX API. Additional clients are planned incrementally.
+A modern .NET client for the public [MultiversX API](https://api.multiversx.com). The current package focuses on GET endpoints and provides typed clients for network and xExchange data.
 
-- [x] Network Client
-- [x] xExchange Client
-- [ ] Account Client
-- [ ] Block Client
-- [ ] Collection Client
-- [ ] NFT Client
-- [ ] Tags Client
-- [ ] Node Client
-- [ ] Provider Client
-- [ ] Token Client
-- [ ] Transaction Client
-- [ ] Marketplace Client
-- [ ] Delegation Client
+## Install
 
-## Introduction
+```bash
+dotnet add package Mvx.ApiClient.Net
+```
 
-Mvx.ApiClient.Net is a C# wrapper for the MultiversX API, designed for querying data from the blockchain. It provides a simple and efficient interface to interact with the API, making it easy to retrieve relevant information for your applications. The client is built with performance and scalability in mind, allowing developers to easily integrate with the MultiversX network.
+## Supported frameworks
 
-The supported public API hosts are:
+- `net8.0`
+- `net10.0`
+
+## Supported networks
+
 - Mainnet: `https://api.multiversx.com`
 - Testnet: `https://testnet-api.multiversx.com`
 - Devnet: `https://devnet-api.multiversx.com`
 
-## Getting started
+You can also provide a custom API base address when using a proxy, local gateway, or private-compatible deployment.
 
-To integrate Mvx.ApiClient.Net into your C# application, follow these setup steps.
-
-1. Installation: Add the package via NuGet Package Manager or the .NET CLI:
-   ```
-   dotnet add package Mvx.ApiClient.Net
-   ```
-   
-2. Configuration: Configure the client by registering it with your application's `IServiceCollection`. Specify the desired network environment — Mainnet, Testnet or Devnet — during setup using the `AddMvxApiClient` extension method. This will register the required services.
-   ```csharp
-   using Microsoft.Extensions.DependencyInjection;
-   using Mvx.ApiClient.Net;
-
-   public void ConfigureServices(IServiceCollection services)
-   {
-       // Configure client for the MultiversX Mainnet
-       services.AddMvxApiClient(NetworkType.Mainnet);
-   }
-   ```
-
-3. Usage: With the client configured and registered, inject and use `IMvxApiClient` wherever you need access to the MultiversX API.
-   ```csharp
-   using Mvx.ApiClient.Net;
-
-   public class BlockchainService
-   {
-       private readonly IMvxApiClient _mvxApiClient;
-    
-       public BlockchainService(IMvxApiClient mvxApiClient)
-       {
-           _mvxApiClient = mvxApiClient;
-       }
-    
-       public async Task GetNetworkStats()
-       {
-           var networkStats = await _mvxApiClient.Network.GetStatsAsync(
-               new DataSelection { Fields = ["accounts", "blocks"] });
-           
-           // Process network stats as needed ...
-       }
-   }
-   ```
-
-   xExchange endpoints are available through the `XExchange` client:
-
-   ```csharp
-   var pairs = await _mvxApiClient.XExchange.GetPairsAsync(
-       new QueryOptions
-       {
-           Pagination = new Pagination { Limit = 25 },
-           Data = new DataSelection { Fields = ["id", "symbol"] }
-       });
-   ```
-
-For advanced configuration, use the options overload:
+## Quick start
 
 ```csharp
-services.AddMvxApiClient(options =>
+using Microsoft.Extensions.DependencyInjection;
+using Mvx.ApiClient.Net;
+
+var services = new ServiceCollection();
+services.AddMvxApiClient(NetworkType.Mainnet);
+
+using var provider = services.BuildServiceProvider();
+var client = provider.GetRequiredService<IMvxApiClient>();
+
+var stats = await client.Network.GetStatsAsync(
+    new DataSelection { Fields = ["accounts", "blocks", "transactions"] });
+
+Console.WriteLine($"Accounts: {stats.Accounts}");
+```
+
+## ASP.NET Core registration
+
+```csharp
+using Mvx.ApiClient.Net;
+
+builder.Services.AddMvxApiClient(options =>
 {
     options.Network = NetworkType.Mainnet;
     options.Timeout = TimeSpan.FromSeconds(30);
 });
 ```
-   
-The public MultiversX API is rate limited. See the official MultiversX API documentation for current limits and infrastructure details.
 
-## Build and Test
+Inject the root client:
 
-To build the project locally, ensure you have the following tools installed:
-- [.NET SDK 10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
+```csharp
+using Mvx.ApiClient.Net;
 
-The package targets `net8.0` and `net10.0`.
+public sealed class DashboardService
+{
+    private readonly IMvxApiClient _client;
 
-After cloning the repository, you can build the project with `dotnet build Mvx.ApiClient.Net.slnx` and run all tests with `dotnet test Mvx.ApiClient.Net.slnx`.
+    public DashboardService(IMvxApiClient client)
+    {
+        _client = client;
+    }
 
-Live API smoke tests are included in a separate integration-test project and are disabled by default. Set `MVX_API_LIVE_TESTS=true` before running tests to enable calls against the public MultiversX API.
+    public Task<int> GetPairCountAsync(CancellationToken cancellationToken)
+    {
+        return _client.XExchange.GetPairsCountAsync(cancellationToken);
+    }
+}
+```
 
-`eng/package-smoke-test.ps1` validates the packed NuGet as a fresh consumer would use it: it creates a temporary console app, restores the local package, and compiles README-style usage.
+You can also inject focused clients directly:
 
-## Contributing Endpoint Groups
+```csharp
+public sealed class NetworkService
+{
+    private readonly INetworkClient _network;
 
-New GET endpoint groups should follow the existing structure:
+    public NetworkService(INetworkClient network)
+    {
+        _network = network;
+    }
+}
+```
 
-- Add the public interface in `src/Mvx.ApiClient.Net/Abstractions`.
-- Add the internal implementation in `src/Mvx.ApiClient.Net/Clients`.
-- Add response models in `src/Mvx.ApiClient.Net/Models/<Domain>`.
-- Add request paths in `EndpointPaths`.
-- Use `ApiRequestExecutor` for HTTP, query encoding, validation, and JSON deserialization.
-- Register the client in `ServiceCollectionExtensions`.
-- Add HTTP-handler unit tests and update `PublicApi.Shipped.txt` when the public surface changes.
+## Query options
 
-## Versioning
+List endpoints accept `QueryOptions`:
 
-Mvx.ApiClient.Net follows semantic versioning.
+```csharp
+var pairs = await client.XExchange.GetPairsAsync(
+    new QueryOptions
+    {
+        Pagination = new Pagination
+        {
+            Limit = 25,
+            Offset = 0
+        },
+        Data = new DataSelection
+        {
+            Fields = ["id", "symbol", "price", "volume24h"]
+        }
+    });
+```
+
+Single-resource endpoints accept `DataSelection`:
+
+```csharp
+var token = await client.XExchange.GetTokenAsync(
+    "WEGLD-bd4d79",
+    new DataSelection { Fields = ["id", "symbol", "price"] });
+```
+
+The client URL-encodes query values and validates obvious invalid input, such as negative pagination values or empty field names, before sending HTTP requests.
+
+## Error handling
+
+Non-success API responses throw `MvxApiException`:
+
+```csharp
+using Mvx.ApiClient.Net.Exceptions;
+
+try
+{
+    var token = await client.XExchange.GetTokenAsync("WEGLD-bd4d79");
+}
+catch (MvxApiException exception)
+{
+    Console.WriteLine(exception.StatusCode);
+    Console.WriteLine(exception.Error);
+    Console.WriteLine(exception.ResponseContent);
+}
+```
+
+The exception preserves the HTTP status code, API error label when available, raw response content, request URI, and request method.
+
+## Available clients
+
+`IMvxApiClient` exposes:
+
+- `Network`: network stats, economics, constants, and API deployment information.
+- `XExchange`: xExchange economics, pairs, tokens, farms, and count endpoints.
+
+The upstream MultiversX API still exposes xExchange data under `/mex/*` routes. This package uses xExchange naming in the .NET API.
 
 ## Documentation
 
-Project documentation lives in `docs/` and is built with Zensical.
-
-Local docs build:
+Documentation lives in `docs/` and is built with Zensical.
 
 ```powershell
 py -m venv .venv
@@ -135,11 +156,39 @@ py -m venv .venv
 .\eng\docs.ps1
 ```
 
-## Changelog
+Serve locally:
 
-The changelog is available in the [CHANGELOG.md](./CHANGELOG.md) file.
+```powershell
+cd docs
+..\.venv\Scripts\python.exe -m zensical serve
+```
+
+Open `http://localhost:8000`.
+
+## Development
+
+```powershell
+dotnet restore Mvx.ApiClient.Net.slnx
+dotnet build Mvx.ApiClient.Net.slnx --configuration Release --no-restore
+dotnet test Mvx.ApiClient.Net.slnx --configuration Release --no-build
+dotnet pack src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj --configuration Release --no-build
+.\eng\package-smoke-test.ps1
+```
+
+Live API smoke tests are disabled by default. Set `MVX_API_LIVE_TESTS=true` to enable the integration test project against the public MultiversX API.
+
+## Versioning
+
+This package follows semantic versioning. Public API changes are guarded by an approval-style public API baseline in the test project.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Security
+
+See [SECURITY.md](./SECURITY.md) for vulnerability reporting.
 
 ## License
 
-The code under this repository is available under the MIT license.
-For more details, please refer yourself to the [license](./LICENSE) file.
+MIT. See [LICENSE](./LICENSE).

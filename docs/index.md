@@ -1,6 +1,11 @@
 # Mvx.ApiClient.Net
 
-Mvx.ApiClient.Net is a .NET wrapper around the public MultiversX API. The current scope is GET endpoints for network and xExchange data.
+Mvx.ApiClient.Net is a typed .NET wrapper around the public MultiversX API. It is intended for application and library authors who want a NuGet package with dependency-injection support, typed response models, cancellation tokens, predictable errors, and package-ready metadata.
+
+The current scope is GET endpoints for:
+
+- Network data
+- xExchange data
 
 ## Supported frameworks
 
@@ -19,7 +24,7 @@ Mvx.ApiClient.Net is a .NET wrapper around the public MultiversX API. The curren
 dotnet add package Mvx.ApiClient.Net
 ```
 
-## Quick example
+## Minimal example
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +36,19 @@ services.AddMvxApiClient(NetworkType.Mainnet);
 using var provider = services.BuildServiceProvider();
 var client = provider.GetRequiredService<IMvxApiClient>();
 
-var stats = await client.Network.GetStatsAsync(
-    new DataSelection { Fields = ["accounts", "blocks"] });
+var stats = await client.Network.GetStatsAsync();
+var pairs = await client.XExchange.GetPairsAsync(
+    new QueryOptions
+    {
+        Pagination = new Pagination { Limit = 10 },
+        Data = new DataSelection { Fields = ["id", "symbol", "price"] }
+    });
 ```
+
+## Package goals
+
+- Keep the public API small and discoverable.
+- Preserve HTTP status and response details when the API returns errors.
+- Validate obvious invalid input before making HTTP calls.
+- Keep retry and rate-limit policy configurable by consumers through `HttpClientFactory`.
+- Keep generated XML documentation and README examples useful for NuGet consumers.

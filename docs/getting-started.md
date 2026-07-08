@@ -2,7 +2,7 @@
 
 ## Service registration
 
-Register the client through dependency injection:
+Register the root client through dependency injection:
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +11,18 @@ using Mvx.ApiClient.Net;
 services.AddMvxApiClient(NetworkType.Mainnet);
 ```
 
-For advanced configuration, use the options overload:
+The root client exposes focused endpoint groups:
+
+```csharp
+var client = provider.GetRequiredService<IMvxApiClient>();
+
+var stats = await client.Network.GetStatsAsync();
+var pairs = await client.XExchange.GetPairsAsync();
+```
+
+## Options registration
+
+Use the options overload when you need timeout, network, or custom host configuration:
 
 ```csharp
 services.AddMvxApiClient(options =>
@@ -21,31 +32,57 @@ services.AddMvxApiClient(options =>
 });
 ```
 
-## Query options
-
-Use `DataSelection`, `Pagination`, and `QueryOptions` to select fields and page list endpoints:
+Use `BaseAddress` to point the client at a compatible API host:
 
 ```csharp
-var pairs = await client.XExchange.GetPairsAsync(
-    new QueryOptions
-    {
-        Pagination = new Pagination { Limit = 25 },
-        Data = new DataSelection { Fields = ["id", "symbol"] }
-    });
+services.AddMvxApiClient(options =>
+{
+    options.BaseAddress = new Uri("https://api.multiversx.com");
+});
 ```
 
-## Error handling
+`BaseAddress` overrides `Network`.
 
-Non-success responses are thrown as `MvxApiException`:
+## HttpClient customization
+
+Use `ConfigureHttpClient` for headers or other `HttpClient` settings:
 
 ```csharp
-try
+services.AddMvxApiClient(options =>
 {
-    var token = await client.XExchange.GetTokenAsync("WEGLD-bd4d79");
-}
-catch (MvxApiException exception)
+    options.Network = NetworkType.Mainnet;
+    options.ConfigureHttpClient = client =>
+    {
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("my-app/1.0");
+    };
+});
+```
+
+The package does not add retry or rate-limit policy by default. Add resilience policy at the application boundary using `IHttpClientFactory` conventions that fit your workload.
+
+## Direct clients
+
+The DI registration also registers focused clients:
+
+```csharp
+public sealed class NetworkDashboard
 {
-    Console.WriteLine(exception.StatusCode);
-    Console.WriteLine(exception.ResponseContent);
+    private readonly INetworkClient _network;
+
+    public NetworkDashboard(INetworkClient network)
+    {
+        _network = network;
+    }
+
+    public Task<StatsDto> GetStatsAsync(CancellationToken cancellationToken)
+    {
+        return _network.GetStatsAsync(cancellationToken: cancellationToken);
+    }
 }
+```
+
+Add the model namespace when using response types directly:
+
+```csharp
+using Mvx.ApiClient.Net.Models.Network;
 ```

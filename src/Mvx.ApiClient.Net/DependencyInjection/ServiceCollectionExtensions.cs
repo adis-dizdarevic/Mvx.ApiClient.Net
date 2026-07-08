@@ -16,6 +16,9 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers the MultiversX API client using a public MultiversX network.
     /// </summary>
+    /// <param name="services">The service collection to add the client registrations to.</param>
+    /// <param name="networkType">The public MultiversX network to use.</param>
+    /// <returns>The same service collection so calls can be chained.</returns>
     public static IServiceCollection AddMvxApiClient(this IServiceCollection services, NetworkType networkType)
     {
         return services.AddMvxApiClient(options => options.Network = networkType);
@@ -24,6 +27,9 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers the MultiversX API client.
     /// </summary>
+    /// <param name="services">The service collection to add the client registrations to.</param>
+    /// <param name="configureOptions">A callback that configures the MultiversX API client.</param>
+    /// <returns>The same service collection so calls can be chained.</returns>
     public static IServiceCollection AddMvxApiClient(this IServiceCollection services, Action<MvxApiClientOptions> configureOptions)
     {
         services.AddTransient<ErrorHandler>();
