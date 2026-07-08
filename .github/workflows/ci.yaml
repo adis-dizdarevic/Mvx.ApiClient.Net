@@ -8,6 +8,8 @@ on:
       - src/**
       - tests/**
       - .github/**
+      - docs/**
+      - eng/**
       - Directory.Build.props
       - Directory.Packages.props
       - global.json
@@ -20,6 +22,8 @@ on:
       - src/**
       - tests/**
       - .github/**
+      - docs/**
+      - eng/**
       - Directory.Build.props
       - Directory.Packages.props
       - global.json

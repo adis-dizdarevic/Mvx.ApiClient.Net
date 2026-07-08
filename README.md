@@ -123,6 +123,10 @@ New GET endpoint groups should follow the existing structure:
 
 Mvx.ApiClient.Net follows semantic versioning.
 
+## Documentation
+
+Project documentation lives in `docs/` and is built with Zensical.
+
 ## Changelog
 
 The changelog is available in the [CHANGELOG.md](./CHANGELOG.md) file.

@@ -1,0 +1,16 @@
+[site]
+name = "Mvx.ApiClient.Net"
+url = "https://adis-dizdarevic.github.io/Mvx.ApiClient.Net/"
+description = "A .NET wrapper around the public MultiversX API."
+
+[build]
+source = "."
+output = "../site"
+
+[nav]
+items = [
+  { title = "Home", path = "index.md" },
+  { title = "Getting Started", path = "getting-started.md" },
+  { title = "Clients", path = "clients.md" },
+  { title = "Contributing", path = "contributing.md" }
+]
