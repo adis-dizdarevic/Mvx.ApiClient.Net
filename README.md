@@ -5,7 +5,7 @@
 > This project currently focuses on GET endpoints exposed by the public MultiversX API. Additional clients are planned incrementally.
 
 - [x] Network Client
-- [x] Mex Client
+- [x] xExchange Client
 - [ ] Account Client
 - [ ] Block Client
 - [ ] Collection Client
@@ -63,12 +63,23 @@ To integrate Mvx.ApiClient.Net into your C# application, follow these setup step
     
        public async Task GetNetworkStats()
        {
-           var networkStats = await _mvxApiClient.Network.GetNetworkStatsAsync(
+           var networkStats = await _mvxApiClient.Network.GetStatsAsync(
                new DataSelection { Fields = ["accounts", "blocks"] });
            
            // Process network stats as needed ...
        }
    }
+   ```
+
+   xExchange endpoints are available through the `XExchange` client:
+
+   ```csharp
+   var pairs = await _mvxApiClient.XExchange.GetPairsAsync(
+       new QueryOptions
+       {
+           Pagination = new Pagination { Limit = 25 },
+           Data = new DataSelection { Fields = ["id", "symbol"] }
+       });
    ```
 
 For advanced configuration, use the options overload:
@@ -91,6 +102,8 @@ To build the project locally, ensure you have the following tools installed:
 The package targets `net8.0` and `net10.0`.
 
 After cloning the repository, you can build the project with `dotnet build Mvx.ApiClient.Net.slnx` and run all tests with `dotnet test Mvx.ApiClient.Net.slnx`.
+
+Live API smoke tests are included in a separate integration-test project and are disabled by default. Set `MVX_API_LIVE_TESTS=true` before running tests to enable calls against the public MultiversX API.
 
 ## Versioning
 

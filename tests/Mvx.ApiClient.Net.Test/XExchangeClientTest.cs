@@ -1,15 +1,14 @@
 using Mvx.ApiClient.Net.Clients;
-using Mvx.ApiClient.Net.Models.Mex;
+using Mvx.ApiClient.Net.Models.XExchange;
 using TUnit.Assertions;
 
 namespace Mvx.ApiClient.Net.Test;
 
-public class MexClientTest
+public class XExchangeClientTest
 {
     [Test]
-    public async Task GetMexEconomicsAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetEconomicsAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
     {
-        // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("""
             {
               "totalSupply": 8045920000000,
@@ -22,76 +21,64 @@ public class MexClientTest
             """));
         var client = CreateClient(handler);
 
-        // act
-        var result = await client.GetMexEconomicsAsync();
+        var result = await client.GetEconomicsAsync();
 
-        // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/economics");
-        await Assert.That(result).IsEqualTo(new MexEconomicsDto(8045920000000, 4475040846664, 0.0000035452649740387483, 15865206, 2459773, 255));
+        await Assert.That(result).IsEqualTo(new XExchangeEconomicsDto(8045920000000, 4475040846664, 0.0000035452649740387483, 15865206, 2459773, 255));
     }
 
     [Test]
-    public async Task GetMexPairsAsync_WithQueryParameters_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetPairsAsync_WithQueryParameters_SendsExpectedRequestAndDeserializesResponse()
     {
-        // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse($$"""
             [
-              {{MexPairJson("erd1pair1", "EGLDMEX-0be9e5", "EGLDMEX", "active", "core")}},
-              {{MexPairJson("erd1pair2", "LAUNCHUSDC-2263cb", "LAUNCHUSDC", "active", "experimental")}}
+              {{PairJson("erd1pair1", "EGLDMEX-0be9e5", "EGLDMEX", "active", "core")}},
+              {{PairJson("erd1pair2", "LAUNCHUSDC-2263cb", "LAUNCHUSDC", "active", "experimental")}}
             ]
             """));
         var client = CreateClient(handler);
-        var queryParameters = new QueryOptions
+        var queryOptions = new QueryOptions
         {
             Pagination = new Pagination { Limit = 2, Offset = 1 },
             Data = new DataSelection { Fields = ["id", "symbol"], Extract = "base/price" }
         };
 
-        // act
-        var result = (await client.GetMexPairsAsync(queryParameters)).ToList();
+        var result = (await client.GetPairsAsync(queryOptions)).ToList();
 
-        // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/pairs?size=2&from=1&fields=id%2Csymbol&extract=base%2Fprice");
         await Assert.That(result).Count().IsEqualTo(2);
-        await Assert.That(result[0].State).IsEqualTo(MexPairState.Active);
-        await Assert.That(result[1].Type).IsEqualTo(MexPairType.Experimental);
+        await Assert.That(result[0].State).IsEqualTo(XExchangePairState.Active);
+        await Assert.That(result[1].Type).IsEqualTo(XExchangePairType.Experimental);
     }
 
     [Test]
-    public async Task GetMexPairAsync_WithPathParameters_SendsEscapedDetailPathAndDeserializesResponse()
+    public async Task GetPairAsync_WithPathParameters_SendsEscapedDetailPathAndDeserializesResponse()
     {
-        // arrange
-        var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse(MexPairJson("erd1pair1", "EGLDMEX-0be9e5", "EGLDMEX", "active", "core")));
+        var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse(PairJson("erd1pair1", "EGLDMEX-0be9e5", "EGLDMEX", "active", "core")));
         var client = CreateClient(handler);
 
-        // act
-        var result = await client.GetMexPairAsync("MEX/455c57", "WEGLD bd4d79", new DataSelection { Fields = ["id", "baseId"] });
+        var result = await client.GetPairAsync("MEX/455c57", "WEGLD bd4d79", new DataSelection { Fields = ["id", "baseId"] });
 
-        // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/pairs/MEX%2F455c57/WEGLD%20bd4d79?fields=id%2CbaseId");
         await Assert.That(result.Id).IsEqualTo("EGLDMEX-0be9e5");
-        await Assert.That(result.Type).IsEqualTo(MexPairType.Core);
+        await Assert.That(result.Type).IsEqualTo(XExchangePairType.Core);
     }
 
     [Test]
-    public async Task GetMexPairsCountAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetPairsCountAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
     {
-        // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("2"));
         var client = CreateClient(handler);
 
-        // act
-        var result = await client.GetMexPairsCountAsync();
+        var result = await client.GetPairsCountAsync();
 
-        // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/pairs/count");
         await Assert.That(result).IsEqualTo(2);
     }
 
     [Test]
-    public async Task GetMexTokensAsync_WithPagination_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetTokensAsync_WithPagination_SendsExpectedRequestAndDeserializesResponse()
     {
-        // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("""
             [
               {
@@ -107,18 +94,15 @@ public class MexClientTest
             """));
         var client = CreateClient(handler);
 
-        // act
-        var result = (await client.GetMexTokensAsync(new QueryOptions { Pagination = new Pagination { Limit = 1 } })).ToList();
+        var result = (await client.GetTokensAsync(new QueryOptions { Pagination = new Pagination { Limit = 1 } })).ToList();
 
-        // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/tokens?size=1");
         await Assert.That(result.Single().Id).IsEqualTo("MEX-455c57");
     }
 
     [Test]
-    public async Task GetMexTokenAsync_WithIdentifier_SendsEscapedDetailPathAndDeserializesResponse()
+    public async Task GetTokenAsync_WithIdentifier_SendsEscapedDetailPathAndDeserializesResponse()
     {
-        // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("""
             {
               "id": "WEGLD-bd4d79",
@@ -132,48 +116,39 @@ public class MexClientTest
             """));
         var client = CreateClient(handler);
 
-        // act
-        var result = await client.GetMexTokenAsync("WEGLD/bd4d79");
+        var result = await client.GetTokenAsync("WEGLD/bd4d79");
 
-        // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/tokens/WEGLD%2Fbd4d79");
         await Assert.That(result.Symbol).IsEqualTo("WEGLD");
     }
 
     [Test]
-    public async Task GetMexTokenAsync_EmptyIdentifier_ThrowsArgumentExceptionBeforeRequest()
+    public async Task GetTokenAsync_EmptyIdentifier_ThrowsArgumentExceptionBeforeRequest()
     {
-        // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("{}"));
         var client = CreateClient(handler);
 
-        // act
-        var exception = await CaptureArgumentException(() => client.GetMexTokenAsync(""));
+        var exception = await CaptureArgumentException(() => client.GetTokenAsync(""));
 
-        // assert
         await Assert.That(exception.ParamName).IsEqualTo("identifier");
         await Assert.That(handler.Requests).IsEmpty();
     }
 
     [Test]
-    public async Task GetMexTokensCountAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetTokensCountAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
     {
-        // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("2"));
         var client = CreateClient(handler);
 
-        // act
-        var result = await client.GetMexTokensCountAsync();
+        var result = await client.GetTokensCountAsync();
 
-        // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/tokens/count");
         await Assert.That(result).IsEqualTo(2);
     }
 
     [Test]
-    public async Task GetMexFarmsAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetFarmsAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
     {
-        // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("""
             [
               {
@@ -197,32 +172,27 @@ public class MexClientTest
             """));
         var client = CreateClient(handler);
 
-        // act
-        var result = (await client.GetMexFarmsAsync()).ToList();
+        var result = (await client.GetFarmsAsync()).ToList();
 
-        // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/farms");
-        await Assert.That(result.Single().Type).IsEqualTo(MexFarmType.Standard);
+        await Assert.That(result.Single().Type).IsEqualTo(XExchangeFarmType.Standard);
     }
 
     [Test]
-    public async Task GetMexFarmsCountAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetFarmsCountAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
     {
-        // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("2"));
         var client = CreateClient(handler);
 
-        // act
-        var result = await client.GetMexFarmsCountAsync();
+        var result = await client.GetFarmsCountAsync();
 
-        // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/farms/count");
         await Assert.That(result).IsEqualTo(2);
     }
 
-    private static MexClient CreateClient(HttpMessageHandler handler)
+    private static XExchangeClient CreateClient(HttpMessageHandler handler)
     {
-        return new MexClient(new HttpClient(handler)
+        return new XExchangeClient(new HttpClient(handler)
         {
             BaseAddress = new Uri("https://api.multiversx.com")
         });
@@ -242,7 +212,7 @@ public class MexClientTest
         throw new InvalidOperationException("Expected ArgumentException was not thrown.");
     }
 
-    private static string MexPairJson(string address, string id, string symbol, string state, string type)
+    private static string PairJson(string address, string id, string symbol, string state, string type)
     {
         return $$"""
             {

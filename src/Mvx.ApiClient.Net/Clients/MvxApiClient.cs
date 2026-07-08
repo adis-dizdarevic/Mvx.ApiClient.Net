@@ -2,16 +2,16 @@ namespace Mvx.ApiClient.Net.Clients;
 
 internal sealed class MvxApiClient : IMvxApiClient
 {
-    public MvxApiClient(NetworkType networkType, IMexClient mex, INetworkClient network)
+    public MvxApiClient(NetworkType networkType, IXExchangeClient xExchange, INetworkClient network)
     {
-        Mex = mex;
+        XExchange = xExchange;
         NetworkType = networkType;
         Network = network;
     }
 
     public NetworkType NetworkType { get; }
 
-    public IMexClient Mex { get; }
+    public IXExchangeClient XExchange { get; }
 
     public INetworkClient Network { get; }
 }

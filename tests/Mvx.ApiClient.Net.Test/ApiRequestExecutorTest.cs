@@ -1,8 +1,9 @@
+using Mvx.ApiClient.Net.Infrastructure;
 using TUnit.Assertions;
 
 namespace Mvx.ApiClient.Net.Test;
 
-public class HttpClientExtensionsTest
+public class ApiRequestExecutorTest
 {
     private const string BaseAddress = "https://api.multiversx.com";
     private const string RequestUri = "/accounts";
@@ -10,7 +11,7 @@ public class HttpClientExtensionsTest
     [Test]
     public async Task BuildRequestUri_QueryOptionsIsNull_UseDefaultValues()
     {
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri);
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri);
 
         await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts"));
     }
@@ -20,7 +21,7 @@ public class HttpClientExtensionsTest
     {
         var data = new DataSelection();
 
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
         await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts"));
     }
@@ -30,7 +31,7 @@ public class HttpClientExtensionsTest
     {
         var pagination = new Pagination { Limit = 15, Offset = 0 };
 
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Pagination = pagination });
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Pagination = pagination });
 
         await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?size=15&from=0"));
     }
@@ -40,7 +41,7 @@ public class HttpClientExtensionsTest
     {
         var data = new DataSelection { Fields = ["balance"] };
 
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
         await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?fields=balance"));
     }
@@ -50,7 +51,7 @@ public class HttpClientExtensionsTest
     {
         var data = new DataSelection { Fields = ["balance", "address", "price"] };
 
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
         await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?fields=balance%2Caddress%2Cprice"));
     }
@@ -60,7 +61,7 @@ public class HttpClientExtensionsTest
     {
         var data = new DataSelection { Extract = "price/usd" };
 
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
         await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?extract=price%2Fusd"));
     }
@@ -74,7 +75,7 @@ public class HttpClientExtensionsTest
             Data = new DataSelection { Fields = ["balance", "address", "price"], Extract = "amount value" }
         };
 
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, options);
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, options);
 
         await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?size=100&from=25&fields=balance%2Caddress%2Cprice&extract=amount%20value"));
     }
@@ -84,7 +85,7 @@ public class HttpClientExtensionsTest
     {
         var data = new DataSelection { Fields = [] };
 
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
         await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts"));
     }
@@ -94,7 +95,7 @@ public class HttpClientExtensionsTest
     {
         var data = new DataSelection { Extract = "" };
 
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
         await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts"));
     }
@@ -104,7 +105,7 @@ public class HttpClientExtensionsTest
     {
         var options = new QueryOptions { Pagination = new Pagination { Limit = -1 } };
 
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, options));
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, options));
 
         await Assert.That(exception.Message).Contains("Pagination limit cannot be negative.");
     }
@@ -114,7 +115,7 @@ public class HttpClientExtensionsTest
     {
         var options = new QueryOptions { Data = new DataSelection { Fields = ["id", ""] } };
 
-        var exception = Assert.Throws<ArgumentException>(() => HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, options));
+        var exception = Assert.Throws<ArgumentException>(() => ApiRequestExecutor.BuildRequestUri(new Uri(BaseAddress), RequestUri, options));
 
         await Assert.That(exception.Message).Contains("Field names cannot be empty.");
     }

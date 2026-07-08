@@ -16,9 +16,6 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers the MultiversX API client using a public MultiversX network.
     /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <param name="networkType">The type of network to connect to.</param>
-    /// <returns>The configured service collection.</returns>
     public static IServiceCollection AddMvxApiClient(this IServiceCollection services, NetworkType networkType)
     {
         return services.AddMvxApiClient(options => options.Network = networkType);
@@ -27,9 +24,6 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Registers the MultiversX API client.
     /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <param name="configureOptions">A callback for configuring the API client.</param>
-    /// <returns>The configured service collection.</returns>
     public static IServiceCollection AddMvxApiClient(this IServiceCollection services, Action<MvxApiClientOptions> configureOptions)
     {
         services.AddTransient<ErrorHandler>();
@@ -39,15 +33,15 @@ public static class ServiceCollectionExtensions
 
         var baseAddress = options.BaseAddress ?? GetBaseAddress(options.Network);
 
-        RegisterClient<IMexClient, MexClient>(services, baseAddress, options);
+        RegisterClient<IXExchangeClient, XExchangeClient>(services, baseAddress, options);
         RegisterClient<INetworkClient, NetworkClient>(services, baseAddress, options);
 
         services.AddTransient<IMvxApiClient>(provider =>
         {
-            var mexClient = provider.GetRequiredService<IMexClient>();
+            var xExchangeClient = provider.GetRequiredService<IXExchangeClient>();
             var networkClient = provider.GetRequiredService<INetworkClient>();
 
-            return new MvxApiClient(options.Network, mexClient, networkClient);
+            return new MvxApiClient(options.Network, xExchangeClient, networkClient);
         });
 
         return services;

@@ -18,38 +18,38 @@ public class PublicApiTest
         var expectedTypes = new[]
         {
             "Mvx.ApiClient.Net.DataSelection",
-            "Mvx.ApiClient.Net.IMexClient",
             "Mvx.ApiClient.Net.IMvxApiClient",
             "Mvx.ApiClient.Net.INetworkClient",
+            "Mvx.ApiClient.Net.IXExchangeClient",
             "Mvx.ApiClient.Net.MvxApiClientOptions",
             "Mvx.ApiClient.Net.NetworkType",
             "Mvx.ApiClient.Net.Pagination",
             "Mvx.ApiClient.Net.QueryOptions",
             "Mvx.ApiClient.Net.ServiceCollectionExtensions",
             "Mvx.ApiClient.Net.Exceptions.MvxApiException",
-            "Mvx.ApiClient.Net.Models.Mex.MexEconomicsDto",
-            "Mvx.ApiClient.Net.Models.Mex.MexFarmDto",
-            "Mvx.ApiClient.Net.Models.Mex.MexFarmType",
-            "Mvx.ApiClient.Net.Models.Mex.MexPairDto",
-            "Mvx.ApiClient.Net.Models.Mex.MexPairState",
-            "Mvx.ApiClient.Net.Models.Mex.MexPairType",
-            "Mvx.ApiClient.Net.Models.Mex.MexTokenDto",
             "Mvx.ApiClient.Net.Models.Network.AboutDto",
             "Mvx.ApiClient.Net.Models.Network.EconomicsDto",
             "Mvx.ApiClient.Net.Models.Network.FeaturesDto",
             "Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto",
-            "Mvx.ApiClient.Net.Models.Network.StatsDto"
+            "Mvx.ApiClient.Net.Models.Network.StatsDto",
+            "Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto",
+            "Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto",
+            "Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType",
+            "Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto",
+            "Mvx.ApiClient.Net.Models.XExchange.XExchangePairState",
+            "Mvx.ApiClient.Net.Models.XExchange.XExchangePairType",
+            "Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto"
         };
 
         await Assert.That(publicTypes).IsEquivalentTo(expectedTypes);
     }
 
     [Test]
-    public async Task PublicApi_MexClientListMethods_ReturnReadOnlyLists()
+    public async Task PublicApi_XExchangeClientListMethods_ReturnReadOnlyLists()
     {
-        var methods = typeof(IMexClient)
+        var methods = typeof(IXExchangeClient)
             .GetMethods()
-            .Where(method => method.Name is "GetMexPairsAsync" or "GetMexTokensAsync" or "GetMexFarmsAsync")
+            .Where(method => method.Name is "GetPairsAsync" or "GetTokensAsync" or "GetFarmsAsync")
             .Select(method => method.ReturnType.GetGenericArguments().Single().GetGenericTypeDefinition())
             .ToArray();
 

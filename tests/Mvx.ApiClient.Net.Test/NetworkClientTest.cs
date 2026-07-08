@@ -7,7 +7,7 @@ namespace Mvx.ApiClient.Net.Test;
 public class NetworkClientTest
 {
     [Test]
-    public async Task GetNetworkStatsAsync_WithFieldSelection_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetStatsAsync_WithFieldSelection_SendsExpectedRequestAndDeserializesResponse()
     {
         // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("""
@@ -26,7 +26,7 @@ public class NetworkClientTest
         var client = CreateClient(handler);
 
         // act
-        var result = await client.GetNetworkStatsAsync(new DataSelection { Fields = ["accounts", "blocks"] });
+        var result = await client.GetStatsAsync(new DataSelection { Fields = ["accounts", "blocks"] });
 
         // assert
         await Assert.That(handler.Requests.Single().Method).IsEqualTo(HttpMethod.Get);
@@ -62,7 +62,7 @@ public class NetworkClientTest
     }
 
     [Test]
-    public async Task GetNetworkConstantsAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetConstantsAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
     {
         // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("""
@@ -77,7 +77,7 @@ public class NetworkClientTest
         var client = CreateClient(handler);
 
         // act
-        var result = await client.GetNetworkConstantsAsync();
+        var result = await client.GetConstantsAsync();
 
         // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/constants");

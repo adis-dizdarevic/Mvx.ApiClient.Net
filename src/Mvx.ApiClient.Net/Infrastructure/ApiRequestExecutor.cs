@@ -2,14 +2,21 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Mvx.ApiClient.Net;
+namespace Mvx.ApiClient.Net.Infrastructure;
 
-internal static class HttpClientExtensions
+internal sealed class ApiRequestExecutor
 {
-    internal static async Task<T> GetWithQueryOptionsAsync<T>(this HttpClient httpClient, string requestPath, QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
+    private readonly HttpClient _httpClient;
+
+    public ApiRequestExecutor(HttpClient httpClient)
     {
-        var requestUri = BuildRequestUri(httpClient.BaseAddress!, requestPath, queryOptions);
-        var response = await httpClient.GetFromJsonAsync<T>(requestUri, DefaultJsonSerializerOptions, cancellationToken);
+        _httpClient = httpClient;
+    }
+
+    public async Task<T> GetAsync<T>(string requestPath, QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
+    {
+        var requestUri = BuildRequestUri(_httpClient.BaseAddress!, requestPath, queryOptions);
+        var response = await _httpClient.GetFromJsonAsync<T>(requestUri, JsonSerializerOptions, cancellationToken);
 
         if (response is null)
         {
@@ -69,7 +76,7 @@ internal static class HttpClientExtensions
         }
     }
 
-    private static JsonSerializerOptions DefaultJsonSerializerOptions { get; } = new()
+    private static JsonSerializerOptions JsonSerializerOptions { get; } = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         Converters =

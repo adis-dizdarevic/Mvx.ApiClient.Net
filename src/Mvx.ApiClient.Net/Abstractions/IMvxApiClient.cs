@@ -13,7 +13,7 @@ public interface IMvxApiClient
     /// <summary>
     /// Client for xExchange endpoints.
     /// </summary>
-    IMexClient Mex { get; }
+    IXExchangeClient XExchange { get; }
 
     /// <summary>
     /// Client for network information endpoints.

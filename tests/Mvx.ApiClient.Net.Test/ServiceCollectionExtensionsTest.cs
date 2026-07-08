@@ -16,7 +16,7 @@ public class ServiceCollectionExtensionsTest
 
         // assert
         await Assert.That(provider.SingleOrDefault(sd => sd.ServiceType == typeof(IMvxApiClient))?.Lifetime).IsEqualTo(ServiceLifetime.Transient);
-        await Assert.That(provider.SingleOrDefault(sd => sd.ServiceType == typeof(IMexClient))?.Lifetime).IsEqualTo(ServiceLifetime.Transient);
+        await Assert.That(provider.SingleOrDefault(sd => sd.ServiceType == typeof(IXExchangeClient))?.Lifetime).IsEqualTo(ServiceLifetime.Transient);
         await Assert.That(provider.SingleOrDefault(sd => sd.ServiceType == typeof(INetworkClient))?.Lifetime).IsEqualTo(ServiceLifetime.Transient);
         await Assert.That(provider.SingleOrDefault(sd => sd.ServiceType == typeof(ServiceCollectionExtensions.ErrorHandler))?.Lifetime).IsEqualTo(ServiceLifetime.Transient);
     }
@@ -56,6 +56,7 @@ public class ServiceCollectionExtensionsTest
         // assert
         var client = provider.GetRequiredService<IMvxApiClient>();
         await Assert.That(client.NetworkType).IsEqualTo(NetworkType.Devnet);
+        await Assert.That(client.XExchange).IsNotNull();
 
         var factory = provider.GetRequiredService<IHttpClientFactory>();
         var httpClient = factory.CreateClient(nameof(INetworkClient));
