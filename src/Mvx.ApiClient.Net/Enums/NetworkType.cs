@@ -1,7 +1,7 @@
-﻿namespace Mvx.ApiClient.Net.Enums;
+namespace Mvx.ApiClient.Net;
 
 /// <summary>
-/// The type of MultiversX network
+/// The type of MultiversX network.
 /// </summary>
 public enum NetworkType
 {

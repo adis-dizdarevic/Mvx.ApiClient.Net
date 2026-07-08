@@ -1,7 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Mvx.ApiClient.Net.Enums;
-using Mvx.ApiClient.Net.ExtensionMethods;
-using Mvx.ApiClient.Net.Interfaces.Clients;
 using TUnit.Assertions;
 
 namespace Mvx.ApiClient.Net.Test;
@@ -39,5 +36,31 @@ public class ServiceCollectionExtensionsTest
         // assert
         var client = provider.GetRequiredService<IMvxApiClient>();
         await Assert.That(client.NetworkType).IsEqualTo(networkType);
+    }
+
+    [Test]
+    public async Task AddMvxApiClient_WithOptions_RegistersConfiguredNetworkAndHttpClient()
+    {
+        // arrange
+        var services = new ServiceCollection();
+
+        // act
+        var provider = services.AddMvxApiClient(options =>
+        {
+            options.Network = NetworkType.Devnet;
+            options.BaseAddress = new Uri("https://example.com");
+            options.Timeout = TimeSpan.FromSeconds(12);
+            options.ConfigureHttpClient = client => client.DefaultRequestHeaders.Add("x-test", "configured");
+        }).BuildServiceProvider();
+
+        // assert
+        var client = provider.GetRequiredService<IMvxApiClient>();
+        await Assert.That(client.NetworkType).IsEqualTo(NetworkType.Devnet);
+
+        var factory = provider.GetRequiredService<IHttpClientFactory>();
+        var httpClient = factory.CreateClient(nameof(INetworkClient));
+        await Assert.That(httpClient.BaseAddress).IsEqualTo(new Uri("https://example.com"));
+        await Assert.That(httpClient.Timeout).IsEqualTo(TimeSpan.FromSeconds(12));
+        await Assert.That(httpClient.DefaultRequestHeaders.Contains("x-test")).IsTrue();
     }
 }

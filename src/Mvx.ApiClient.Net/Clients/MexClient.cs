@@ -1,6 +1,3 @@
-using Mvx.ApiClient.Net.Dtos;
-using Mvx.ApiClient.Net.ExtensionMethods;
-using Mvx.ApiClient.Net.Interfaces.Clients;
 using Mvx.ApiClient.Net.Models.Mex;
 
 namespace Mvx.ApiClient.Net.Clients;
@@ -14,83 +11,65 @@ internal sealed class MexClient : IMexClient
         _httpClient = httpClient;
     }
 
-    public async Task<MexEconomicsDto> GetMexEconomicsAsync(DataSelectionDto? dataSelection = null, CancellationToken cancellationToken = default)
+    public async Task<MexEconomicsDto> GetMexEconomicsAsync(DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
     {
-        var parameters = new QueryParametersDto { Data = dataSelection };
-        var result = await _httpClient.GetWithQueryParametersAsync<MexEconomicsDto>(EndpointPaths.MexEconomics, parameters, cancellationToken);
-
-        return result;
+        return await _httpClient.GetWithQueryOptionsAsync<MexEconomicsDto>(EndpointPaths.MexEconomics, new QueryOptions { Data = dataSelection }, cancellationToken);
     }
 
-    public async Task<IEnumerable<MexPairDto>> GetMexPairsAsync(QueryParametersDto? queryParameters = null, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<MexPairDto>> GetMexPairsAsync(QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
     {
-        var parameters = new QueryParametersDto
-        {
-            Data = queryParameters?.Data, Pagination = queryParameters?.Pagination
-        };
-        var result = await _httpClient.GetWithQueryParametersAsync<IEnumerable<MexPairDto>>(EndpointPaths.MexPairs, parameters, cancellationToken);
-
-        return result;
+        return await _httpClient.GetWithQueryOptionsAsync<IReadOnlyList<MexPairDto>>(EndpointPaths.MexPairs, queryOptions, cancellationToken);
     }
 
-    public async Task<MexPairDto> GetMexPairAsync(string baseId, string quoteId, DataSelectionDto? dataSelection = null, CancellationToken cancellationToken = default)
+    public async Task<MexPairDto> GetMexPairAsync(string baseId, string quoteId, DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
     {
-        var parameters = new QueryParametersDto { Data = dataSelection };
+        ValidateRequiredPathSegment(baseId, nameof(baseId));
+        ValidateRequiredPathSegment(quoteId, nameof(quoteId));
+
         var path = string.Format(EndpointPaths.MexPairDetails, Uri.EscapeDataString(baseId), Uri.EscapeDataString(quoteId));
-        var result = await _httpClient.GetWithQueryParametersAsync<MexPairDto>(path, parameters, cancellationToken);
 
-        return result;
+        return await _httpClient.GetWithQueryOptionsAsync<MexPairDto>(path, new QueryOptions { Data = dataSelection }, cancellationToken);
     }
 
     public async Task<int> GetMexPairsCountAsync(CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.GetWithQueryParametersAsync<int>(EndpointPaths.MexPairsCount, null, cancellationToken);
-
-        return result;
+        return await _httpClient.GetWithQueryOptionsAsync<int>(EndpointPaths.MexPairsCount, null, cancellationToken);
     }
 
-    public async Task<IEnumerable<MexTokenDto>> GetMexTokensAsync(QueryParametersDto? queryParameters = null, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<MexTokenDto>> GetMexTokensAsync(QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
     {
-        var parameters = new QueryParametersDto
-        {
-            Data = queryParameters?.Data, Pagination = queryParameters?.Pagination
-        };
-        var result = await _httpClient.GetWithQueryParametersAsync<IEnumerable<MexTokenDto>>(EndpointPaths.MexTokens, parameters, cancellationToken);
-
-        return result;
+        return await _httpClient.GetWithQueryOptionsAsync<IReadOnlyList<MexTokenDto>>(EndpointPaths.MexTokens, queryOptions, cancellationToken);
     }
 
-    public async Task<MexTokenDto> GetMexTokenAsync(string identifier, DataSelectionDto? dataSelection = null, CancellationToken cancellationToken = default)
+    public async Task<MexTokenDto> GetMexTokenAsync(string identifier, DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
     {
-        var parameters = new QueryParametersDto { Data = dataSelection };
+        ValidateRequiredPathSegment(identifier, nameof(identifier));
+
         var path = string.Format(EndpointPaths.MexTokenDetails, Uri.EscapeDataString(identifier));
-        var result = await _httpClient.GetWithQueryParametersAsync<MexTokenDto>(path, parameters, cancellationToken);
 
-        return result;
+        return await _httpClient.GetWithQueryOptionsAsync<MexTokenDto>(path, new QueryOptions { Data = dataSelection }, cancellationToken);
     }
 
     public async Task<int> GetMexTokensCountAsync(CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.GetWithQueryParametersAsync<int>(EndpointPaths.MexTokensCount, null, cancellationToken);
-
-        return result;
+        return await _httpClient.GetWithQueryOptionsAsync<int>(EndpointPaths.MexTokensCount, null, cancellationToken);
     }
 
-    public async Task<IEnumerable<MexFarmDto>> GetMexFarmsAsync(QueryParametersDto? queryParameters = null, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<MexFarmDto>> GetMexFarmsAsync(QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
     {
-        var parameters = new QueryParametersDto
-        {
-            Data = queryParameters?.Data, Pagination = queryParameters?.Pagination
-        };
-        var result = await _httpClient.GetWithQueryParametersAsync<IEnumerable<MexFarmDto>>(EndpointPaths.MexFarms, parameters, cancellationToken);
-
-        return result;
+        return await _httpClient.GetWithQueryOptionsAsync<IReadOnlyList<MexFarmDto>>(EndpointPaths.MexFarms, queryOptions, cancellationToken);
     }
 
     public async Task<int> GetMexFarmsCountAsync(CancellationToken cancellationToken = default)
     {
-        var result = await _httpClient.GetWithQueryParametersAsync<int>(EndpointPaths.MexFarmsCount, null, cancellationToken);
+        return await _httpClient.GetWithQueryOptionsAsync<int>(EndpointPaths.MexFarmsCount, null, cancellationToken);
+    }
 
-        return result;
+    private static void ValidateRequiredPathSegment(string value, string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException("Path segment cannot be null or empty.", parameterName);
+        }
     }
 }

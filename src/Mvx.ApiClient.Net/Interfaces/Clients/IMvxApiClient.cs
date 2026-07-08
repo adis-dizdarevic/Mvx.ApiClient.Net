@@ -1,6 +1,4 @@
-﻿using Mvx.ApiClient.Net.Enums;
-
-namespace Mvx.ApiClient.Net.Interfaces.Clients;
+namespace Mvx.ApiClient.Net;
 
 /// <summary>
 /// Root client that exposes MultiversX API endpoint groups.

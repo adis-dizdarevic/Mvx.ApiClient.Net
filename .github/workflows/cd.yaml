@@ -66,8 +66,31 @@ jobs:
         run: dotnet test Mvx.ApiClient.Net.slnx --configuration Release --no-build
 
       - name: Pack NuGet package
-        if: ${{ inputs.packNuget }}
-        run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ steps.version.outputs.fullSemVer }}
+        if: ${{ inputs.packNuget || inputs.publishNuget }}
+        run: dotnet pack src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj --configuration Release --no-build -p:PackageVersion=${{ steps.version.outputs.fullSemVer }}
+
+      - name: Validate package contents
+        if: ${{ inputs.packNuget || inputs.publishNuget }}
+        shell: pwsh
+        run: |
+          $package = Get-ChildItem src/Mvx.ApiClient.Net/bin/Release/Mvx.ApiClient.Net.*.nupkg | Select-Object -First 1
+          $symbols = Get-ChildItem src/Mvx.ApiClient.Net/bin/Release/Mvx.ApiClient.Net.*.snupkg | Select-Object -First 1
+          if (-not $package) { throw "NuGet package was not created." }
+          if (-not $symbols) { throw "Symbol package was not created." }
+
+          $extractPath = Join-Path $env:RUNNER_TEMP "mvx-package"
+          Expand-Archive -Path $package.FullName -DestinationPath $extractPath -Force
+
+          foreach ($path in @(
+            "README.md",
+            "lib/net8.0/Mvx.ApiClient.Net.dll",
+            "lib/net8.0/Mvx.ApiClient.Net.xml",
+            "lib/net10.0/Mvx.ApiClient.Net.dll",
+            "lib/net10.0/Mvx.ApiClient.Net.xml"
+          )) {
+            $fullPath = Join-Path $extractPath $path
+            if (-not (Test-Path $fullPath)) { throw "Package is missing $path." }
+          }
 
       - name: Publish to NuGet
         if: ${{ inputs.publishNuget }}

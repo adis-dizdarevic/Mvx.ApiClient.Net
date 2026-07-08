@@ -1,6 +1,5 @@
 using System.Net;
 using Mvx.ApiClient.Net.Exceptions;
-using Mvx.ApiClient.Net.ExtensionMethods;
 using TUnit.Assertions;
 
 namespace Mvx.ApiClient.Net.Test;
@@ -25,7 +24,9 @@ public class ErrorHandlerTest
         // assert
         await Assert.That(exception.Message).IsEqualTo("Token not found");
         await Assert.That(exception.Error).IsEqualTo("Not Found");
-        await Assert.That(exception.StatusCode).IsEqualTo(404);
+        await Assert.That(exception.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
+        await Assert.That(exception.RequestMethod).IsEqualTo(HttpMethod.Get);
+        await Assert.That(exception.RequestUri).IsEqualTo(new Uri("https://api.multiversx.com/missing-token"));
         await Assert.That(exception.ResponseContent).IsNotNull();
     }
 
@@ -41,7 +42,7 @@ public class ErrorHandlerTest
         // assert
         await Assert.That(exception.Message).IsEqualTo("MultiversX API request failed with status code 429 (TooManyRequests).");
         await Assert.That(exception.Error).IsEqualTo("Too Many Requests");
-        await Assert.That(exception.StatusCode).IsEqualTo(429);
+        await Assert.That(exception.StatusCode).IsEqualTo(HttpStatusCode.TooManyRequests);
         await Assert.That(exception.ResponseContent).IsNull();
     }
 
@@ -57,7 +58,7 @@ public class ErrorHandlerTest
         // assert
         await Assert.That(exception.Message).IsEqualTo("MultiversX API request failed with status code 502 (BadGateway). Response content: upstream unavailable");
         await Assert.That(exception.Error).IsEqualTo("Bad Gateway");
-        await Assert.That(exception.StatusCode).IsEqualTo(502);
+        await Assert.That(exception.StatusCode).IsEqualTo(HttpStatusCode.BadGateway);
         await Assert.That(exception.ResponseContent).IsEqualTo("upstream unavailable");
     }
 

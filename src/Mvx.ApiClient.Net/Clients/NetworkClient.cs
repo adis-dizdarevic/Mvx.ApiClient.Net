@@ -1,6 +1,3 @@
-﻿using Mvx.ApiClient.Net.Dtos;
-using Mvx.ApiClient.Net.ExtensionMethods;
-using Mvx.ApiClient.Net.Interfaces.Clients;
 using Mvx.ApiClient.Net.Models.Network;
 
 namespace Mvx.ApiClient.Net.Clients;
@@ -13,32 +10,24 @@ internal sealed class NetworkClient : INetworkClient
     {
         _httpClient = httpClient;
     }
-    
-    public async Task<StatsDto> GetNetworkStatsAsync(DataSelectionDto? dataSelectionDto = null, CancellationToken cancellationToken = default)
-    {
-        var result = await _httpClient.GetWithQueryParametersAsync<StatsDto>(EndpointPaths.NetworkStats, new QueryParametersDto { Data = dataSelectionDto }, cancellationToken);
 
-        return result;
+    public async Task<StatsDto> GetNetworkStatsAsync(DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
+    {
+        return await _httpClient.GetWithQueryOptionsAsync<StatsDto>(EndpointPaths.NetworkStats, new QueryOptions { Data = dataSelection }, cancellationToken);
     }
-    
-    public async Task<EconomicsDto> GetEconomicsAsync(DataSelectionDto? dataSelectionDto = null, CancellationToken cancellationToken = default)
-    {
-        var result = await _httpClient.GetWithQueryParametersAsync<EconomicsDto>(EndpointPaths.NetworkEconomics, new QueryParametersDto { Data = dataSelectionDto }, cancellationToken);
 
-        return result;
+    public async Task<EconomicsDto> GetEconomicsAsync(DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
+    {
+        return await _httpClient.GetWithQueryOptionsAsync<EconomicsDto>(EndpointPaths.NetworkEconomics, new QueryOptions { Data = dataSelection }, cancellationToken);
     }
-    
-    public async Task<NetworkConstantsDto> GetNetworkConstantsAsync(DataSelectionDto? dataSelectionDto = null, CancellationToken cancellationToken = default)
-    {
-        var result = await _httpClient.GetWithQueryParametersAsync<NetworkConstantsDto>(EndpointPaths.NetworkConstants, new QueryParametersDto { Data = dataSelectionDto }, cancellationToken);
 
-        return result;
+    public async Task<NetworkConstantsDto> GetNetworkConstantsAsync(DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
+    {
+        return await _httpClient.GetWithQueryOptionsAsync<NetworkConstantsDto>(EndpointPaths.NetworkConstants, new QueryOptions { Data = dataSelection }, cancellationToken);
     }
-    
-    public async Task<AboutDto> GetAboutAsync(DataSelectionDto? dataSelectionDto = null, CancellationToken cancellationToken = default)
-    {
-        var result = await _httpClient.GetWithQueryParametersAsync<AboutDto>(EndpointPaths.NetworkAbout, new QueryParametersDto { Data = dataSelectionDto }, cancellationToken);
 
-        return result;
+    public async Task<AboutDto> GetAboutAsync(DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
+    {
+        return await _httpClient.GetWithQueryOptionsAsync<AboutDto>(EndpointPaths.NetworkAbout, new QueryOptions { Data = dataSelection }, cancellationToken);
     }
 }

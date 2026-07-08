@@ -1,141 +1,121 @@
-using Mvx.ApiClient.Net.Dtos;
-using Mvx.ApiClient.Net.ExtensionMethods;
 using TUnit.Assertions;
 
 namespace Mvx.ApiClient.Net.Test;
 
 public class HttpClientExtensionsTest
 {
-    private const string BaseAddress = "https://api.multivers.com";
-    private const string RequestPath = "/MyRequestPath";
-    private const string RequestUri = BaseAddress + RequestPath;
+    private const string BaseAddress = "https://api.multiversx.com";
+    private const string RequestUri = "/accounts";
 
     [Test]
-    public async Task BuildRequestUri_QueryParametersDtoIsNull_UseDefaultValues()
+    public async Task BuildRequestUri_QueryOptionsIsNull_UseDefaultValues()
     {
-        // arrange
-        var expectedRequestUri = new Uri(RequestUri);
-
-        // act
         var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri);
 
-        // assert
-        await Assert.That(result).IsEqualTo(expectedRequestUri);
+        await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts"));
     }
 
     [Test]
-    public async Task BuildRequestUri_QueryParametersDtoNewInstanceWithoutSettingsValues_UseDefaultValues()
+    public async Task BuildRequestUri_QueryOptionsNewInstanceWithoutSettingsValues_UseDefaultValues()
     {
-        // arrange
-        var expectedRequestUri = new Uri(RequestUri);
-        var data = new DataSelectionDto();
+        var data = new DataSelection();
 
-        // act
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
+        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
-        // assert
-        await Assert.That(result).IsEqualTo(expectedRequestUri);
+        await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts"));
     }
 
     [Test]
-    public async Task BuildRequestUri_QueryParametersDtoWithLimitAndOffset_ReturnsExpectedUri()
+    public async Task BuildRequestUri_QueryOptionsWithLimitAndOffset_ReturnsExpectedUri()
     {
-        // arrange
-        var expectedRequestUri = new Uri($"{RequestUri}?size=15&from=0");
-        var pagination = new PaginationParametersDto { Limit = 15, Offset = 0 };
+        var pagination = new Pagination { Limit = 15, Offset = 0 };
 
-        // act
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Pagination = pagination });
+        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Pagination = pagination });
 
-        // assert
-        await Assert.That(result).IsEqualTo(expectedRequestUri);
+        await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?size=15&from=0"));
     }
 
     [Test]
-    public async Task BuildRequestUri_QueryParametersDtoWithOneField_ReturnsExpectedUri()
+    public async Task BuildRequestUri_QueryOptionsWithOneField_ReturnsExpectedUri()
     {
-        // arrange
-        var expectedRequestUri = new Uri($"{RequestUri}?fields=balance");
-        var data = new DataSelectionDto { Fields = ["balance"] };
+        var data = new DataSelection { Fields = ["balance"] };
 
-        // act
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
+        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
-        // assert
-        await Assert.That(result).IsEqualTo(expectedRequestUri);
+        await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?fields=balance"));
     }
 
     [Test]
-    public async Task BuildRequestUri_QueryParametersDtoWithThreeFields_ReturnsExpectedUri()
+    public async Task BuildRequestUri_QueryOptionsWithThreeFields_ReturnsExpectedUri()
     {
-        // arrange
-        var expectedRequestUri = new Uri($"{RequestUri}?fields=balance%2Caddress%2Cprice");
-        var data = new DataSelectionDto { Fields = ["balance", "address", "price"] };
+        var data = new DataSelection { Fields = ["balance", "address", "price"] };
 
-        // act
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
+        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
-        // assert
-        await Assert.That(result).IsEqualTo(expectedRequestUri);
+        await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?fields=balance%2Caddress%2Cprice"));
     }
 
     [Test]
-    public async Task BuildRequestUri_QueryParametersDtoWithScalarValue_ReturnsExpectedUri()
+    public async Task BuildRequestUri_QueryOptionsWithScalarValue_ReturnsExpectedUri()
     {
-        // arrange
-        var expectedRequestUri = new Uri($"{RequestUri}?extract=price%2Fusd");
-        var data = new DataSelectionDto { Extract = "price/usd" };
+        var data = new DataSelection { Extract = "price/usd" };
 
-        // act
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
+        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
-        // assert
-        await Assert.That(result).IsEqualTo(expectedRequestUri);
+        await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?extract=price%2Fusd"));
     }
 
     [Test]
-    public async Task BuildRequestUri_QueryParametersDtoWithAllPropertiesSet_ReturnsExpectedUri()
+    public async Task BuildRequestUri_QueryOptionsWithAllPropertiesSet_ReturnsExpectedUri()
     {
-        // arrange
-        var expectedRequestUri = new Uri($"{RequestUri}?size=100&from=25&fields=balance%2Caddress%2Cprice&extract=amount%20value");
-        var dto = new QueryParametersDto
+        var options = new QueryOptions
         {
-            Pagination = new PaginationParametersDto { Limit = 100, Offset = 25 },
-            Data = new DataSelectionDto { Fields = ["balance", "address", "price"], Extract = "amount value" }
+            Pagination = new Pagination { Limit = 100, Offset = 25 },
+            Data = new DataSelection { Fields = ["balance", "address", "price"], Extract = "amount value" }
         };
 
-        // act
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, dto);
+        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, options);
 
-        // assert
-        await Assert.That(result).IsEqualTo(expectedRequestUri);
+        await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts?size=100&from=25&fields=balance%2Caddress%2Cprice&extract=amount%20value"));
     }
 
     [Test]
     public async Task BuildRequestUri_EmptyFieldsList_DoesNotAddFieldsToUri()
     {
-        // arrange
-        var expectedRequestUri = new Uri(RequestUri);
-        var data = new DataSelectionDto { Fields = [] };
+        var data = new DataSelection { Fields = [] };
 
-        // act
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
+        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
-        // assert
-        await Assert.That(result).IsEqualTo(expectedRequestUri);
+        await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts"));
     }
 
     [Test]
     public async Task BuildRequestUri_EmptyExtractString_DoesNotAddExtractToUri()
     {
-        // arrange
-        var expectedRequestUri = new Uri(RequestUri);
-        var data = new DataSelectionDto { Extract = "" };
+        var data = new DataSelection { Extract = "" };
 
-        // act
-        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryParametersDto { Data = data });
+        var result = HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, new QueryOptions { Data = data });
 
-        // assert
-        await Assert.That(result).IsEqualTo(expectedRequestUri);
+        await Assert.That(result).IsEqualTo(new Uri("https://api.multiversx.com/accounts"));
+    }
+
+    [Test]
+    public async Task BuildRequestUri_NegativePagination_ThrowsArgumentOutOfRangeException()
+    {
+        var options = new QueryOptions { Pagination = new Pagination { Limit = -1 } };
+
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, options));
+
+        await Assert.That(exception.Message).Contains("Pagination limit cannot be negative.");
+    }
+
+    [Test]
+    public async Task BuildRequestUri_EmptyFieldName_ThrowsArgumentException()
+    {
+        var options = new QueryOptions { Data = new DataSelection { Fields = ["id", ""] } };
+
+        var exception = Assert.Throws<ArgumentException>(() => HttpClientExtensions.BuildRequestUri(new Uri(BaseAddress), RequestUri, options));
+
+        await Assert.That(exception.Message).Contains("Field names cannot be empty.");
     }
 }

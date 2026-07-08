@@ -39,8 +39,7 @@ To integrate Mvx.ApiClient.Net into your C# application, follow these setup step
 2. Configuration: Configure the client by registering it with your application's `IServiceCollection`. Specify the desired network environment — Mainnet, Testnet or Devnet — during setup using the `AddMvxApiClient` extension method. This will register the required services.
    ```csharp
    using Microsoft.Extensions.DependencyInjection;
-   using Mvx.ApiClient.Net.Enums;
-   using Mvx.ApiClient.Net.ExtensionMethods;
+   using Mvx.ApiClient.Net;
 
    public void ConfigureServices(IServiceCollection services)
    {
@@ -51,7 +50,7 @@ To integrate Mvx.ApiClient.Net into your C# application, follow these setup step
 
 3. Usage: With the client configured and registered, inject and use `IMvxApiClient` wherever you need access to the MultiversX API.
    ```csharp
-   using Mvx.ApiClient.Net.Interfaces.Clients;
+   using Mvx.ApiClient.Net;
 
    public class BlockchainService
    {
@@ -64,12 +63,23 @@ To integrate Mvx.ApiClient.Net into your C# application, follow these setup step
     
        public async Task GetNetworkStats()
        {
-           var networkStats = await _mvxApiClient.Network.GetNetworkStatsAsync();
+           var networkStats = await _mvxApiClient.Network.GetNetworkStatsAsync(
+               new DataSelection { Fields = ["accounts", "blocks"] });
            
            // Process network stats as needed ...
        }
    }
    ```
+
+For advanced configuration, use the options overload:
+
+```csharp
+services.AddMvxApiClient(options =>
+{
+    options.Network = NetworkType.Mainnet;
+    options.Timeout = TimeSpan.FromSeconds(30);
+});
+```
    
 The public MultiversX API is rate limited. See the official MultiversX API documentation for current limits and infrastructure details.
 
@@ -77,6 +87,8 @@ The public MultiversX API is rate limited. See the official MultiversX API docum
 
 To build the project locally, ensure you have the following tools installed:
 - [.NET SDK 10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
+
+The package targets `net8.0` and `net10.0`.
 
 After cloning the repository, you can build the project with `dotnet build Mvx.ApiClient.Net.slnx` and run all tests with `dotnet test Mvx.ApiClient.Net.slnx`.
 

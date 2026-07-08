@@ -11,10 +11,17 @@ dotnet add package Mvx.ApiClient.Net
 ## Service Registration
 
 ```csharp
-using Mvx.ApiClient.Net.Enums;
-using Mvx.ApiClient.Net.ExtensionMethods;
+using Mvx.ApiClient.Net;
 
 services.AddMvxApiClient(NetworkType.Mainnet);
+```
+
+```csharp
+services.AddMvxApiClient(options =>
+{
+    options.Network = NetworkType.Mainnet;
+    options.Timeout = TimeSpan.FromSeconds(30);
+});
 ```
 
 Supported networks:
@@ -26,7 +33,7 @@ Supported networks:
 ## Usage
 
 ```csharp
-using Mvx.ApiClient.Net.Interfaces.Clients;
+using Mvx.ApiClient.Net;
 using Mvx.ApiClient.Net.Models.Network;
 
 public sealed class BlockchainService

@@ -1,5 +1,4 @@
 using Mvx.ApiClient.Net.Clients;
-using Mvx.ApiClient.Net.Dtos;
 using Mvx.ApiClient.Net.Models.Network;
 using TUnit.Assertions;
 
@@ -27,7 +26,7 @@ public class NetworkClientTest
         var client = CreateClient(handler);
 
         // act
-        var result = await client.GetNetworkStatsAsync(new DataSelectionDto { Fields = ["accounts", "blocks"] });
+        var result = await client.GetNetworkStatsAsync(new DataSelection { Fields = ["accounts", "blocks"] });
 
         // assert
         await Assert.That(handler.Requests.Single().Method).IsEqualTo(HttpMethod.Get);

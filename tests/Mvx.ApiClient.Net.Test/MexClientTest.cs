@@ -1,5 +1,4 @@
 using Mvx.ApiClient.Net.Clients;
-using Mvx.ApiClient.Net.Dtos;
 using Mvx.ApiClient.Net.Models.Mex;
 using TUnit.Assertions;
 
@@ -42,10 +41,10 @@ public class MexClientTest
             ]
             """));
         var client = CreateClient(handler);
-        var queryParameters = new QueryParametersDto
+        var queryParameters = new QueryOptions
         {
-            Pagination = new PaginationParametersDto { Limit = 2, Offset = 1 },
-            Data = new DataSelectionDto { Fields = ["id", "symbol"], Extract = "base/price" }
+            Pagination = new Pagination { Limit = 2, Offset = 1 },
+            Data = new DataSelection { Fields = ["id", "symbol"], Extract = "base/price" }
         };
 
         // act
@@ -66,7 +65,7 @@ public class MexClientTest
         var client = CreateClient(handler);
 
         // act
-        var result = await client.GetMexPairAsync("MEX/455c57", "WEGLD bd4d79", new DataSelectionDto { Fields = ["id", "baseId"] });
+        var result = await client.GetMexPairAsync("MEX/455c57", "WEGLD bd4d79", new DataSelection { Fields = ["id", "baseId"] });
 
         // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/pairs/MEX%2F455c57/WEGLD%20bd4d79?fields=id%2CbaseId");
@@ -109,7 +108,7 @@ public class MexClientTest
         var client = CreateClient(handler);
 
         // act
-        var result = (await client.GetMexTokensAsync(new QueryParametersDto { Pagination = new PaginationParametersDto { Limit = 1 } })).ToList();
+        var result = (await client.GetMexTokensAsync(new QueryOptions { Pagination = new Pagination { Limit = 1 } })).ToList();
 
         // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/tokens?size=1");
@@ -139,6 +138,21 @@ public class MexClientTest
         // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/tokens/WEGLD%2Fbd4d79");
         await Assert.That(result.Symbol).IsEqualTo("WEGLD");
+    }
+
+    [Test]
+    public async Task GetMexTokenAsync_EmptyIdentifier_ThrowsArgumentExceptionBeforeRequest()
+    {
+        // arrange
+        var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("{}"));
+        var client = CreateClient(handler);
+
+        // act
+        var exception = await CaptureArgumentException(() => client.GetMexTokenAsync(""));
+
+        // assert
+        await Assert.That(exception.ParamName).IsEqualTo("identifier");
+        await Assert.That(handler.Requests).IsEmpty();
     }
 
     [Test]
@@ -212,6 +226,20 @@ public class MexClientTest
         {
             BaseAddress = new Uri("https://api.multiversx.com")
         });
+    }
+
+    private static async Task<ArgumentException> CaptureArgumentException(Func<Task> action)
+    {
+        try
+        {
+            await action();
+        }
+        catch (ArgumentException exception)
+        {
+            return exception;
+        }
+
+        throw new InvalidOperationException("Expected ArgumentException was not thrown.");
     }
 
     private static string MexPairJson(string address, string id, string symbol, string state, string type)

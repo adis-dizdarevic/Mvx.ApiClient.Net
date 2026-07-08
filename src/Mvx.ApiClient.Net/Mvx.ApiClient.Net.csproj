@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <AssemblyName>Mvx.ApiClient.Net</AssemblyName>
     <RootNamespace>Mvx.ApiClient.Net</RootNamespace>
     <Authors>Adis Dizdarevic</Authors>
     <Description>Mvx.ApiClient.Net is a C# wrapper for the MultiversX API, designed for querying data from the blockchain.</Description>
+    <Title>MultiversX API Client for .NET</Title>
     <PackageTags>multiversx;mvx;egld;api-client;blockchain</PackageTags>
     <PackageId>Mvx.ApiClient.Net</PackageId>
     <PackageProjectUrl>https://github.com/adis-dizdarevic/Mvx.ApiClient.Net</PackageProjectUrl>
@@ -17,6 +19,8 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
   
   <ItemGroup>
@@ -25,6 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>
