@@ -71,3 +71,7 @@ jobs:
             $fullPath = Join-Path $extractPath $path
             if (-not (Test-Path $fullPath)) { throw "Package is missing $path." }
           }
+
+      - name: Smoke test NuGet package consumption
+        shell: pwsh
+        run: ./eng/package-smoke-test.ps1

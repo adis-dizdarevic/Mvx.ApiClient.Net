@@ -57,3 +57,5 @@ public sealed class BlockchainService
 The public MultiversX API is rate limited. This package does not add retry or rate-limit policies by default; consumers can configure resilience around `HttpClientFactory` in their application.
 
 Live API smoke tests are available through the integration-test project and only call the public API when `MVX_API_LIVE_TESTS=true`.
+
+The package smoke test in `eng/package-smoke-test.ps1` verifies that a fresh consumer project can install and compile against the locally packed NuGet.

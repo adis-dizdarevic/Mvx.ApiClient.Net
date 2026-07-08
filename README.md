@@ -105,6 +105,20 @@ After cloning the repository, you can build the project with `dotnet build Mvx.A
 
 Live API smoke tests are included in a separate integration-test project and are disabled by default. Set `MVX_API_LIVE_TESTS=true` before running tests to enable calls against the public MultiversX API.
 
+`eng/package-smoke-test.ps1` validates the packed NuGet as a fresh consumer would use it: it creates a temporary console app, restores the local package, and compiles README-style usage.
+
+## Contributing Endpoint Groups
+
+New GET endpoint groups should follow the existing structure:
+
+- Add the public interface in `src/Mvx.ApiClient.Net/Abstractions`.
+- Add the internal implementation in `src/Mvx.ApiClient.Net/Clients`.
+- Add response models in `src/Mvx.ApiClient.Net/Models/<Domain>`.
+- Add request paths in `EndpointPaths`.
+- Use `ApiRequestExecutor` for HTTP, query encoding, validation, and JSON deserialization.
+- Register the client in `ServiceCollectionExtensions`.
+- Add HTTP-handler unit tests and update `PublicApi.Shipped.txt` when the public surface changes.
+
 ## Versioning
 
 Mvx.ApiClient.Net follows semantic versioning.

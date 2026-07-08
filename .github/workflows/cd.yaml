@@ -92,6 +92,11 @@ jobs:
             if (-not (Test-Path $fullPath)) { throw "Package is missing $path." }
           }
 
+      - name: Smoke test NuGet package consumption
+        if: ${{ inputs.packNuget || inputs.publishNuget }}
+        shell: pwsh
+        run: ./eng/package-smoke-test.ps1
+
       - name: Publish to NuGet
         if: ${{ inputs.publishNuget }}
         env:
