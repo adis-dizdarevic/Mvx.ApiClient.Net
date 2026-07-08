@@ -12,3 +12,4 @@
 - Added an opt-in live integration test project gated by `MVX_API_LIVE_TESTS=true`.
 - Added stricter library analyzers, a public API baseline file, a package consumer smoke test, and endpoint contribution guidance.
 - Replaced the MkDocs documentation layout with a Zensical docs tree under `docs/`.
+- Added a `.venv`-based docs build script and fixed the Zensical build command to run from `docs/`.

@@ -127,6 +127,14 @@ Mvx.ApiClient.Net follows semantic versioning.
 
 Project documentation lives in `docs/` and is built with Zensical.
 
+Local docs build:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install zensical
+.\eng\docs.ps1
+```
+
 ## Changelog
 
 The changelog is available in the [CHANGELOG.md](./CHANGELOG.md) file.

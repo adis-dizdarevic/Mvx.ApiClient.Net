@@ -318,6 +318,10 @@ paket-files/
 __pycache__/
 *.pyc
 
+# Zensical docs build output
+docs/site/
+docs/.cache/
+
 # Cake - Uncomment if you are using it
 # tools/**
 # !tools/packages.config

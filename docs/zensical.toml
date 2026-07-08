@@ -1,16 +1,39 @@
-[site]
-name = "Mvx.ApiClient.Net"
-url = "https://adis-dizdarevic.github.io/Mvx.ApiClient.Net/"
-description = "A .NET wrapper around the public MultiversX API."
+[project]
+site_name = "Mvx.ApiClient.Net"
+site_description = "A .NET wrapper around the public MultiversX API."
+site_author = "Adis Dizdarevic"
+site_url = "https://adis-dizdarevic.github.io/Mvx.ApiClient.Net/"
+docs_dir = "."
+site_dir = "site"
+repo_url = "https://github.com/adis-dizdarevic/Mvx.ApiClient.Net"
+repo_name = "GitHub"
+copyright = """
+Copyright &copy; 2026 Adis Dizdarevic
+"""
 
-[build]
-source = "."
-output = "../site"
-
-[nav]
-items = [
-  { title = "Home", path = "index.md" },
-  { title = "Getting Started", path = "getting-started.md" },
-  { title = "Clients", path = "clients.md" },
-  { title = "Contributing", path = "contributing.md" }
+nav = [
+  { "Home" = "index.md" },
+  { "Getting Started" = "getting-started.md" },
+  { "Clients" = "clients.md" },
+  { "Contributing" = "contributing.md" }
 ]
+
+[project.theme]
+language = "en"
+features = [
+  "content.code.copy",
+  "navigation.footer",
+  "navigation.sections",
+  "navigation.top",
+  "search.highlight"
+]
+
+[[project.theme.palette]]
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"

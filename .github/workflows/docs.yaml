@@ -20,11 +20,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - run: python -m pip install zensical
+      - run: python -m venv .venv
+      - run: ./.venv/bin/python -m pip install zensical
       - name: Build Zensical docs
-        run: python -m zensical build docs
+        run: |
+          cd docs
+          ../.venv/bin/python -m zensical build
       - name: Deploy docs
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
+          publish_dir: ./docs/site
