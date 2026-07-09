@@ -12,9 +12,9 @@ internal sealed class XExchangeClient : IXExchangeClient
         _requestExecutor = new ApiRequestExecutor(httpClient);
     }
 
-    public async Task<XExchangeEconomicsDto> GetEconomicsAsync(DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
+    public async Task<XExchangeEconomicsDto> GetEconomicsAsync(CancellationToken cancellationToken = default)
     {
-        return await _requestExecutor.GetAsync<XExchangeEconomicsDto>(EndpointPaths.XExchangeEconomics, new QueryOptions { Data = dataSelection }, cancellationToken);
+        return await _requestExecutor.GetAsync<XExchangeEconomicsDto>(EndpointPaths.XExchangeEconomics, null, cancellationToken);
     }
 
     public async Task<IReadOnlyList<XExchangePairDto>> GetPairsAsync(QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
@@ -22,14 +22,14 @@ internal sealed class XExchangeClient : IXExchangeClient
         return await _requestExecutor.GetAsync<IReadOnlyList<XExchangePairDto>>(EndpointPaths.XExchangePairs, queryOptions, cancellationToken);
     }
 
-    public async Task<XExchangePairDto> GetPairAsync(string baseId, string quoteId, DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
+    public async Task<XExchangePairDto> GetPairAsync(string baseId, string quoteId, CancellationToken cancellationToken = default)
     {
         ValidateRequiredPathSegment(baseId, nameof(baseId));
         ValidateRequiredPathSegment(quoteId, nameof(quoteId));
 
         var path = string.Format(EndpointPaths.XExchangePairDetails, Uri.EscapeDataString(baseId), Uri.EscapeDataString(quoteId));
 
-        return await _requestExecutor.GetAsync<XExchangePairDto>(path, new QueryOptions { Data = dataSelection }, cancellationToken);
+        return await _requestExecutor.GetAsync<XExchangePairDto>(path, null, cancellationToken);
     }
 
     public async Task<int> GetPairsCountAsync(CancellationToken cancellationToken = default)
@@ -42,13 +42,13 @@ internal sealed class XExchangeClient : IXExchangeClient
         return await _requestExecutor.GetAsync<IReadOnlyList<XExchangeTokenDto>>(EndpointPaths.XExchangeTokens, queryOptions, cancellationToken);
     }
 
-    public async Task<XExchangeTokenDto> GetTokenAsync(string identifier, DataSelection? dataSelection = null, CancellationToken cancellationToken = default)
+    public async Task<XExchangeTokenDto> GetTokenAsync(string identifier, CancellationToken cancellationToken = default)
     {
         ValidateRequiredPathSegment(identifier, nameof(identifier));
 
         var path = string.Format(EndpointPaths.XExchangeTokenDetails, Uri.EscapeDataString(identifier));
 
-        return await _requestExecutor.GetAsync<XExchangeTokenDto>(path, new QueryOptions { Data = dataSelection }, cancellationToken);
+        return await _requestExecutor.GetAsync<XExchangeTokenDto>(path, null, cancellationToken);
     }
 
     public async Task<int> GetTokensCountAsync(CancellationToken cancellationToken = default)

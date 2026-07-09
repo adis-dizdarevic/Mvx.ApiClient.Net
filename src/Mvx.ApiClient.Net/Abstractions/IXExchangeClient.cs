@@ -10,10 +10,9 @@ public interface IXExchangeClient
     /// <summary>
     /// Returns xExchange economics details.
     /// </summary>
-    /// <param name="dataSelection">Optional field selection or extraction settings.</param>
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>Current xExchange economics information.</returns>
-    Task<XExchangeEconomicsDto> GetEconomicsAsync(DataSelection? dataSelection = null, CancellationToken cancellationToken = default);
+    Task<XExchangeEconomicsDto> GetEconomicsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns active liquidity pools available on xExchange.
@@ -28,10 +27,9 @@ public interface IXExchangeClient
     /// </summary>
     /// <param name="baseId">The base token identifier, for example <c>MEX-455c57</c>.</param>
     /// <param name="quoteId">The quote token identifier, for example <c>WEGLD-bd4d79</c>.</param>
-    /// <param name="dataSelection">Optional field selection or extraction settings.</param>
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>The xExchange liquidity pool matching the token pair.</returns>
-    Task<XExchangePairDto> GetPairAsync(string baseId, string quoteId, DataSelection? dataSelection = null, CancellationToken cancellationToken = default);
+    Task<XExchangePairDto> GetPairAsync(string baseId, string quoteId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns active liquidity pools count available on xExchange.
@@ -52,10 +50,9 @@ public interface IXExchangeClient
     /// Returns a specific token listed on xExchange.
     /// </summary>
     /// <param name="identifier">The token identifier, for example <c>WEGLD-bd4d79</c>.</param>
-    /// <param name="dataSelection">Optional field selection or extraction settings.</param>
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>The xExchange token matching <paramref name="identifier"/>.</returns>
-    Task<XExchangeTokenDto> GetTokenAsync(string identifier, DataSelection? dataSelection = null, CancellationToken cancellationToken = default);
+    Task<XExchangeTokenDto> GetTokenAsync(string identifier, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns tokens count available on xExchange.

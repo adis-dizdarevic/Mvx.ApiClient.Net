@@ -21,6 +21,8 @@ public static class ServiceCollectionExtensions
     /// <returns>The same service collection so calls can be chained.</returns>
     public static IServiceCollection AddMvxApiClient(this IServiceCollection services, NetworkType networkType)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         return services.AddMvxApiClient(options => options.Network = networkType);
     }
 
@@ -32,12 +34,17 @@ public static class ServiceCollectionExtensions
     /// <returns>The same service collection so calls can be chained.</returns>
     public static IServiceCollection AddMvxApiClient(this IServiceCollection services, Action<MvxApiClientOptions> configureOptions)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configureOptions);
+
         services.AddTransient<ErrorHandler>();
 
         var options = new MvxApiClientOptions();
         configureOptions(options);
 
-        var baseAddress = options.BaseAddress ?? GetBaseAddress(options.Network);
+        var networkType = options.Network;
+        var baseAddress = NormalizeBaseAddress(options.BaseAddress ?? GetBaseAddress(networkType));
+        ValidateTimeout(options.Timeout);
 
         RegisterClient<IXExchangeClient, XExchangeClient>(services, baseAddress, options);
         RegisterClient<INetworkClient, NetworkClient>(services, baseAddress, options);
@@ -47,7 +54,7 @@ public static class ServiceCollectionExtensions
             var xExchangeClient = provider.GetRequiredService<IXExchangeClient>();
             var networkClient = provider.GetRequiredService<INetworkClient>();
 
-            return new MvxApiClient(options.Network, xExchangeClient, networkClient);
+            return new MvxApiClient(networkType, xExchangeClient, networkClient);
         });
 
         return services;
@@ -57,7 +64,7 @@ public static class ServiceCollectionExtensions
         where TClientInterface : class
         where TClientImplementation : class, TClientInterface
     {
-        services.AddHttpClient<TClientInterface, TClientImplementation>(client =>
+        var builder = services.AddHttpClient<TClientInterface, TClientImplementation>(client =>
         {
             client.BaseAddress = baseAddress;
             if (options.Timeout is not null)
@@ -67,8 +74,10 @@ public static class ServiceCollectionExtensions
 
             client.DefaultRequestHeaders.Add("accept", MediaTypeNames.Application.Json);
             options.ConfigureHttpClient?.Invoke(client);
-        })
-        .AddHttpMessageHandler<ErrorHandler>();
+        });
+
+        options.ConfigureHttpClientBuilder?.Invoke(builder);
+        builder.AddHttpMessageHandler<ErrorHandler>();
     }
 
     private static Uri GetBaseAddress(NetworkType networkType)
@@ -81,7 +90,27 @@ public static class ServiceCollectionExtensions
             _ => throw new ArgumentOutOfRangeException(nameof(networkType), $"Unexpected network type: {networkType}")
         };
 
-        return new Uri(baseAddress);
+        return new Uri(baseAddress, UriKind.Absolute);
+    }
+
+    private static Uri NormalizeBaseAddress(Uri baseAddress)
+    {
+        if (!baseAddress.IsAbsoluteUri || (baseAddress.Scheme != Uri.UriSchemeHttp && baseAddress.Scheme != Uri.UriSchemeHttps))
+        {
+            throw new ArgumentException("Base address must be an absolute HTTP or HTTPS URI.", nameof(baseAddress));
+        }
+
+        return baseAddress.AbsoluteUri.EndsWith("/", StringComparison.Ordinal)
+            ? baseAddress
+            : new Uri($"{baseAddress.AbsoluteUri}/", UriKind.Absolute);
+    }
+
+    private static void ValidateTimeout(TimeSpan? timeout)
+    {
+        if (timeout is { } value && value != Timeout.InfiniteTimeSpan && value <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(timeout), "Timeout must be positive or infinite.");
+        }
     }
 
     internal sealed class ErrorHandler : DelegatingHandler
@@ -95,30 +124,51 @@ public static class ServiceCollectionExtensions
                 return response;
             }
 
-            var statusCode = response.StatusCode;
-            var statusCodeNumber = (int)statusCode;
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            var fallbackMessage = $"MultiversX API request failed with status code {statusCodeNumber} ({statusCode}).";
-            var fallbackError = response.ReasonPhrase ?? statusCode.ToString();
-
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                throw new MvxApiException(fallbackMessage, fallbackError, statusCode, request.RequestUri, request.Method);
-            }
+            string? content = null;
 
             try
             {
+                var statusCode = response.StatusCode;
+                var statusCodeNumber = (int)statusCode;
+                var retryAfter = GetRetryAfter(response);
+                content = await response.Content.ReadAsStringAsync(cancellationToken);
+                var fallbackMessage = $"MultiversX API request failed with status code {statusCodeNumber} ({statusCode}).";
+                var fallbackError = response.ReasonPhrase ?? statusCode.ToString();
+
+                if (string.IsNullOrWhiteSpace(content))
+                {
+                    throw new MvxApiException(fallbackMessage, fallbackError, statusCode, request.RequestUri, request.Method, retryAfter: retryAfter);
+                }
+
                 var errorDetails = JsonSerializer.Deserialize<ApiErrorResponse>(content, ErrorJsonSerializerOptions);
                 var message = string.IsNullOrWhiteSpace(errorDetails?.Message) ? fallbackMessage : errorDetails.Message;
                 var error = string.IsNullOrWhiteSpace(errorDetails?.Error) ? fallbackError : errorDetails.Error;
-                var apiStatusCode = errorDetails?.StatusCode is > 0 ? (HttpStatusCode)errorDetails.StatusCode : statusCode;
 
-                throw new MvxApiException(message, error, apiStatusCode, request.RequestUri, request.Method, content);
+                throw new MvxApiException(message, error, statusCode, request.RequestUri, request.Method, content, retryAfter);
             }
             catch (JsonException)
             {
-                throw new MvxApiException($"{fallbackMessage} Response content: {content}", fallbackError, statusCode, request.RequestUri, request.Method, content);
+                throw new MvxApiException(
+                    $"MultiversX API request failed with status code {(int)response.StatusCode} ({response.StatusCode}). Response content: {content}",
+                    response.ReasonPhrase ?? response.StatusCode.ToString(),
+                    response.StatusCode,
+                    request.RequestUri,
+                    request.Method,
+                    content,
+                    GetRetryAfter(response));
             }
+            finally
+            {
+                response.Dispose();
+            }
+        }
+
+        private static TimeSpan? GetRetryAfter(HttpResponseMessage response)
+        {
+            var retryAfter = response.Headers.RetryAfter?.Delta
+                ?? (response.Headers.RetryAfter?.Date - DateTimeOffset.UtcNow);
+
+            return retryAfter is { } value && value > TimeSpan.Zero ? value : null;
         }
 
         private static JsonSerializerOptions ErrorJsonSerializerOptions { get; } = new()
@@ -128,7 +178,6 @@ public static class ServiceCollectionExtensions
 
         private sealed record ApiErrorResponse(
             [property: JsonPropertyName("message")] string? Message,
-            [property: JsonPropertyName("error")] string? Error,
-            [property: JsonPropertyName("statusCode")] int StatusCode);
+            [property: JsonPropertyName("error")] string? Error);
     }
 }

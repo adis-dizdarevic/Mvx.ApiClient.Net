@@ -16,19 +16,22 @@ public sealed class MvxApiException : Exception
     /// <param name="requestUri">The request URI, when available.</param>
     /// <param name="requestMethod">The request method, when available.</param>
     /// <param name="responseContent">The raw response content, when available.</param>
+    /// <param name="retryAfter">The server-provided retry delay, when available.</param>
     public MvxApiException(
         string message,
         string? error,
         HttpStatusCode statusCode,
         Uri? requestUri = null,
         HttpMethod? requestMethod = null,
-        string? responseContent = null) : base(message)
+        string? responseContent = null,
+        TimeSpan? retryAfter = null) : base(message)
     {
         Error = error;
         StatusCode = statusCode;
         RequestUri = requestUri;
         RequestMethod = requestMethod;
         ResponseContent = responseContent;
+        RetryAfter = retryAfter;
     }
 
     /// <summary>
@@ -55,4 +58,9 @@ public sealed class MvxApiException : Exception
     /// The raw response content, when available.
     /// </summary>
     public string? ResponseContent { get; }
+
+    /// <summary>
+    /// The server-provided delay before retrying the request, when available.
+    /// </summary>
+    public TimeSpan? RetryAfter { get; }
 }

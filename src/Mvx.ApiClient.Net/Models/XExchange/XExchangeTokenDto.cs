@@ -23,13 +23,13 @@ public sealed record XExchangeTokenDto(
     string Name,
 
     [property: JsonPropertyName("price")]
-    double Price,
+    decimal Price,
 
     [property: JsonPropertyName("previous24hPrice")]
-    double PreviousPrice,
+    decimal PreviousPrice,
 
     [property: JsonPropertyName("previous24hVolume")]
-    double PreviousVolume,
+    decimal PreviousVolume,
 
     [property: JsonPropertyName("tradesCount")]
     long TradesCount

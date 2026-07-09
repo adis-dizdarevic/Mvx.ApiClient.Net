@@ -18,7 +18,8 @@ Before opening a pull request, run:
 
 ```powershell
 dotnet pack src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj --configuration Release --no-build
-.\eng\package-smoke-test.ps1
+.\eng\package-smoke-test.ps1 -TargetFramework net8.0
+.\eng\package-smoke-test.ps1 -TargetFramework net10.0
 ```
 
 For docs changes:

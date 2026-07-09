@@ -24,7 +24,7 @@ public class XExchangeClientTest
         var result = await client.GetEconomicsAsync();
 
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/economics");
-        await Assert.That(result).IsEqualTo(new XExchangeEconomicsDto(8045920000000, 4475040846664, 0.0000035452649740387483, 15865206, 2459773, 255));
+        await Assert.That(result).IsEqualTo(new XExchangeEconomicsDto(8045920000000, 4475040846664, 0.0000035452649740387483m, 15865206m, 2459773m, 255));
     }
 
     [Test]
@@ -37,18 +37,16 @@ public class XExchangeClientTest
             ]
             """));
         var client = CreateClient(handler);
-        var queryOptions = new QueryOptions
-        {
-            Pagination = new Pagination { Limit = 2, Offset = 1 },
-            Data = new DataSelection { Fields = ["id", "symbol"], Extract = "base/price" }
-        };
+        var queryOptions = new QueryOptions { Pagination = new Pagination { Limit = 2, Offset = 1 } };
 
         var result = (await client.GetPairsAsync(queryOptions)).ToList();
 
-        await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/pairs?size=2&from=1&fields=id%2Csymbol&extract=base%2Fprice");
+        await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/pairs?size=2&from=1");
         await Assert.That(result).Count().IsEqualTo(2);
         await Assert.That(result[0].State).IsEqualTo(XExchangePairState.Active);
         await Assert.That(result[1].Type).IsEqualTo(XExchangePairType.Experimental);
+        await Assert.That(result[0].HasFarms).IsTrue();
+        await Assert.That(result[0].Price).IsEqualTo(25.990377430412764m);
     }
 
     [Test]
@@ -57,9 +55,9 @@ public class XExchangeClientTest
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse(PairJson("erd1pair1", "EGLDMEX-0be9e5", "EGLDMEX", "active", "core")));
         var client = CreateClient(handler);
 
-        var result = await client.GetPairAsync("MEX/455c57", "WEGLD bd4d79", new DataSelection { Fields = ["id", "baseId"] });
+        var result = await client.GetPairAsync("MEX/455c57", "WEGLD bd4d79");
 
-        await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/pairs/MEX%2F455c57/WEGLD%20bd4d79?fields=id%2CbaseId");
+        await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/pairs/MEX%2F455c57/WEGLD%20bd4d79");
         await Assert.That(result.Id).IsEqualTo("EGLDMEX-0be9e5");
         await Assert.That(result.Type).IsEqualTo(XExchangePairType.Core);
     }

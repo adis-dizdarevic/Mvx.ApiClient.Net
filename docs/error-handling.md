@@ -17,6 +17,8 @@ catch (MvxApiException exception)
 }
 ```
 
+For rate-limited responses, inspect `RetryAfter` and apply a retry policy appropriate for your application.
+
 ## Exception details
 
 `MvxApiException` exposes:

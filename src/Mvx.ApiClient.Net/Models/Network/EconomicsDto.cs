@@ -17,10 +17,10 @@ public sealed record EconomicsDto
     long TotalSupply,
     long CirculatingSupply,
     long Staked,
-    double Price,
-    long MarketCap,
-    double Apr,
-    double TopUpApr,
-    double BaseApr,
-    long? TokenMarketCap
+    decimal Price,
+    decimal MarketCap,
+    decimal Apr,
+    decimal TopUpApr,
+    decimal BaseApr,
+    decimal? TokenMarketCap
 );

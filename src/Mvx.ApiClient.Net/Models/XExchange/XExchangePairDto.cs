@@ -44,13 +44,13 @@ public sealed record XExchangePairDto(
     string Name,
 
     [property: JsonPropertyName("price")]
-    double Price,
+    decimal Price,
 
     [property: JsonPropertyName("basePrevious24hPrice")]
-    double BasePreviousPrice,
+    decimal BasePreviousPrice,
 
     [property: JsonPropertyName("quotePrevious24hPrice")]
-    double QuotePreviousPrice,
+    decimal QuotePreviousPrice,
 
     [property: JsonPropertyName("baseId")]
     string BaseId,
@@ -62,7 +62,7 @@ public sealed record XExchangePairDto(
     string BaseName,
 
     [property: JsonPropertyName("basePrice")]
-    double BasePrice,
+    decimal BasePrice,
 
     [property: JsonPropertyName("quoteId")]
     string QuoteId,
@@ -74,13 +74,13 @@ public sealed record XExchangePairDto(
     string QuoteName,
 
     [property: JsonPropertyName("quotePrice")]
-    double QuotePrice,
+    decimal QuotePrice,
 
     [property: JsonPropertyName("totalValue")]
-    double TotalValue,
+    decimal TotalValue,
 
     [property: JsonPropertyName("volume24h")]
-    double Volume,
+    decimal Volume,
 
     [property: JsonPropertyName("state")]
     XExchangePairState State,
@@ -92,10 +92,10 @@ public sealed record XExchangePairDto(
     string Exchange,
 
     [property: JsonPropertyName("hasFarms")]
-    bool HasFarms,
+    bool? HasFarms,
 
     [property: JsonPropertyName("hasDualFarms")]
-    bool HasDualFarms,
+    bool? HasDualFarms,
 
     [property: JsonPropertyName("tradesCount")]
     long TradesCount,

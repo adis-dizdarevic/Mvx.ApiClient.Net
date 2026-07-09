@@ -3,26 +3,16 @@ name: Deployment
 on:
   workflow_dispatch:
     inputs:
-      createGitTag:
-        description: Create Git Tag?
-        type: boolean
-        default: false
-      packNuget:
-        description: Nuget Pack?
-        type: boolean
-        default: false
-      publishNuget:
-        description: Nuget Publish?
-        type: boolean
-        default: false
-      createGitHubRelease:
-        description: Create GitHub Release?
+      release:
+        description: Publish NuGet, create the Git tag, and create the GitHub release?
         type: boolean
         default: false
 
 jobs:
   PublishToNuGet:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout repository
@@ -45,19 +35,13 @@ jobs:
         id: version
         uses: gittools/actions/gitversion/execute@v3.0.0
 
-      - name: Create Git Tag
-        if: ${{ inputs.createGitTag }}
-        run: |
-          git tag -a "v${{ steps.version.outputs.fullSemVer }}" -m "Release v${{ steps.version.outputs.fullSemVer }}"
-          git push origin "v${{ steps.version.outputs.fullSemVer }}"
-
       - name: Set assembly version
         uses: gittools/actions/gitversion/execute@v3.0.0
         with:
           updateAssemblyInfo: true
 
       - name: Install dependencies
-        run: dotnet restore Mvx.ApiClient.Net.slnx
+        run: dotnet restore Mvx.ApiClient.Net.slnx --locked-mode
 
       - name: Build solution
         run: dotnet build Mvx.ApiClient.Net.slnx --configuration Release --no-restore
@@ -66,11 +50,9 @@ jobs:
         run: dotnet test Mvx.ApiClient.Net.slnx --configuration Release --no-build
 
       - name: Pack NuGet package
-        if: ${{ inputs.packNuget || inputs.publishNuget }}
         run: dotnet pack src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj --configuration Release --no-build -p:PackageVersion=${{ steps.version.outputs.fullSemVer }}
 
       - name: Validate package contents
-        if: ${{ inputs.packNuget || inputs.publishNuget }}
         shell: pwsh
         run: |
           $package = Get-ChildItem src/Mvx.ApiClient.Net/bin/Release/Mvx.ApiClient.Net.*.nupkg | Select-Object -First 1
@@ -93,12 +75,19 @@ jobs:
           }
 
       - name: Smoke test NuGet package consumption
-        if: ${{ inputs.packNuget || inputs.publishNuget }}
         shell: pwsh
-        run: ./eng/package-smoke-test.ps1
+        run: |
+          ./eng/package-smoke-test.ps1 -TargetFramework net8.0
+          ./eng/package-smoke-test.ps1 -TargetFramework net10.0
+
+      - name: Create Git tag
+        if: ${{ inputs.release }}
+        run: |
+          git tag -a "v${{ steps.version.outputs.fullSemVer }}" -m "Release v${{ steps.version.outputs.fullSemVer }}"
+          git push origin "v${{ steps.version.outputs.fullSemVer }}"
 
       - name: Publish to NuGet
-        if: ${{ inputs.publishNuget }}
+        if: ${{ inputs.release }}
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
@@ -106,14 +95,14 @@ jobs:
             --api-key $NUGET_API_KEY \
             --source https://api.nuget.org/v3/index.json
 
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        if: ${{ inputs.createGitHubRelease }}
+      - name: Create GitHub release
+        if: ${{ inputs.release }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_name: Release v${{ steps.version.outputs.fullSemVer }}
-          tag_name: v${{ steps.version.outputs.fullSemVer }}
-          body: Release of version ${{ steps.version.outputs.fullSemVer }}
-          draft: false
-          prerelease: ${{ startsWith(github.ref, 'refs/heads/releases/') }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prerelease=
+          if [[ "$GITHUB_REF" == refs/heads/releases/* ]]; then
+            prerelease=--prerelease
+          fi
+
+          gh release create "v${{ steps.version.outputs.fullSemVer }}" --title "Release v${{ steps.version.outputs.fullSemVer }}" --generate-notes --verify-tag $prerelease

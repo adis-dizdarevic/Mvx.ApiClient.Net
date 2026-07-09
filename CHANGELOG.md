@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Prepared the next breaking release for `2.0.0`.
+- Removed typed response projections so every typed endpoint returns its complete documented response shape.
+- Switched financial response values to `decimal`, preserved optional xExchange pair farm flags, and exposed `Retry-After` on API exceptions.
+- Validated client configuration, preserved custom API base paths, and exposed HTTP client builder configuration for resilience and observability.
+- Multi-targeted tests, added locked dependency restores, and hardened the release workflow to validate before tagging or publishing.
+- Expanded public API contract tests to protect key consumer method and model signatures.
 - Migrated the library and tests to .NET 10.
 - Switched the test suite to TUnit.
 - Added central build and package version management.

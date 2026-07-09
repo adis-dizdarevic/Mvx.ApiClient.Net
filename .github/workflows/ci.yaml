@@ -12,7 +12,12 @@ on:
       - eng/**
       - Directory.Build.props
       - Directory.Packages.props
+      - GitVersion.yml
+      - .editorconfig
       - global.json
+      - README.md
+      - CHANGELOG.md
+      - 'packages.lock.json'
       - '*.slnx'
 
   push:
@@ -26,7 +31,12 @@ on:
       - eng/**
       - Directory.Build.props
       - Directory.Packages.props
+      - GitVersion.yml
+      - .editorconfig
       - global.json
+      - README.md
+      - CHANGELOG.md
+      - 'packages.lock.json'
       - '*.slnx'
 
 jobs:
@@ -43,7 +53,7 @@ jobs:
           dotnet-version: 10.x
 
       - name: Install dependencies
-        run: dotnet restore Mvx.ApiClient.Net.slnx
+        run: dotnet restore Mvx.ApiClient.Net.slnx --locked-mode
 
       - name: Build solution
         run: dotnet build Mvx.ApiClient.Net.slnx --configuration Release --no-restore
@@ -78,4 +88,6 @@ jobs:
 
       - name: Smoke test NuGet package consumption
         shell: pwsh
-        run: ./eng/package-smoke-test.ps1
+        run: |
+          ./eng/package-smoke-test.ps1 -TargetFramework net8.0
+          ./eng/package-smoke-test.ps1 -TargetFramework net10.0

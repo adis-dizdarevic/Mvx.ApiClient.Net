@@ -19,13 +19,13 @@ public sealed record XExchangeEconomicsDto(
     long CirculatingSupply,
 
     [property: JsonPropertyName("price")]
-    double Price,
+    decimal Price,
 
     [property: JsonPropertyName("marketCap")]
-    long MarketCap,
+    decimal MarketCap,
 
     [property: JsonPropertyName("volume24h")]
-    long Volume,
+    decimal Volume,
 
     [property: JsonPropertyName("marketPairs")]
     int MarketPairs

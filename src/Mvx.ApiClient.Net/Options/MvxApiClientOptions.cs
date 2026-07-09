@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Mvx.ApiClient.Net;
 
 /// <summary>
@@ -24,4 +26,13 @@ public sealed class MvxApiClientOptions
     /// Gets or sets an optional callback for additional <see cref="HttpClient"/> configuration.
     /// </summary>
     public Action<HttpClient>? ConfigureHttpClient { get; set; }
+
+    /// <summary>
+    /// Gets or sets an optional callback for configuring the underlying HTTP client builders.
+    /// </summary>
+    /// <remarks>
+    /// Use this callback to add resilient handlers, logging, or other <see cref="IHttpClientBuilder"/> configuration.
+    /// The callback is applied to every client registered by <c>AddMvxApiClient</c>.
+    /// </remarks>
+    public Action<IHttpClientBuilder>? ConfigureHttpClientBuilder { get; set; }
 }

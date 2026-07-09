@@ -40,8 +40,7 @@ var stats = await client.Network.GetStatsAsync();
 var pairs = await client.XExchange.GetPairsAsync(
     new QueryOptions
     {
-        Pagination = new Pagination { Limit = 10 },
-        Data = new DataSelection { Fields = ["id", "symbol", "price"] }
+        Pagination = new Pagination { Limit = 10 }
     });
 ```
 

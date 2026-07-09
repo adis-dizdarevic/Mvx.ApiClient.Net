@@ -7,7 +7,7 @@ namespace Mvx.ApiClient.Net.Test;
 public class NetworkClientTest
 {
     [Test]
-    public async Task GetStatsAsync_WithFieldSelection_SendsExpectedRequestAndDeserializesResponse()
+    public async Task GetStatsAsync_SendsExpectedRequestAndDeserializesResponse()
     {
         // arrange
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("""
@@ -26,11 +26,11 @@ public class NetworkClientTest
         var client = CreateClient(handler);
 
         // act
-        var result = await client.GetStatsAsync(new DataSelection { Fields = ["accounts", "blocks"] });
+        var result = await client.GetStatsAsync();
 
         // assert
         await Assert.That(handler.Requests.Single().Method).IsEqualTo(HttpMethod.Get);
-        await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/stats?fields=accounts%2Cblocks");
+        await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/stats");
         await Assert.That(result).IsEqualTo(new StatsDto(1_000_000, 250_000, 1500, 1000, 5000, 50, 3, 5_000_000, 100_000));
     }
 
@@ -58,7 +58,7 @@ public class NetworkClientTest
 
         // assert
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/economics");
-        await Assert.That(result).IsEqualTo(new EconomicsDto(2_500_000, 1_500_000, 1_000_000, 20.42, 1_000_000_000, 7.63, 8.14, 6.12, 200_000));
+        await Assert.That(result).IsEqualTo(new EconomicsDto(2_500_000, 1_500_000, 1_000_000, 20.42m, 1_000_000_000m, 7.63m, 8.14m, 6.12m, 200_000m));
     }
 
     [Test]

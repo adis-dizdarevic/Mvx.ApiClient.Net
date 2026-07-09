@@ -34,7 +34,9 @@ public class ErrorHandlerTest
     public async Task SendAsync_EmptyErrorBody_ThrowsMvxApiExceptionWithFallbackDetails()
     {
         // arrange
-        using var client = CreateClient(new HttpResponseMessage(HttpStatusCode.TooManyRequests));
+        var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+        response.Headers.RetryAfter = new System.Net.Http.Headers.RetryConditionHeaderValue(TimeSpan.FromSeconds(30));
+        using var client = CreateClient(response);
 
         // act
         var exception = await CaptureException(() => client.GetAsync("/rate-limited"));
@@ -44,6 +46,7 @@ public class ErrorHandlerTest
         await Assert.That(exception.Error).IsEqualTo("Too Many Requests");
         await Assert.That(exception.StatusCode).IsEqualTo(HttpStatusCode.TooManyRequests);
         await Assert.That(exception.ResponseContent).IsNull();
+        await Assert.That(exception.RetryAfter).IsEqualTo(TimeSpan.FromSeconds(30));
     }
 
     [Test]

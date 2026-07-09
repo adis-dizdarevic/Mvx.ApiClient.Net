@@ -33,8 +33,7 @@ services.AddMvxApiClient(NetworkType.Mainnet);
 using var provider = services.BuildServiceProvider();
 var client = provider.GetRequiredService<IMvxApiClient>();
 
-var stats = await client.Network.GetStatsAsync(
-    new DataSelection { Fields = ["accounts", "blocks", "transactions"] });
+var stats = await client.Network.GetStatsAsync();
 
 Console.WriteLine($"Accounts: {stats.Accounts}");
 ```
@@ -98,23 +97,17 @@ var pairs = await client.XExchange.GetPairsAsync(
         {
             Limit = 25,
             Offset = 0
-        },
-        Data = new DataSelection
-        {
-            Fields = ["id", "symbol", "price", "volume24h"]
         }
     });
 ```
 
-Single-resource endpoints accept `DataSelection`:
+Typed endpoint methods always request and return their complete documented response shape. This avoids silently treating fields omitted by server-side projections as zero or `false`.
 
 ```csharp
-var token = await client.XExchange.GetTokenAsync(
-    "WEGLD-bd4d79",
-    new DataSelection { Fields = ["id", "symbol", "price"] });
+var token = await client.XExchange.GetTokenAsync("WEGLD-bd4d79");
 ```
 
-The client URL-encodes query values and validates obvious invalid input, such as negative pagination values or empty field names, before sending HTTP requests.
+The client validates obvious invalid input, such as negative pagination values, before sending HTTP requests.
 
 ## Error handling
 
@@ -172,7 +165,8 @@ dotnet restore Mvx.ApiClient.Net.slnx
 dotnet build Mvx.ApiClient.Net.slnx --configuration Release --no-restore
 dotnet test Mvx.ApiClient.Net.slnx --configuration Release --no-build
 dotnet pack src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj --configuration Release --no-build
-.\eng\package-smoke-test.ps1
+.\eng\package-smoke-test.ps1 -TargetFramework net8.0
+.\eng\package-smoke-test.ps1 -TargetFramework net10.0
 ```
 
 Live API smoke tests are disabled by default. Set `MVX_API_LIVE_TESTS=true` to enable the integration test project against the public MultiversX API.

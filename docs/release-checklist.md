@@ -9,7 +9,8 @@ dotnet restore Mvx.ApiClient.Net.slnx
 dotnet build Mvx.ApiClient.Net.slnx --configuration Release --no-restore
 dotnet test Mvx.ApiClient.Net.slnx --configuration Release --no-build
 dotnet pack src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj --configuration Release --no-build
-.\eng\package-smoke-test.ps1
+.\eng\package-smoke-test.ps1 -TargetFramework net8.0
+.\eng\package-smoke-test.ps1 -TargetFramework net10.0
 .\eng\docs.ps1
 ```
 

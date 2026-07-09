@@ -1,4 +1,3 @@
-Mvx.ApiClient.Net.DataSelection
 Mvx.ApiClient.Net.IMvxApiClient
 Mvx.ApiClient.Net.INetworkClient
 Mvx.ApiClient.Net.IXExchangeClient

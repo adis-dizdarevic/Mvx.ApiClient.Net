@@ -42,16 +42,6 @@ internal sealed class ApiRequestExecutor
             queryDictionary.Add("from", queryOptions.Pagination.Offset.Value.ToString());
         }
 
-        if (queryOptions?.Data?.Fields is not null && queryOptions.Data.Fields.Any())
-        {
-            queryDictionary.Add("fields", string.Join(",", queryOptions.Data.Fields));
-        }
-
-        if (!string.IsNullOrWhiteSpace(queryOptions?.Data?.Extract))
-        {
-            queryDictionary.Add("extract", queryOptions.Data.Extract);
-        }
-
         var queryString = string.Join("&", queryDictionary.Select(param => $"{param.Key}={Uri.EscapeDataString(param.Value)}"));
         var fullUri = string.IsNullOrEmpty(queryString) ? requestPath : $"{requestPath}?{queryString}";
 
@@ -70,10 +60,6 @@ internal sealed class ApiRequestExecutor
             throw new ArgumentOutOfRangeException(nameof(queryOptions), "Pagination offset cannot be negative.");
         }
 
-        if (queryOptions?.Data?.Fields?.Any(string.IsNullOrWhiteSpace) is true)
-        {
-            throw new ArgumentException("Field names cannot be empty.", nameof(queryOptions));
-        }
     }
 
     private static JsonSerializerOptions JsonSerializerOptions { get; } = new()

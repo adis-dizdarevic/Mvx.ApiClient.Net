@@ -1,61 +1,21 @@
-# Query Options
+# Query options
 
-Mvx.ApiClient.Net exposes small request option types instead of asking consumers to build query strings manually.
-
-## Pagination
-
-List endpoints accept `QueryOptions` with optional `Pagination`.
-
-```csharp
-var tokens = await client.XExchange.GetTokensAsync(
-    new QueryOptions
-    {
-        Pagination = new Pagination
-        {
-            Limit = 50,
-            Offset = 100
-        }
-    });
-```
-
-The client maps:
-
-- `Pagination.Limit` to `size`
-- `Pagination.Offset` to `from`
-
-Negative values are rejected before an HTTP request is sent.
-
-## Field selection
-
-Use `DataSelection.Fields` to ask the API for a smaller response shape:
+List endpoints accept `QueryOptions` for pagination.
 
 ```csharp
 var pairs = await client.XExchange.GetPairsAsync(
     new QueryOptions
     {
-        Data = new DataSelection
+        Pagination = new Pagination
         {
-            Fields = ["id", "symbol", "price", "volume24h"]
+            Limit = 25,
+            Offset = 50
         }
     });
 ```
 
-For single-resource endpoints:
+`Limit` maps to the API's `size` parameter and `Offset` maps to `from`. Negative values are rejected before the request is sent.
 
-```csharp
-var economics = await client.Network.GetEconomicsAsync(
-    new DataSelection { Fields = ["price", "marketCap"] });
-```
+## Complete typed responses
 
-The client maps `Fields` to the `fields` query parameter. Empty field names are rejected before an HTTP request is sent.
-
-## Extract
-
-Use `DataSelection.Extract` when the upstream endpoint supports extracting a scalar value:
-
-```csharp
-var stats = await client.Network.GetStatsAsync(
-    new DataSelection { Extract = "accounts" });
-```
-
-The client maps `Extract` to the `extract` query parameter. Query values are URL encoded.
+The client deliberately does not expose the upstream `fields` or `extract` parameters through typed endpoint methods. A field projection omits properties and makes missing numeric or Boolean values indistinguishable from `0` or `false`; an extract can return a scalar instead of the documented DTO. Complete endpoint responses keep the typed API reliable.

@@ -95,11 +95,10 @@ services.AddMvxApiClient(options =>
 using var provider = services.BuildServiceProvider();
 var client = provider.GetRequiredService<IMvxApiClient>();
 
-Task<StatsDto> stats = client.Network.GetStatsAsync(new DataSelection { Fields = ["accounts", "blocks"] });
+Task<StatsDto> stats = client.Network.GetStatsAsync();
 Task<IReadOnlyList<XExchangePairDto>> pairs = client.XExchange.GetPairsAsync(new QueryOptions
 {
-    Pagination = new Pagination { Limit = 25 },
-    Data = new DataSelection { Fields = ["id", "symbol"] }
+    Pagination = new Pagination { Limit = 25 }
 });
 
 Console.WriteLine($"{client.NetworkType}: {stats.GetType().Name}, {pairs.GetType().Name}");

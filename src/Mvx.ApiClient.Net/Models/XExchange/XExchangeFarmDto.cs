@@ -40,7 +40,7 @@ public sealed record XExchangeFarmDto(
     string Name,
 
     [property: JsonPropertyName("price")]
-    double Price,
+    decimal Price,
 
     [property: JsonPropertyName("farmingId")]
     string FarmingId,
@@ -52,7 +52,7 @@ public sealed record XExchangeFarmDto(
     string FarmingName,
 
     [property: JsonPropertyName("farmingPrice")]
-    double FarmingPrice,
+    decimal FarmingPrice,
 
     [property: JsonPropertyName("farmedId")]
     string FarmedId,
@@ -64,7 +64,7 @@ public sealed record XExchangeFarmDto(
     string FarmedName,
 
     [property: JsonPropertyName("farmedPrice")]
-    double FarmedPrice
+    decimal FarmedPrice
 );
 
 /// <summary>

@@ -13,11 +13,4 @@ public sealed class QueryOptions
     /// </remarks>
     public Pagination? Pagination { get; set; }
 
-    /// <summary>
-    /// Gets or sets response field selection options.
-    /// </summary>
-    /// <remarks>
-    /// Field selection can be used by endpoints that support <c>fields</c> or <c>extract</c>.
-    /// </remarks>
-    public DataSelection? Data { get; set; }
 }
