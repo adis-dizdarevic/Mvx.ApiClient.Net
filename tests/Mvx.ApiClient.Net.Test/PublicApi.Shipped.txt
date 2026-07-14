@@ -1,22 +1,249 @@
-Mvx.ApiClient.Net.IMvxApiClient
-Mvx.ApiClient.Net.INetworkClient
-Mvx.ApiClient.Net.IXExchangeClient
-Mvx.ApiClient.Net.MvxApiClientOptions
-Mvx.ApiClient.Net.MvxApiContent
-Mvx.ApiClient.Net.NetworkType
-Mvx.ApiClient.Net.Pagination
-Mvx.ApiClient.Net.QueryOptions
-Mvx.ApiClient.Net.ServiceCollectionExtensions
-Mvx.ApiClient.Net.Exceptions.MvxApiException
-Mvx.ApiClient.Net.Models.Network.AboutDto
-Mvx.ApiClient.Net.Models.Network.EconomicsDto
-Mvx.ApiClient.Net.Models.Network.FeaturesDto
-Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto
-Mvx.ApiClient.Net.Models.Network.StatsDto
-Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto
-Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto
-Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType
-Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto
-Mvx.ApiClient.Net.Models.XExchange.XExchangePairState
-Mvx.ApiClient.Net.Models.XExchange.XExchangePairType
-Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto
+type sealed class Mvx.ApiClient.Net.Exceptions.MvxApiException : System.Exception, System.Runtime.Serialization.ISerializable
+  ctor (string message, string? error, System.Net.HttpStatusCode statusCode, System.Uri? requestUri = null, System.Net.Http.HttpMethod? requestMethod = null, string? responseContent = null, System.TimeSpan? retryAfter = null)
+  property System.Net.Http.HttpMethod? RequestMethod { get; }
+  property System.Net.HttpStatusCode StatusCode { get; }
+  property System.TimeSpan? RetryAfter { get; }
+  property System.Uri? RequestUri { get; }
+  property string? Error { get; }
+  property string? ResponseContent { get; }
+type interface Mvx.ApiClient.Net.IMvxApiClient
+  property Mvx.ApiClient.Net.INetworkClient Network { get; }
+  property Mvx.ApiClient.Net.IXExchangeClient XExchange { get; }
+  property Mvx.ApiClient.Net.NetworkType NetworkType { get; }
+type interface Mvx.ApiClient.Net.INetworkClient
+  method abstract System.Threading.Tasks.Task<Mvx.ApiClient.Net.Models.Network.AboutDto> GetAboutAsync(System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<Mvx.ApiClient.Net.Models.Network.EconomicsDto> GetEconomicsAsync(System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto> GetConstantsAsync(System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<Mvx.ApiClient.Net.Models.Network.StatsDto> GetStatsAsync(System.Threading.CancellationToken cancellationToken = default)
+type interface Mvx.ApiClient.Net.IXExchangeClient
+  method abstract System.Threading.Tasks.Task<Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto> GetEconomicsAsync(System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto> GetPairAsync(string baseId, string quoteId, System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto> GetTokenAsync(string identifier, System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto>> GetFarmsAsync(Mvx.ApiClient.Net.QueryOptions? queryOptions = null, System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto>> GetPairsAsync(Mvx.ApiClient.Net.QueryOptions? queryOptions = null, System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto>> GetTokensAsync(Mvx.ApiClient.Net.QueryOptions? queryOptions = null, System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<int> GetFarmsCountAsync(System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<int> GetPairsCountAsync(System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<int> GetTokensCountAsync(System.Threading.CancellationToken cancellationToken = default)
+type sealed class Mvx.ApiClient.Net.Models.Network.AboutDto : System.IEquatable<Mvx.ApiClient.Net.Models.Network.AboutDto>
+  ctor (string? AppVersion, string? PluginsVersion, string Network, string Cluster, string Version, string IndexerVersion, string GatewayVersion, string ScamEngineVersion, Mvx.ApiClient.Net.Models.Network.FeaturesDto? Features)
+  method  Mvx.ApiClient.Net.Models.Network.AboutDto <Clone>$()
+  method  void Deconstruct(out string? AppVersion, out string? PluginsVersion, out string Network, out string Cluster, out string Version, out string IndexerVersion, out string GatewayVersion, out string ScamEngineVersion, out Mvx.ApiClient.Net.Models.Network.FeaturesDto? Features)
+  method override bool Equals(object? obj)
+  method override int GetHashCode()
+  method override string ToString()
+  method static bool op_Equality(Mvx.ApiClient.Net.Models.Network.AboutDto? left, Mvx.ApiClient.Net.Models.Network.AboutDto? right)
+  method static bool op_Inequality(Mvx.ApiClient.Net.Models.Network.AboutDto? left, Mvx.ApiClient.Net.Models.Network.AboutDto? right)
+  method virtual bool Equals(Mvx.ApiClient.Net.Models.Network.AboutDto? other)
+  property Mvx.ApiClient.Net.Models.Network.FeaturesDto? Features { get; init; }
+  property string Cluster { get; init; }
+  property string GatewayVersion { get; init; }
+  property string IndexerVersion { get; init; }
+  property string Network { get; init; }
+  property string ScamEngineVersion { get; init; }
+  property string Version { get; init; }
+  property string? AppVersion { get; init; }
+  property string? PluginsVersion { get; init; }
+type sealed class Mvx.ApiClient.Net.Models.Network.EconomicsDto : System.IEquatable<Mvx.ApiClient.Net.Models.Network.EconomicsDto>
+  ctor (long TotalSupply, long CirculatingSupply, long Staked, decimal Price, decimal MarketCap, decimal Apr, decimal TopUpApr, decimal BaseApr, decimal? TokenMarketCap)
+  method  Mvx.ApiClient.Net.Models.Network.EconomicsDto <Clone>$()
+  method  void Deconstruct(out long TotalSupply, out long CirculatingSupply, out long Staked, out decimal Price, out decimal MarketCap, out decimal Apr, out decimal TopUpApr, out decimal BaseApr, out decimal? TokenMarketCap)
+  method override bool Equals(object? obj)
+  method override int GetHashCode()
+  method override string ToString()
+  method static bool op_Equality(Mvx.ApiClient.Net.Models.Network.EconomicsDto? left, Mvx.ApiClient.Net.Models.Network.EconomicsDto? right)
+  method static bool op_Inequality(Mvx.ApiClient.Net.Models.Network.EconomicsDto? left, Mvx.ApiClient.Net.Models.Network.EconomicsDto? right)
+  method virtual bool Equals(Mvx.ApiClient.Net.Models.Network.EconomicsDto? other)
+  property decimal Apr { get; init; }
+  property decimal BaseApr { get; init; }
+  property decimal MarketCap { get; init; }
+  property decimal Price { get; init; }
+  property decimal TopUpApr { get; init; }
+  property decimal? TokenMarketCap { get; init; }
+  property long CirculatingSupply { get; init; }
+  property long Staked { get; init; }
+  property long TotalSupply { get; init; }
+type sealed class Mvx.ApiClient.Net.Models.Network.FeaturesDto : System.IEquatable<Mvx.ApiClient.Net.Models.Network.FeaturesDto>
+  ctor (bool UpdateCollectionExtraDetails, bool Marketplace, bool Exchange, bool DataApi)
+  method  Mvx.ApiClient.Net.Models.Network.FeaturesDto <Clone>$()
+  method  void Deconstruct(out bool UpdateCollectionExtraDetails, out bool Marketplace, out bool Exchange, out bool DataApi)
+  method override bool Equals(object? obj)
+  method override int GetHashCode()
+  method override string ToString()
+  method static bool op_Equality(Mvx.ApiClient.Net.Models.Network.FeaturesDto? left, Mvx.ApiClient.Net.Models.Network.FeaturesDto? right)
+  method static bool op_Inequality(Mvx.ApiClient.Net.Models.Network.FeaturesDto? left, Mvx.ApiClient.Net.Models.Network.FeaturesDto? right)
+  method virtual bool Equals(Mvx.ApiClient.Net.Models.Network.FeaturesDto? other)
+  property bool DataApi { get; init; }
+  property bool Exchange { get; init; }
+  property bool Marketplace { get; init; }
+  property bool UpdateCollectionExtraDetails { get; init; }
+type sealed class Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto : System.IEquatable<Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto>
+  ctor (string ChainId, long GasPerDataByte, long MinGasLimit, long MinGasPrice, int MinTransactionVersion)
+  method  Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto <Clone>$()
+  method  void Deconstruct(out string ChainId, out long GasPerDataByte, out long MinGasLimit, out long MinGasPrice, out int MinTransactionVersion)
+  method override bool Equals(object? obj)
+  method override int GetHashCode()
+  method override string ToString()
+  method static bool op_Equality(Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto? left, Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto? right)
+  method static bool op_Inequality(Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto? left, Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto? right)
+  method virtual bool Equals(Mvx.ApiClient.Net.Models.Network.NetworkConstantsDto? other)
+  property int MinTransactionVersion { get; init; }
+  property long GasPerDataByte { get; init; }
+  property long MinGasLimit { get; init; }
+  property long MinGasPrice { get; init; }
+  property string ChainId { get; init; }
+type sealed class Mvx.ApiClient.Net.Models.Network.StatsDto : System.IEquatable<Mvx.ApiClient.Net.Models.Network.StatsDto>
+  ctor (long Accounts, long Blocks, int Epoch, int RefreshRate, int RoundsPassed, int RoundsPerEpoch, int Shards, long Transactions, long ScResults)
+  method  Mvx.ApiClient.Net.Models.Network.StatsDto <Clone>$()
+  method  void Deconstruct(out long Accounts, out long Blocks, out int Epoch, out int RefreshRate, out int RoundsPassed, out int RoundsPerEpoch, out int Shards, out long Transactions, out long ScResults)
+  method override bool Equals(object? obj)
+  method override int GetHashCode()
+  method override string ToString()
+  method static bool op_Equality(Mvx.ApiClient.Net.Models.Network.StatsDto? left, Mvx.ApiClient.Net.Models.Network.StatsDto? right)
+  method static bool op_Inequality(Mvx.ApiClient.Net.Models.Network.StatsDto? left, Mvx.ApiClient.Net.Models.Network.StatsDto? right)
+  method virtual bool Equals(Mvx.ApiClient.Net.Models.Network.StatsDto? other)
+  property int Epoch { get; init; }
+  property int RefreshRate { get; init; }
+  property int RoundsPassed { get; init; }
+  property int RoundsPerEpoch { get; init; }
+  property int Shards { get; init; }
+  property long Accounts { get; init; }
+  property long Blocks { get; init; }
+  property long ScResults { get; init; }
+  property long Transactions { get; init; }
+type sealed class Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto : System.IEquatable<Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto>
+  ctor (long TotalSupply, long CirculatingSupply, decimal Price, decimal MarketCap, decimal Volume, int MarketPairs)
+  method  Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto <Clone>$()
+  method  void Deconstruct(out long TotalSupply, out long CirculatingSupply, out decimal Price, out decimal MarketCap, out decimal Volume, out int MarketPairs)
+  method override bool Equals(object? obj)
+  method override int GetHashCode()
+  method override string ToString()
+  method static bool op_Equality(Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto? left, Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto? right)
+  method static bool op_Inequality(Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto? left, Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto? right)
+  method virtual bool Equals(Mvx.ApiClient.Net.Models.XExchange.XExchangeEconomicsDto? other)
+  property decimal MarketCap { get; init; }
+  property decimal Price { get; init; }
+  property decimal Volume { get; init; }
+  property int MarketPairs { get; init; }
+  property long CirculatingSupply { get; init; }
+  property long TotalSupply { get; init; }
+type sealed class Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto : System.IEquatable<Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto>
+  ctor (Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType Type, string? Version, string Address, string Id, string Symbol, string Name, decimal Price, string FarmingId, string FarmingSymbol, string FarmingName, decimal FarmingPrice, string FarmedId, string FarmedSymbol, string FarmedName, decimal FarmedPrice)
+  method  Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto <Clone>$()
+  method  void Deconstruct(out Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType Type, out string? Version, out string Address, out string Id, out string Symbol, out string Name, out decimal Price, out string FarmingId, out string FarmingSymbol, out string FarmingName, out decimal FarmingPrice, out string FarmedId, out string FarmedSymbol, out string FarmedName, out decimal FarmedPrice)
+  method override bool Equals(object? obj)
+  method override int GetHashCode()
+  method override string ToString()
+  method static bool op_Equality(Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto? left, Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto? right)
+  method static bool op_Inequality(Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto? left, Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto? right)
+  method virtual bool Equals(Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto? other)
+  property Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType Type { get; init; }
+  property decimal FarmedPrice { get; init; }
+  property decimal FarmingPrice { get; init; }
+  property decimal Price { get; init; }
+  property string Address { get; init; }
+  property string FarmedId { get; init; }
+  property string FarmedName { get; init; }
+  property string FarmedSymbol { get; init; }
+  property string FarmingId { get; init; }
+  property string FarmingName { get; init; }
+  property string FarmingSymbol { get; init; }
+  property string Id { get; init; }
+  property string Name { get; init; }
+  property string Symbol { get; init; }
+  property string? Version { get; init; }
+type enum Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType MetaStaking = Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType.MetaStaking (2)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType Standard = Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType.Standard (1)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType Unknown = Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmType.Unknown (0)
+type sealed class Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto : System.IEquatable<Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto>
+  ctor (string Address, string Id, string Symbol, string Name, decimal Price, decimal BasePreviousPrice, decimal QuotePreviousPrice, string BaseId, string BaseSymbol, string BaseName, decimal BasePrice, string QuoteId, string QuoteSymbol, string QuoteName, decimal QuotePrice, decimal TotalValue, decimal Volume, Mvx.ApiClient.Net.Models.XExchange.XExchangePairState State, Mvx.ApiClient.Net.Models.XExchange.XExchangePairType Type, string Exchange, bool? HasFarms, bool? HasDualFarms, long TradesCount, long PreviousTradesCount, long DeployedAt)
+  method  Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto <Clone>$()
+  method  void Deconstruct(out string Address, out string Id, out string Symbol, out string Name, out decimal Price, out decimal BasePreviousPrice, out decimal QuotePreviousPrice, out string BaseId, out string BaseSymbol, out string BaseName, out decimal BasePrice, out string QuoteId, out string QuoteSymbol, out string QuoteName, out decimal QuotePrice, out decimal TotalValue, out decimal Volume, out Mvx.ApiClient.Net.Models.XExchange.XExchangePairState State, out Mvx.ApiClient.Net.Models.XExchange.XExchangePairType Type, out string Exchange, out bool? HasFarms, out bool? HasDualFarms, out long TradesCount, out long PreviousTradesCount, out long DeployedAt)
+  method override bool Equals(object? obj)
+  method override int GetHashCode()
+  method override string ToString()
+  method static bool op_Equality(Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto? left, Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto? right)
+  method static bool op_Inequality(Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto? left, Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto? right)
+  method virtual bool Equals(Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto? other)
+  property Mvx.ApiClient.Net.Models.XExchange.XExchangePairState State { get; init; }
+  property Mvx.ApiClient.Net.Models.XExchange.XExchangePairType Type { get; init; }
+  property bool? HasDualFarms { get; init; }
+  property bool? HasFarms { get; init; }
+  property decimal BasePreviousPrice { get; init; }
+  property decimal BasePrice { get; init; }
+  property decimal Price { get; init; }
+  property decimal QuotePreviousPrice { get; init; }
+  property decimal QuotePrice { get; init; }
+  property decimal TotalValue { get; init; }
+  property decimal Volume { get; init; }
+  property long DeployedAt { get; init; }
+  property long PreviousTradesCount { get; init; }
+  property long TradesCount { get; init; }
+  property string Address { get; init; }
+  property string BaseId { get; init; }
+  property string BaseName { get; init; }
+  property string BaseSymbol { get; init; }
+  property string Exchange { get; init; }
+  property string Id { get; init; }
+  property string Name { get; init; }
+  property string QuoteId { get; init; }
+  property string QuoteName { get; init; }
+  property string QuoteSymbol { get; init; }
+  property string Symbol { get; init; }
+type enum Mvx.ApiClient.Net.Models.XExchange.XExchangePairState : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairState Active = Mvx.ApiClient.Net.Models.XExchange.XExchangePairState.Active (1)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairState Inactive = Mvx.ApiClient.Net.Models.XExchange.XExchangePairState.Inactive (2)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairState Partial = Mvx.ApiClient.Net.Models.XExchange.XExchangePairState.Partial (4)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairState Paused = Mvx.ApiClient.Net.Models.XExchange.XExchangePairState.Paused (3)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairState Unknown = Mvx.ApiClient.Net.Models.XExchange.XExchangePairState.Unknown (0)
+type enum Mvx.ApiClient.Net.Models.XExchange.XExchangePairType : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairType Community = Mvx.ApiClient.Net.Models.XExchange.XExchangePairType.Community (2)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairType Core = Mvx.ApiClient.Net.Models.XExchange.XExchangePairType.Core (1)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairType Ecosystem = Mvx.ApiClient.Net.Models.XExchange.XExchangePairType.Ecosystem (3)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairType Experimental = Mvx.ApiClient.Net.Models.XExchange.XExchangePairType.Experimental (4)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairType Unknown = Mvx.ApiClient.Net.Models.XExchange.XExchangePairType.Unknown (0)
+  field const Mvx.ApiClient.Net.Models.XExchange.XExchangePairType Unlisted = Mvx.ApiClient.Net.Models.XExchange.XExchangePairType.Unlisted (5)
+type sealed class Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto : System.IEquatable<Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto>
+  ctor (string Id, string Symbol, string Name, decimal Price, decimal PreviousPrice, decimal PreviousVolume, long TradesCount)
+  method  Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto <Clone>$()
+  method  void Deconstruct(out string Id, out string Symbol, out string Name, out decimal Price, out decimal PreviousPrice, out decimal PreviousVolume, out long TradesCount)
+  method override bool Equals(object? obj)
+  method override int GetHashCode()
+  method override string ToString()
+  method static bool op_Equality(Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto? left, Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto? right)
+  method static bool op_Inequality(Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto? left, Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto? right)
+  method virtual bool Equals(Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto? other)
+  property decimal PreviousPrice { get; init; }
+  property decimal PreviousVolume { get; init; }
+  property decimal Price { get; init; }
+  property long TradesCount { get; init; }
+  property string Id { get; init; }
+  property string Name { get; init; }
+  property string Symbol { get; init; }
+type sealed class Mvx.ApiClient.Net.MvxApiClientOptions
+  ctor ()
+  property Mvx.ApiClient.Net.NetworkType Network { get; set; }
+  property System.Action<Microsoft.Extensions.DependencyInjection.IHttpClientBuilder>? ConfigureHttpClientBuilder { get; set; }
+  property System.Action<System.Net.Http.HttpClient>? ConfigureHttpClient { get; set; }
+  property System.TimeSpan? Timeout { get; set; }
+  property System.Uri? BaseAddress { get; set; }
+type sealed class Mvx.ApiClient.Net.MvxApiContent
+  property System.ReadOnlyMemory<byte> Content { get; }
+  property string? FileName { get; }
+  property string? MediaType { get; }
+type enum Mvx.ApiClient.Net.NetworkType : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+  field const Mvx.ApiClient.Net.NetworkType Devnet = Mvx.ApiClient.Net.NetworkType.Devnet (2)
+  field const Mvx.ApiClient.Net.NetworkType Mainnet = Mvx.ApiClient.Net.NetworkType.Mainnet (0)
+  field const Mvx.ApiClient.Net.NetworkType Testnet = Mvx.ApiClient.Net.NetworkType.Testnet (1)
+type sealed class Mvx.ApiClient.Net.Pagination
+  ctor ()
+  field const int MaximumLimit = 10000
+  property int? Limit { get; set; }
+  property int? Offset { get; set; }
+type sealed class Mvx.ApiClient.Net.QueryOptions
+  ctor ()
+  property Mvx.ApiClient.Net.Pagination? Pagination { get; set; }
+type static class Mvx.ApiClient.Net.ServiceCollectionExtensions
+  method static Microsoft.Extensions.DependencyInjection.IServiceCollection AddMvxApiClient(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Mvx.ApiClient.Net.NetworkType networkType)
+  method static Microsoft.Extensions.DependencyInjection.IServiceCollection AddMvxApiClient(Microsoft.Extensions.DependencyInjection.IServiceCollection services, System.Action<Mvx.ApiClient.Net.MvxApiClientOptions> configureOptions)

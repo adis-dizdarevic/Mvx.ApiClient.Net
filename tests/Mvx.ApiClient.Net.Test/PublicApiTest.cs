@@ -11,18 +11,23 @@ public class PublicApiTest
     [Test]
     public async Task PublicApi_Surface_MatchesExpectedConsumerContracts()
     {
-        var publicTypes = typeof(IMvxApiClient).Assembly
-            .GetExportedTypes()
-            .Select(type => type.FullName!)
-            .Order()
-            .ToArray();
+        var publicApi = PublicApiSnapshot.Create(typeof(IMvxApiClient).Assembly);
+
+        if (string.Equals(Environment.GetEnvironmentVariable("MVX_UPDATE_PUBLIC_API"), "true", StringComparison.OrdinalIgnoreCase))
+        {
+            var baselinePath = Path.Combine(FindRepositoryRoot(), "tests", "Mvx.ApiClient.Net.Test", "PublicApi.Shipped.txt");
+            await File.WriteAllLinesAsync(baselinePath, publicApi);
+            await File.WriteAllLinesAsync(Path.Combine(AppContext.BaseDirectory, "PublicApi.Shipped.txt"), publicApi);
+            return;
+        }
 
         var expectedTypes = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "PublicApi.Shipped.txt"))
             .Where(line => !string.IsNullOrWhiteSpace(line))
-            .Order()
             .ToArray();
 
-        await Assert.That(publicTypes).IsEquivalentTo(expectedTypes);
+        var differences = DescribeDifferences(expectedTypes, publicApi);
+        await Assert.That(differences).IsEmpty()
+            .Because("the complete public API surface must match the approved baseline");
     }
 
     [Test]
@@ -74,5 +79,37 @@ public class PublicApiTest
         await Assert.That(typeof(XExchangeTokenDto).GetProperty(nameof(XExchangeTokenDto.Price))?.PropertyType).IsEqualTo(typeof(decimal));
         await Assert.That(typeof(XExchangeFarmDto).GetProperty(nameof(XExchangeFarmDto.Price))?.PropertyType).IsEqualTo(typeof(decimal));
         await Assert.That(typeof(XExchangePairDto).GetProperty(nameof(XExchangePairDto.HasFarms))?.PropertyType).IsEqualTo(typeof(bool?));
+    }
+
+    private static string FindRepositoryRoot()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+
+        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Mvx.ApiClient.Net.slnx")))
+        {
+            directory = directory.Parent;
+        }
+
+        return directory?.FullName
+            ?? throw new InvalidOperationException("Could not find the repository root for the public API baseline.");
+    }
+
+    private static string DescribeDifferences(IReadOnlyList<string> expected, IReadOnlyList<string> actual)
+    {
+        var differences = new List<string>();
+        var length = Math.Max(expected.Count, actual.Count);
+
+        for (var index = 0; index < length && differences.Count < 20; index++)
+        {
+            var expectedLine = index < expected.Count ? expected[index] : "<missing>";
+            var actualLine = index < actual.Count ? actual[index] : "<missing>";
+
+            if (!string.Equals(expectedLine, actualLine, StringComparison.Ordinal))
+            {
+                differences.Add($"Line {index + 1}:{Environment.NewLine}  expected: {expectedLine}{Environment.NewLine}  actual:   {actualLine}");
+            }
+        }
+
+        return string.Join(Environment.NewLine, differences);
     }
 }
