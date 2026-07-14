@@ -18,6 +18,8 @@ var client = provider.GetRequiredService<IMvxApiClient>();
 
 var stats = await client.Network.GetStatsAsync();
 var pairs = await client.XExchange.GetPairsAsync();
+var tokens = await client.Tokens.GetTokensAsync();
+var latestBlock = await client.Blocks.GetLatestBlockAsync();
 ```
 
 ## Options registration
@@ -85,4 +87,6 @@ Add the model namespace when using response types directly:
 
 ```csharp
 using Mvx.ApiClient.Net.Models.Network;
+using Mvx.ApiClient.Net.Models.Api;
+using Mvx.ApiClient.Net.Requests.Api;
 ```

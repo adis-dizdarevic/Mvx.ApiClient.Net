@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Implemented all 157 current, non-obsolete MultiversX GET operations across focused clients, including complete endpoint-specific query options and typed JSON, text, count, and media responses.
+- Added reviewed API response models plus live-evidence corrections for NFT media and owner-history arrays, provider metrics/accounts, account upgrades, NFT thumbnails, node versions, batch results, avatars, logos, and arbitrary-precision balances.
+- Added exhaustive operation-to-method and query-wire contract tests, checked-in OpenAPI generation provenance, and a throttled seeded mainnet suite covering global and parameterized routes.
+
 - Prepared the next breaking release for `2.0.0`.
 - Added a reviewed snapshot of the complete upstream GET surface, weekly drift checks, and an automated gate that prevents deprecated or temporary operations from being exposed.
 - Added reusable complex-query serialization, secure path construction, JSON/text/binary response modes, arbitrary-precision amount handling, and forward-compatible response enums.

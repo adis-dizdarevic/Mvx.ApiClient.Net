@@ -20,7 +20,22 @@ The approved July 2026 snapshot contains 145 documented candidates, 12 operation
 
 ```powershell
 .\eng\api-surface.ps1 -Update
+python eng\generate-get-clients.py
 ```
+
+All 157 non-obsolete candidates in this snapshot are implemented. The generator performs repetitive surface work from `eng/multiversx-openapi.json`; reviewed overrides encode the live evidence that OpenAPI omits or describes incorrectly. A SHA-256 contract test prevents generated sources from drifting from that checked-in document.
+
+The 12 incomplete OpenAPI operations were resolved as follows:
+
+| Operations | Verified representation |
+| --- | --- |
+| Token logos, provider avatar, identity avatar | Buffered media (`MvxApiContent`) with media type |
+| Node versions | JSON dictionary from version to decimal share |
+| xExchange counts, account ESDT-history count | Invariant 64-bit integer parsed from scalar text |
+| `/hello` | Plain text |
+| Transaction batch list/detail | Typed nested batch result from the official API-service entities |
+
+The recurring live suite skips the currently unhealthy `/auctions` and `/auctions/count` routes: mainnet hangs for a bounded list and returns HTTP 500 for `size=0`. Their non-obsolete methods remain locally contract-tested. Source-verification, collection-rank, pool-detail, and batch-detail checks are conditional when no matching live resource exists; the batch detail success model is additionally derived from the official controller/entity source.
 
 ## Definition of ready
 

@@ -1,6 +1,6 @@
 # Mvx.ApiClient.Net
 
-A modern .NET client for the public [MultiversX API](https://api.multiversx.com). The current package focuses on GET endpoints and provides typed clients for network and xExchange data.
+A modern .NET client for the public [MultiversX API](https://api.multiversx.com). It provides ready-to-use methods for all 157 current, non-obsolete GET operations in the approved upstream contract.
 
 ## Install
 
@@ -87,7 +87,7 @@ public sealed class NetworkService
 
 ## Query options
 
-List endpoints accept `QueryOptions`:
+The original xExchange list methods accept `QueryOptions`. Every other filtered route has an endpoint-specific options type so IntelliSense exposes the complete supported filter set without an unbounded property bag:
 
 ```csharp
 var pairs = await client.XExchange.GetPairsAsync(
@@ -98,6 +98,17 @@ var pairs = await client.XExchange.GetPairsAsync(
             Limit = 25,
             Offset = 0
         }
+    });
+
+using Mvx.ApiClient.Net.Requests.Api;
+
+var accounts = await client.Accounts.GetAccountsAsync(
+    new AccountsGetAccountsOptions
+    {
+        Pagination = new Pagination { Limit = 25 },
+        IsSmartContract = true,
+        Sort = AccountsGetAccountsOptionsSort.Balance,
+        Order = AccountsGetAccountsOptionsOrder.Desc
     });
 ```
 
@@ -132,10 +143,19 @@ The exception preserves the HTTP status code, API error label when available, ra
 
 ## Available clients
 
-`IMvxApiClient` exposes:
+`IMvxApiClient` exposes focused groups for accounts, applications, blocks, collections, delegation, events, identities, keys, marketplace, miniblocks, network, NFTs, nodes, pool, providers, smart-contract results, rounds, shards, stake, tags, tokens, transaction batches, transactions, transfers, usernames, waiting-list data, dapp/websocket configuration, health checks, and xExchange.
 
-- `Network`: network stats, economics, constants, and API deployment information.
-- `XExchange`: xExchange economics, pairs, tokens, farms, and count endpoints.
+Examples:
+
+```csharp
+var block = await client.Blocks.GetLatestBlockAsync();
+var token = await client.Tokens.GetTokenAsync("USDC-c76f1f");
+var nft = await client.Nfts.GetNftAsync("HLSR-374950-324a");
+var transactions = await client.Accounts.GetAccountTransactionsAsync(address);
+var logo = await client.Tokens.GetTokenLogoPngAsync("WEGLD-bd4d79");
+```
+
+JSON response models live in `Mvx.ApiClient.Net.Models.Api`. Binary/image methods return `MvxApiContent`, including bytes and response media metadata.
 
 The upstream MultiversX API still exposes xExchange data under `/mex/*` routes. This package uses xExchange naming in the .NET API.
 
@@ -175,6 +195,7 @@ Review upstream GET drift and regenerate the complete public API contract with:
 
 ```powershell
 .\eng\api-surface.ps1
+python eng\generate-get-clients.py
 .\eng\update-public-api.ps1
 ```
 

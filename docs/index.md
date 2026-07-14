@@ -2,10 +2,7 @@
 
 Mvx.ApiClient.Net is a typed .NET wrapper around the public MultiversX API. It is intended for application and library authors who want a NuGet package with dependency-injection support, typed response models, cancellation tokens, predictable errors, and package-ready metadata.
 
-The current scope is GET endpoints for:
-
-- Network data
-- xExchange data
+The package implements all 157 current, non-obsolete GET operations in the approved MultiversX OpenAPI contract. Endpoint groups cover accounts, chain data, tokens and NFTs, staking, marketplace data, transaction history, xExchange, configuration, media, and supporting lookup APIs.
 
 ## Supported frameworks
 
@@ -37,8 +34,8 @@ using var provider = services.BuildServiceProvider();
 var client = provider.GetRequiredService<IMvxApiClient>();
 
 var stats = await client.Network.GetStatsAsync();
-var pairs = await client.XExchange.GetPairsAsync(
-    new QueryOptions
+var accounts = await client.Accounts.GetAccountsAsync(
+    new AccountsGetAccountsOptions
     {
         Pagination = new Pagination { Limit = 10 }
     });
@@ -46,7 +43,7 @@ var pairs = await client.XExchange.GetPairsAsync(
 
 ## Package goals
 
-- Keep the public API small and discoverable.
+- Keep the large upstream surface discoverable through focused clients and endpoint-specific options.
 - Preserve HTTP status and response details when the API returns errors.
 - Validate obvious invalid input before making HTTP calls.
 - Keep retry and rate-limit policy configurable by consumers through `HttpClientFactory`.

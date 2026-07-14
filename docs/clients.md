@@ -1,75 +1,80 @@
 # Clients
 
-`IMvxApiClient` exposes endpoint groups through focused child clients.
+`IMvxApiClient` exposes the complete GET API through focused child clients. Every child interface is also registered directly with dependency injection.
 
-```csharp
-public interface IMvxApiClient
-{
-    NetworkType NetworkType { get; }
-    IXExchangeClient XExchange { get; }
-    INetworkClient Network { get; }
-}
-```
+## Endpoint groups
 
-## Network
-
-The network client wraps general MultiversX API endpoints.
-
-```csharp
-var stats = await client.Network.GetStatsAsync();
-var economics = await client.Network.GetEconomicsAsync();
-var constants = await client.Network.GetConstantsAsync();
-var about = await client.Network.GetAboutAsync();
-```
-
-Response models live under:
-
-```csharp
-using Mvx.ApiClient.Net.Models.Network;
-```
-
-## xExchange
-
-The xExchange client wraps the currently validated xExchange GET subset exposed by the public API.
-
-```csharp
-var economics = await client.XExchange.GetEconomicsAsync();
-var pairs = await client.XExchange.GetPairsAsync();
-var pair = await client.XExchange.GetPairAsync("MEX-455c57", "WEGLD-bd4d79");
-var pairsCount = await client.XExchange.GetPairsCountAsync();
-
-var tokens = await client.XExchange.GetTokensAsync();
-var token = await client.XExchange.GetTokenAsync("WEGLD-bd4d79");
-var tokensCount = await client.XExchange.GetTokensCountAsync();
-
-var farms = await client.XExchange.GetFarmsAsync();
-var farmsCount = await client.XExchange.GetFarmsCountAsync();
-```
-
-Response models live under:
-
-```csharp
-using Mvx.ApiClient.Net.Models.XExchange;
-```
-
-The upstream API still uses `/mex/*` paths for these endpoints. The public .NET API uses xExchange naming.
-
-Endpoint coverage is intentionally evidence-driven. The temporary `/mex-pairs` alias is upstream-deprecated and is not exposed. Additional documented operations, such as price charts, are added only after they satisfy the [endpoint readiness gate](endpoint-readiness.md).
-
-## Endpoint coverage
-
-| Client | Method | Upstream path |
+| Root property | Interface | Area |
 | --- | --- | --- |
-| `INetworkClient` | `GetStatsAsync` | `/stats` |
-| `INetworkClient` | `GetEconomicsAsync` | `/economics` |
-| `INetworkClient` | `GetConstantsAsync` | `/constants` |
-| `INetworkClient` | `GetAboutAsync` | `/about` |
-| `IXExchangeClient` | `GetEconomicsAsync` | `/mex/economics` |
-| `IXExchangeClient` | `GetPairsAsync` | `/mex/pairs` |
-| `IXExchangeClient` | `GetPairAsync` | `/mex/pairs/{baseId}/{quoteId}` |
-| `IXExchangeClient` | `GetPairsCountAsync` | `/mex/pairs/count` |
-| `IXExchangeClient` | `GetTokensAsync` | `/mex/tokens` |
-| `IXExchangeClient` | `GetTokenAsync` | `/mex/tokens/{identifier}` |
-| `IXExchangeClient` | `GetTokensCountAsync` | `/mex/tokens/count` |
-| `IXExchangeClient` | `GetFarmsAsync` | `/mex/farms` |
-| `IXExchangeClient` | `GetFarmsCountAsync` | `/mex/farms/count` |
+| `Accounts` | `IAccountsClient` | Accounts, balances, roles, history, account transactions and transfers |
+| `Applications` | `IApplicationsClient` | Indexed applications |
+| `Blocks` | `IBlocksClient` | Blocks, latest block, and counts |
+| `Collections` | `ICollectionsClient` | NFT collections, ranks, accounts, transactions, and transfers |
+| `Delegation` | `IDelegationClient` | Current and legacy global delegation data |
+| `Events` | `IEventsClient` | Indexed events |
+| `Identities` | `IIdentitiesClient` | Validator identities and avatars |
+| `Keys` | `IKeysClient` | Validator-key unbond periods |
+| `Marketplace` | `IMarketplaceClient` | Auctions and marketplace statistics |
+| `Miniblocks` | `IMiniblocksClient` | Miniblock list and details |
+| `Network` | `INetworkClient` | Stats, economics, constants, and deployment information |
+| `Nfts` | `INftsClient` | NFTs, holders, supply, media, transactions, and transfers |
+| `Nodes` | `INodesClient` | Nodes, auctions, counts, and version distribution |
+| `Pool` | `IPoolClient` | Pending transaction pool |
+| `Providers` | `IProvidersClient` | Delegation providers, accounts, and avatars |
+| `Results` | `IResultsClient` | Smart-contract results |
+| `Rounds` | `IRoundsClient` | Round list and details |
+| `Shards` | `IShardsClient` | Shard status |
+| `Stake` | `IStakeClient` | Global staking data |
+| `Tags` | `ITagsClient` | NFT tags |
+| `Tokens` | `ITokensClient` | ESDT tokens, supply, holders, media, transactions, and transfers |
+| `TransactionBatches` | `ITransactionBatchesClient` | Transaction-batch status |
+| `Transactions` | `ITransactionsClient` | Transactions, counts, details, and price-per-unit metadata |
+| `Transfers` | `ITransfersClient` | Global transfer history |
+| `Usernames` | `IUsernamesClient` | Username lookup |
+| `WaitingList` | `IWaitingListClient` | Validator waiting list |
+| `DappConfig` | `IDappConfigClient` | Dapp configuration |
+| `Websocket` | `IWebsocketClient` | Websocket configuration |
+| `HealthCheck` | `IHealthCheckClient` | API health text |
+| `XExchange` | `IXExchangeClient` | xExchange economics, pairs, farms, tokens, and charts |
+
+## Examples
+
+```csharp
+using Mvx.ApiClient.Net.Requests.Api;
+
+var latest = await client.Blocks.GetLatestBlockAsync();
+
+var tokens = await client.Tokens.GetTokensAsync(
+    new TokensGetTokensOptions
+    {
+        Pagination = new Pagination { Limit = 10 },
+        Search = "USDC"
+    });
+
+var token = await client.Tokens.GetTokenAsync(tokens[0].Identifier!);
+var supply = await client.Tokens.GetTokenSupplyAsync(tokens[0].Identifier!);
+
+var nfts = await client.Nfts.GetNftsAsync(
+    new NftsGetNftsOptions { Pagination = new Pagination { Limit = 10 } });
+
+var transactions = await client.Accounts.GetAccountTransactionsAsync(
+    "erd1...",
+    new AccountsGetAccountTransactionsOptions
+    {
+        Pagination = new Pagination { Limit = 25 }
+    });
+```
+
+Response models for the expanded surface live under `Mvx.ApiClient.Net.Models.Api`. Atomic quantities use `BigInteger`, bounded fractional values use `decimal`, and optional upstream fields are nullable.
+
+Image and other binary endpoints return `MvxApiContent`:
+
+```csharp
+var logo = await client.Tokens.GetTokenLogoPngAsync("WEGLD-bd4d79");
+Console.WriteLine(logo.MediaType);
+Console.WriteLine(logo.Content.Length);
+```
+
+The upstream API still uses `/mex/*` routes. The .NET API retains the existing `XExchange` naming and adds `GetTokenDailyPricesAsync` and `GetTokenHourlyPricesAsync` for its chart routes.
+
+The authoritative endpoint-to-method map is guarded by `CompleteGetSurfaceTest`: each approved non-obsolete operation ID and path must map to exactly one implementation.

@@ -1,6 +1,6 @@
 # Query options
 
-List endpoints accept `QueryOptions` for pagination.
+The original xExchange list endpoints accept `QueryOptions` for pagination.
 
 ```csharp
 var pairs = await client.XExchange.GetPairsAsync(
@@ -17,6 +17,21 @@ var pairs = await client.XExchange.GetPairsAsync(
 `Limit` maps to the API's `size` parameter and `Offset` maps to `from`. Negative values and limits above `Pagination.MaximumLimit` (`10_000`) are rejected before the request is sent. Endpoints that request expensive optional details can have a smaller effective limit.
 
 Endpoint-specific option types use the same internal query builder for invariant numbers, lowercase Booleans, explicitly mapped enums, and both comma-separated and repeated collections. This keeps complex filters consistent without turning `QueryOptions` into an unbounded property bag.
+
+```csharp
+using Mvx.ApiClient.Net.Requests.Api;
+
+var tokens = await client.Tokens.GetTokensAsync(
+    new TokensGetTokensOptions
+    {
+        Pagination = new Pagination { Limit = 20 },
+        Search = "USDC",
+        Type = TokensGetTokensOptionsType.FungibleESDT,
+        Order = TokensGetTokensOptionsOrder.Desc
+    });
+```
+
+Some upstream operations expose only `size` and no `from`; their generated options expose `Size` instead of `Pagination`, preventing the client from sending an unsupported offset. Collections and enums use their documented wire representation.
 
 ## Complete typed responses
 
