@@ -92,7 +92,13 @@ public class JsonSerializationTest
             { "score": 485.9999, "distribution": { "direct": 1 } }
             """, MvxJsonSerializerOptions.Default);
         var nft = JsonSerializer.Deserialize<Nft>("""
-            { "media": [{ "url": "https://example.test/nft.png", "fileType": "image/png" }] }
+            {
+              "royalties": 6.9,
+              "media": [{ "url": "https://example.test/nft.png", "fileType": "image/png" }]
+            }
+            """, MvxJsonSerializerOptions.Default);
+        var accountNft = JsonSerializer.Deserialize<NftAccount>("""
+            { "royalties": 6.9 }
             """, MvxJsonSerializerOptions.Default);
         var token = JsonSerializer.Deserialize<TokenDetailed>("""
             {
@@ -130,6 +136,8 @@ public class JsonSerializationTest
 
         await Assert.That(identity?.Score).IsEqualTo(485.9999m);
         await Assert.That(nft?.Media?.Single().Url).IsEqualTo("https://example.test/nft.png");
+        await Assert.That(nft?.Royalties).IsEqualTo(6.9m);
+        await Assert.That(accountNft?.Royalties).IsEqualTo(6.9m);
         await Assert.That(token?.Assets?.LockedAccounts?.ValueKind).IsEqualTo(JsonValueKind.Object);
         await Assert.That(token?.OwnersHistory?.Single().Address).IsEqualTo("erd1owner");
         await Assert.That(provider?.Stake).IsEqualTo(BigInteger.Parse("122500000000000000000000"));

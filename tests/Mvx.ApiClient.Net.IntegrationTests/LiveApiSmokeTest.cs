@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Mvx.ApiClient.Net.Infrastructure;
 using Mvx.ApiClient.Net.Exceptions;
-using Mvx.ApiClient.Net.Requests.Api;
 using TUnit.Assertions;
 using TUnit.Core;
 
@@ -73,8 +72,8 @@ public class LiveApiSmokeTest
         var farms = await ExecuteRateLimitedAsync(() => client.XExchange.GetFarmsAsync(
             new QueryOptions { Pagination = new Pagination { Limit = 1 } }));
         var farmsCount = await ExecuteRateLimitedAsync(() => client.XExchange.GetFarmsCountAsync());
-        var globalResults = await ValidateGeneratedGlobalContractsAsync(provider);
-        await ValidateGeneratedDetailContractsAsync(provider, globalResults, pair, token);
+        var globalResults = await ValidateHandwrittenGlobalContractsAsync(provider);
+        await ValidateHandwrittenDetailContractsAsync(provider, globalResults, pair, token);
 
         await Assert.That(stats.Shards).IsGreaterThan(0);
         await Assert.That(stats.Blocks).IsGreaterThan(0);
@@ -91,7 +90,7 @@ public class LiveApiSmokeTest
 #endif
     }
 
-    private static async Task<Dictionary<string, object?>> ValidateGeneratedGlobalContractsAsync(IServiceProvider provider)
+    private static async Task<Dictionary<string, object?>> ValidateHandwrittenGlobalContractsAsync(IServiceProvider provider)
     {
         var results = new Dictionary<string, object?>(StringComparer.Ordinal);
         var methods = typeof(IMvxApiClient).Assembly.GetTypes()
@@ -125,7 +124,7 @@ public class LiveApiSmokeTest
         return results;
     }
 
-    private static async Task ValidateGeneratedDetailContractsAsync(
+    private static async Task ValidateHandwrittenDetailContractsAsync(
         IServiceProvider provider,
         IReadOnlyDictionary<string, object?> globalResults,
         Models.XExchange.XExchangePairDto exchangePair,
@@ -137,9 +136,9 @@ public class LiveApiSmokeTest
             "/collections/{collection}/auction", "/collections/{collection}/auctions"
         };
         var nftIdentifier = StringProperty(FirstRequired(globalResults, "/nfts"), "Identifier");
-        var nftOwners = await ExecuteRateLimitedAsync(() => provider.GetRequiredService<INftsClient>().GetNftAccountsAsync(
+        var nftOwners = await ExecuteRateLimitedAsync(() => provider.GetRequiredService<INftClient>().GetNftAccountsAsync(
             nftIdentifier,
-            new NftsGetNftAccountsOptions { Pagination = new Pagination { Limit = 1 } }));
+            new Mvx.ApiClient.Net.Requests.Nfts.GetNftAccountsOptions { Pagination = new Pagination { Limit = 1 } }));
         var nftHolder = nftOwners.FirstOrDefault()?.Address
             ?? throw new InvalidOperationException($"Could not derive a holder for NFT {nftIdentifier}.");
         var methods = typeof(IMvxApiClient).Assembly.GetTypes()

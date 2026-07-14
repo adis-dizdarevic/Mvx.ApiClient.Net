@@ -2,7 +2,6 @@ using System.Collections;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -78,18 +77,7 @@ public sealed class CompleteGetSurfaceTest
     }
 
     [Test]
-    public async Task GeneratedClients_MatchCheckedInOpenApiDocument()
-    {
-        var bytes = await File.ReadAllBytesAsync(Path.Combine(AppContext.BaseDirectory, "multiversx-openapi.json"));
-        var actual = Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
-        if (!string.Equals(GeneratedApiRegistration.SourceSha256, actual, StringComparison.Ordinal))
-        {
-            throw new InvalidOperationException("Generated GET clients do not match eng/multiversx-openapi.json. Run the GET client generator.");
-        }
-    }
-
-    [Test]
-    public async Task EveryGeneratedGet_EncodesItsCompleteUsefulQueryContract()
+    public async Task EveryHandwrittenGet_EncodesItsCompleteUsefulQueryContract()
     {
         var snapshot = await ReadSnapshotAsync();
         var operations = snapshot.Operations.ToDictionary(operation => operation.OperationId, StringComparer.Ordinal);
@@ -213,7 +201,7 @@ public sealed class CompleteGetSurfaceTest
             return array;
         }
 
-        throw new InvalidOperationException($"No generated query test value is defined for {type}.");
+        throw new InvalidOperationException($"No query contract test value is defined for {type}.");
     }
 
     private static object CreateCollectionElement(Type type, int index)

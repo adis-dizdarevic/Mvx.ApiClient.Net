@@ -20,10 +20,20 @@ jobs:
         shell: pwsh
         run: ./eng/api-surface.ps1
 
-      - name: Verify generated GET clients match approved OpenAPI
-        run: |
-          python3 eng/generate-get-clients.py
-          git diff --exit-code
+      - name: Verify handwritten source architecture
+        shell: pwsh
+        run: ./eng/handwritten-surface.ps1
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.x
+
+      - name: Restore locked dependencies
+        run: dotnet restore Mvx.ApiClient.Net.slnx --locked-mode
+
+      - name: Verify handwritten endpoint mapping
+        run: dotnet test tests/Mvx.ApiClient.Net.Test/Mvx.ApiClient.Net.Test.csproj --framework net10.0 --configuration Release --no-restore
 
   ValidateCurrentTypedContracts:
     runs-on: ubuntu-latest
