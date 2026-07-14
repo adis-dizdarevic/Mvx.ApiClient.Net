@@ -113,24 +113,29 @@ public sealed record XExchangePairDto(
 public enum XExchangePairState
 {
     /// <summary>
+    /// A state introduced by the API that is not yet known by this package version.
+    /// </summary>
+    Unknown = 0,
+
+    /// <summary>
     /// Active pair.
     /// </summary>
-    Active,
+    Active = 1,
 
     /// <summary>
     /// Inactive pair.
     /// </summary>
-    Inactive,
+    Inactive = 2,
 
     /// <summary>
     /// Paused pair.
     /// </summary>
-    Paused,
+    Paused = 3,
 
     /// <summary>
     /// Partially active pair.
     /// </summary>
-    Partial
+    Partial = 4
 }
 
 /// <summary>
@@ -139,27 +144,32 @@ public enum XExchangePairState
 public enum XExchangePairType
 {
     /// <summary>
+    /// A category introduced by the API that is not yet known by this package version.
+    /// </summary>
+    Unknown = 0,
+
+    /// <summary>
     /// Core xExchange pair.
     /// </summary>
-    Core,
+    Core = 1,
 
     /// <summary>
     /// Community xExchange pair.
     /// </summary>
-    Community,
+    Community = 2,
 
     /// <summary>
     /// Ecosystem xExchange pair.
     /// </summary>
-    Ecosystem,
+    Ecosystem = 3,
 
     /// <summary>
     /// Experimental xExchange pair.
     /// </summary>
-    Experimental,
+    Experimental = 4,
 
     /// <summary>
     /// Unlisted xExchange pair.
     /// </summary>
-    Unlisted
+    Unlisted = 5
 }

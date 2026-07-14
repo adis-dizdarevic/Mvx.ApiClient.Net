@@ -1,5 +1,5 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using Mvx.ApiClient.Net.Infrastructure.Serialization;
 
 namespace Mvx.ApiClient.Net.Infrastructure;
 
@@ -21,7 +21,7 @@ internal sealed class ApiRequestExecutor
     {
         using var response = await SendAsync(requestPath, queryParameters, cancellationToken);
         await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        var result = await JsonSerializer.DeserializeAsync<T>(responseStream, JsonSerializerOptions, cancellationToken);
+        var result = await JsonSerializer.DeserializeAsync<T>(responseStream, MvxJsonSerializerOptions.Default, cancellationToken);
 
         if (result is null)
         {
@@ -92,12 +92,4 @@ internal sealed class ApiRequestExecutor
         }
     }
 
-    private static JsonSerializerOptions JsonSerializerOptions { get; } = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        Converters =
-        {
-            new JsonStringEnumConverter()
-        }
-    };
 }

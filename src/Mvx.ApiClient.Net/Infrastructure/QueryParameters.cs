@@ -1,4 +1,5 @@
 using System.Globalization;
+using Mvx.ApiClient.Net.Infrastructure.Serialization;
 
 namespace Mvx.ApiClient.Net.Infrastructure;
 
@@ -51,6 +52,30 @@ internal sealed class QueryParameters
         where T : struct, IFormattable
     {
         Add(name, value.ToString(null, CultureInfo.InvariantCulture));
+
+        return this;
+    }
+
+    public QueryParameters AddEnum<TEnum>(string name, TEnum value)
+        where TEnum : struct, Enum
+    {
+        if (string.Equals(Enum.GetName(value), "Unknown", StringComparison.Ordinal))
+        {
+            throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown enum values cannot be sent as API query parameters.");
+        }
+
+        Add(name, EnumWireName.GetValue(value));
+
+        return this;
+    }
+
+    public QueryParameters AddOptionalEnum<TEnum>(string name, TEnum? value)
+        where TEnum : struct, Enum
+    {
+        if (value is not null)
+        {
+            AddEnum(name, value.Value);
+        }
 
         return this;
     }

@@ -73,12 +73,17 @@ public sealed record XExchangeFarmDto(
 public enum XExchangeFarmType
 {
     /// <summary>
+    /// A category introduced by the API that is not yet known by this package version.
+    /// </summary>
+    Unknown = 0,
+
+    /// <summary>
     /// Standard farm.
     /// </summary>
-    Standard,
+    Standard = 1,
 
     /// <summary>
     /// Meta-staking farm.
     /// </summary>
-    MetaStaking
+    MetaStaking = 2
 }
