@@ -1,4 +1,6 @@
 using Mvx.ApiClient.Net.Infrastructure;
+using System.Net;
+using System.Net.Http.Headers;
 using TUnit.Assertions;
 
 namespace Mvx.ApiClient.Net.Test;
@@ -82,4 +84,102 @@ public class ApiRequestExecutorTest
 
         await Assert.That(result.PathAndQuery).IsEqualTo("/accounts?withAssets=true&search=alice");
     }
+
+    [Test]
+    public async Task GetStringAsync_TextResponse_ReturnsCompleteBody()
+    {
+        var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.TextResponse("hello MultiversX", HttpStatusCode.OK));
+        var executor = CreateExecutor(handler);
+
+        var result = await executor.GetStringAsync("hello");
+
+        await Assert.That(result).IsEqualTo("hello MultiversX");
+        await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/hello");
+    }
+
+    [Test]
+    public async Task GetContentAsync_BinaryResponse_PreservesBodyAndMetadata()
+    {
+        var expected = new byte[] { 0x89, 0x50, 0x4E, 0x47 };
+        var handler = new TestHttpMessageHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(expected)
+            };
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("inline")
+            {
+                FileName = "token.png"
+            };
+
+            return response;
+        });
+        var executor = CreateExecutor(handler);
+
+        var result = await executor.GetContentAsync("tokens/TOKEN-123/logo/png");
+
+        await Assert.That(result.Content.ToArray()).IsEquivalentTo(expected);
+        await Assert.That(result.MediaType).IsEqualTo("image/png");
+        await Assert.That(result.FileName).IsEqualTo("token.png");
+    }
+
+    [Test]
+    public async Task GetJsonAsync_JsonResponse_DeserializesUsingSharedPipeline()
+    {
+        var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("""
+            { "value": "ready" }
+            """));
+        var executor = CreateExecutor(handler);
+
+        var result = await executor.GetJsonAsync<TestResponse>("test");
+
+        await Assert.That(result.Value).IsEqualTo("ready");
+    }
+
+    [Test]
+    public async Task GetJsonAsync_NonSuccessWithoutRegisteredErrorHandler_ThrowsHttpRequestException()
+    {
+        var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("{}", HttpStatusCode.BadGateway));
+        var executor = CreateExecutor(handler);
+
+        var exception = await CaptureHttpRequestException(() => executor.GetJsonAsync<TestResponse>("test"));
+
+        await Assert.That(exception.StatusCode).IsEqualTo(HttpStatusCode.BadGateway);
+    }
+
+    [Test]
+    public async Task GetJsonAsync_NullJsonResponse_ThrowsClearHttpRequestException()
+    {
+        var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("null"));
+        var executor = CreateExecutor(handler);
+
+        var exception = await CaptureHttpRequestException(() => executor.GetJsonAsync<TestResponse>("test"));
+
+        await Assert.That(exception.Message).Contains(typeof(TestResponse).ToString());
+    }
+
+    private static ApiRequestExecutor CreateExecutor(HttpMessageHandler handler)
+    {
+        return new ApiRequestExecutor(new HttpClient(handler)
+        {
+            BaseAddress = BaseAddress
+        });
+    }
+
+    private static async Task<HttpRequestException> CaptureHttpRequestException(Func<Task> action)
+    {
+        try
+        {
+            await action();
+        }
+        catch (HttpRequestException exception)
+        {
+            return exception;
+        }
+
+        throw new InvalidOperationException("Expected HttpRequestException was not thrown.");
+    }
+
+    private sealed record TestResponse(string Value);
 }

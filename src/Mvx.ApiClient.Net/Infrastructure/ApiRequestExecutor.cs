@@ -1,4 +1,3 @@
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -15,15 +14,39 @@ internal sealed class ApiRequestExecutor
 
     public async Task<T> GetAsync<T>(string requestPath, QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
     {
-        var requestUri = BuildRequestUri(_httpClient.BaseAddress!, requestPath, QueryParameters.From(queryOptions));
-        var response = await _httpClient.GetFromJsonAsync<T>(requestUri, JsonSerializerOptions, cancellationToken);
+        return await GetJsonAsync<T>(requestPath, QueryParameters.From(queryOptions), cancellationToken);
+    }
 
-        if (response is null)
+    internal async Task<T> GetJsonAsync<T>(string requestPath, QueryParameters? queryParameters = null, CancellationToken cancellationToken = default)
+    {
+        using var response = await SendAsync(requestPath, queryParameters, cancellationToken);
+        await using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var result = await JsonSerializer.DeserializeAsync<T>(responseStream, JsonSerializerOptions, cancellationToken);
+
+        if (result is null)
         {
             throw new HttpRequestException($"No response data or could not deserialize to type {typeof(T)}.");
         }
 
-        return response;
+        return result;
+    }
+
+    internal async Task<string> GetStringAsync(string requestPath, QueryParameters? queryParameters = null, CancellationToken cancellationToken = default)
+    {
+        using var response = await SendAsync(requestPath, queryParameters, cancellationToken);
+
+        return await response.Content.ReadAsStringAsync(cancellationToken);
+    }
+
+    internal async Task<MvxApiContent> GetContentAsync(string requestPath, QueryParameters? queryParameters = null, CancellationToken cancellationToken = default)
+    {
+        using var response = await SendAsync(requestPath, queryParameters, cancellationToken);
+        var content = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+        var mediaType = response.Content.Headers.ContentType?.MediaType;
+        var fileName = response.Content.Headers.ContentDisposition?.FileNameStar
+            ?? response.Content.Headers.ContentDisposition?.FileName?.Trim('"');
+
+        return new MvxApiContent(content, mediaType, fileName);
     }
 
     internal static Uri BuildRequestUri(Uri baseAddress, string requestPath, QueryOptions? queryOptions = null)
@@ -44,6 +67,29 @@ internal sealed class ApiRequestExecutor
         var fullUri = string.IsNullOrEmpty(queryString) ? requestPath : $"{requestPath}{separator}{queryString}";
 
         return new Uri(baseAddress, fullUri);
+    }
+
+    private async Task<HttpResponseMessage> SendAsync(
+        string requestPath,
+        QueryParameters? queryParameters,
+        CancellationToken cancellationToken)
+    {
+        var baseAddress = _httpClient.BaseAddress
+            ?? throw new InvalidOperationException("The HTTP client must have a base address before sending a request.");
+        var requestUri = BuildRequestUri(baseAddress, requestPath, queryParameters);
+        using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+        var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+        try
+        {
+            response.EnsureSuccessStatusCode();
+            return response;
+        }
+        catch
+        {
+            response.Dispose();
+            throw;
+        }
     }
 
     private static JsonSerializerOptions JsonSerializerOptions { get; } = new()

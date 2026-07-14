@@ -2,6 +2,7 @@ Mvx.ApiClient.Net.IMvxApiClient
 Mvx.ApiClient.Net.INetworkClient
 Mvx.ApiClient.Net.IXExchangeClient
 Mvx.ApiClient.Net.MvxApiClientOptions
+Mvx.ApiClient.Net.MvxApiContent
 Mvx.ApiClient.Net.NetworkType
 Mvx.ApiClient.Net.Pagination
 Mvx.ApiClient.Net.QueryOptions
