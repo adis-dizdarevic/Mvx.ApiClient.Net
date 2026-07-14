@@ -86,6 +86,26 @@ public class ApiRequestExecutorTest
     }
 
     [Test]
+    [Arguments("/accounts")]
+    [Arguments("https://malicious.example/accounts")]
+    [Arguments("../accounts")]
+    [Arguments("accounts#fragment")]
+    public async Task BuildRequestUri_WithUnsafeRequestPath_ThrowsArgumentException(string requestPath)
+    {
+        var exception = Assert.Throws<ArgumentException>(() => ApiRequestExecutor.BuildRequestUri(BaseAddress, requestPath));
+
+        await Assert.That(exception.ParamName).IsEqualTo("requestPath");
+    }
+
+    [Test]
+    public async Task BuildRequestUri_WithCustomBasePath_PreservesProxyPrefix()
+    {
+        var result = ApiRequestExecutor.BuildRequestUri(new Uri("https://example.com/proxy/api/"), "accounts");
+
+        await Assert.That(result).IsEqualTo(new Uri("https://example.com/proxy/api/accounts"));
+    }
+
+    [Test]
     public async Task GetStringAsync_TextResponse_ReturnsCompleteBody()
     {
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.TextResponse("hello MultiversX", HttpStatusCode.OK));

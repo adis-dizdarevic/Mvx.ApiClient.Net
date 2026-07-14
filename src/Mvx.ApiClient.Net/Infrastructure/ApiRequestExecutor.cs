@@ -58,6 +58,7 @@ internal sealed class ApiRequestExecutor
     {
         ArgumentNullException.ThrowIfNull(baseAddress);
         ArgumentException.ThrowIfNullOrWhiteSpace(requestPath);
+        ValidateRelativeRequestPath(requestPath);
 
         var queryString = queryParameters is null
             ? string.Empty
@@ -67,6 +68,26 @@ internal sealed class ApiRequestExecutor
         var fullUri = string.IsNullOrEmpty(queryString) ? requestPath : $"{requestPath}{separator}{queryString}";
 
         return new Uri(baseAddress, fullUri);
+    }
+
+    private static void ValidateRelativeRequestPath(string requestPath)
+    {
+        if (requestPath.StartsWith("/", StringComparison.Ordinal)
+            || Uri.TryCreate(requestPath, UriKind.Absolute, out _))
+        {
+            throw new ArgumentException("Request path must be relative so the configured API base path is preserved.", nameof(requestPath));
+        }
+
+        if (requestPath.Contains("#", StringComparison.Ordinal))
+        {
+            throw new ArgumentException("Request path cannot contain a URI fragment.", nameof(requestPath));
+        }
+
+        var pathOnly = requestPath.Split('?', 2)[0];
+        if (pathOnly.Split('/').Any(segment => segment is "." or ".."))
+        {
+            throw new ArgumentException("Request path cannot contain relative directory segments.", nameof(requestPath));
+        }
     }
 
     private async Task<HttpResponseMessage> SendAsync(

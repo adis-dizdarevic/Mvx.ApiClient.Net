@@ -133,6 +133,18 @@ public class XExchangeClientTest
     }
 
     [Test]
+    public async Task GetTokenAsync_RelativeDirectoryIdentifier_ThrowsArgumentExceptionBeforeRequest()
+    {
+        var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("{}"));
+        var client = CreateClient(handler);
+
+        var exception = await CaptureArgumentException(() => client.GetTokenAsync(".."));
+
+        await Assert.That(exception.ParamName).IsEqualTo("identifier");
+        await Assert.That(handler.Requests).IsEmpty();
+    }
+
+    [Test]
     public async Task GetTokensCountAsync_NoParameters_SendsExpectedRequestAndDeserializesResponse()
     {
         var handler = new TestHttpMessageHandler(_ => TestHttpMessageHandler.JsonResponse("2"));

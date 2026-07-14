@@ -1,3 +1,4 @@
+using System.Globalization;
 using Mvx.ApiClient.Net.Infrastructure;
 using Mvx.ApiClient.Net.Models.XExchange;
 
@@ -24,10 +25,11 @@ internal sealed class XExchangeClient : IXExchangeClient
 
     public async Task<XExchangePairDto> GetPairAsync(string baseId, string quoteId, CancellationToken cancellationToken = default)
     {
-        ValidateRequiredPathSegment(baseId, nameof(baseId));
-        ValidateRequiredPathSegment(quoteId, nameof(quoteId));
-
-        var path = string.Format(EndpointPaths.XExchangePairDetails, Uri.EscapeDataString(baseId), Uri.EscapeDataString(quoteId));
+        var path = string.Format(
+            CultureInfo.InvariantCulture,
+            EndpointPaths.XExchangePairDetails,
+            ApiPath.EscapeRequired(baseId, nameof(baseId)),
+            ApiPath.EscapeRequired(quoteId, nameof(quoteId)));
 
         return await _requestExecutor.GetAsync<XExchangePairDto>(path, null, cancellationToken);
     }
@@ -44,9 +46,10 @@ internal sealed class XExchangeClient : IXExchangeClient
 
     public async Task<XExchangeTokenDto> GetTokenAsync(string identifier, CancellationToken cancellationToken = default)
     {
-        ValidateRequiredPathSegment(identifier, nameof(identifier));
-
-        var path = string.Format(EndpointPaths.XExchangeTokenDetails, Uri.EscapeDataString(identifier));
+        var path = string.Format(
+            CultureInfo.InvariantCulture,
+            EndpointPaths.XExchangeTokenDetails,
+            ApiPath.EscapeRequired(identifier, nameof(identifier)));
 
         return await _requestExecutor.GetAsync<XExchangeTokenDto>(path, null, cancellationToken);
     }
@@ -64,13 +67,5 @@ internal sealed class XExchangeClient : IXExchangeClient
     public async Task<int> GetFarmsCountAsync(CancellationToken cancellationToken = default)
     {
         return await _requestExecutor.GetAsync<int>(EndpointPaths.XExchangeFarmsCount, null, cancellationToken);
-    }
-
-    private static void ValidateRequiredPathSegment(string value, string parameterName)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            throw new ArgumentException("Path segment cannot be null or empty.", parameterName);
-        }
     }
 }
