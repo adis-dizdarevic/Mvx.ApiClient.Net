@@ -124,6 +124,27 @@ internal sealed class QueryParameters
         return this;
     }
 
+    public QueryParameters AddEnumCollection<TEnum>(string name, IEnumerable<TEnum>? values)
+        where TEnum : struct, Enum
+    {
+        if (values is null)
+        {
+            return this;
+        }
+
+        var wireValues = values.Select(value =>
+        {
+            if (string.Equals(Enum.GetName(value), "Unknown", StringComparison.Ordinal))
+            {
+                throw new ArgumentOutOfRangeException(nameof(values), value, "Unknown enum values cannot be sent as API query parameters.");
+            }
+
+            return EnumWireName.GetValue(value);
+        });
+
+        return AddCollection(name, wireValues);
+    }
+
     public QueryParameters AddPagination(Pagination? pagination)
     {
         if (pagination is null)

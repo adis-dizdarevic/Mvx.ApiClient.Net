@@ -3,7 +3,7 @@ namespace Mvx.ApiClient.Net;
 /// <summary>
 /// Root client that exposes MultiversX API endpoint groups.
 /// </summary>
-public interface IMvxApiClient
+public partial interface IMvxApiClient
 {
     /// <summary>
     /// The configured MultiversX network.

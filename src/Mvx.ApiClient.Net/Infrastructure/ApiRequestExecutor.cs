@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Globalization;
 using Mvx.ApiClient.Net.Infrastructure.Serialization;
 
 namespace Mvx.ApiClient.Net.Infrastructure;
@@ -36,6 +37,17 @@ internal sealed class ApiRequestExecutor
         using var response = await SendAsync(requestPath, queryParameters, cancellationToken);
 
         return await response.Content.ReadAsStringAsync(cancellationToken);
+    }
+
+    internal async Task<long> GetInt64Async(string requestPath, QueryParameters? queryParameters = null, CancellationToken cancellationToken = default)
+    {
+        var content = await GetStringAsync(requestPath, queryParameters, cancellationToken);
+        if (!long.TryParse(content, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result))
+        {
+            throw new JsonException($"The MultiversX API returned an invalid 64-bit count: '{content}'.");
+        }
+
+        return result;
     }
 
     internal async Task<MvxApiContent> GetContentAsync(string requestPath, QueryParameters? queryParameters = null, CancellationToken cancellationToken = default)

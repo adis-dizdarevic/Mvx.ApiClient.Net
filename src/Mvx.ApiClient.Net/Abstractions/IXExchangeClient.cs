@@ -5,7 +5,7 @@ namespace Mvx.ApiClient.Net;
 /// <summary>
 /// Client for retrieving information about xExchange.
 /// </summary>
-public interface IXExchangeClient
+public partial interface IXExchangeClient
 {
     /// <summary>
     /// Returns xExchange economics details.

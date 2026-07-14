@@ -48,19 +48,20 @@ public static class ServiceCollectionExtensions
 
         RegisterClient<IXExchangeClient, XExchangeClient>(services, baseAddress, options);
         RegisterClient<INetworkClient, NetworkClient>(services, baseAddress, options);
+        GeneratedApiRegistration.Register(services, baseAddress, options);
 
         services.AddTransient<IMvxApiClient>(provider =>
         {
             var xExchangeClient = provider.GetRequiredService<IXExchangeClient>();
             var networkClient = provider.GetRequiredService<INetworkClient>();
 
-            return new MvxApiClient(networkType, xExchangeClient, networkClient);
+            return new MvxApiClient(networkType, xExchangeClient, networkClient, provider);
         });
 
         return services;
     }
 
-    private static void RegisterClient<TClientInterface, TClientImplementation>(IServiceCollection services, Uri baseAddress, MvxApiClientOptions options)
+    internal static void RegisterClient<TClientInterface, TClientImplementation>(IServiceCollection services, Uri baseAddress, MvxApiClientOptions options)
         where TClientInterface : class
         where TClientImplementation : class, TClientInterface
     {

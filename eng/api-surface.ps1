@@ -6,6 +6,7 @@ param(
 $ErrorActionPreference = "Stop"
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $snapshotPath = Join-Path $PSScriptRoot "multiversx-get-surface.json"
+$openApiSnapshotPath = Join-Path $PSScriptRoot "multiversx-openapi.json"
 
 # The live specification does not mark this compatibility route as deprecated, but its operation
 # identifier explicitly labels it temporary and /mex/pairs is the canonical documented route.
@@ -123,6 +124,7 @@ $canonicalJson = $surface | ConvertTo-Json -Depth 20
 
 if ($Update) {
     Set-Content -LiteralPath $snapshotPath -Value $canonicalJson -Encoding utf8NoBOM
+    Set-Content -LiteralPath $openApiSnapshotPath -Value $specificationContent -Encoding utf8NoBOM -NoNewline
     Write-Host "Updated $snapshotPath with $($surface.operations.Count) GET operations."
     exit 0
 }
