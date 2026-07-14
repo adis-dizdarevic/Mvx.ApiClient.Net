@@ -51,3 +51,4 @@ var pairs = await client.XExchange.GetPairsAsync(
 - Validate obvious invalid input before making HTTP calls.
 - Keep retry and rate-limit policy configurable by consumers through `HttpClientFactory`.
 - Keep generated XML documentation and README examples useful for NuGet consumers.
+- Expose only current, contract-validated GET operations and reject deprecated or temporary routes.

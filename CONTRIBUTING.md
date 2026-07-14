@@ -30,18 +30,30 @@ For docs changes:
 
 ## Endpoint contributions
 
-New GET endpoint groups should follow the established layout:
+New GET endpoint groups must first satisfy the readiness gate in `docs/endpoint-readiness.md`. In particular, do not implement operations marked deprecated or `excluded` in `eng/multiversx-get-surface.json`.
+
+Endpoint groups should follow the established layout:
 
 - Public interface in `src/Mvx.ApiClient.Net/Abstractions`.
 - Internal implementation in `src/Mvx.ApiClient.Net/Clients`.
 - Response models in `src/Mvx.ApiClient.Net/Models/<Domain>`.
 - Paths in `EndpointPaths`.
-- HTTP execution through `ApiRequestExecutor`.
+- JSON, text, or buffered content execution through `ApiRequestExecutor`.
+- Query construction through `QueryParameters` and required path values through `ApiPath`.
 - DI registration in `ServiceCollectionExtensions`.
 - Unit tests using a fake `HttpMessageHandler`.
-- Public API baseline update when the public surface changes.
+- A throttled opt-in live contract test.
+- Public API baseline update with `.\eng\update-public-api.ps1` when the public surface changes.
 
 Do not add live public API calls to unit tests. Use the integration-test project and keep live tests disabled unless `MVX_API_LIVE_TESTS=true`.
+
+Check the live GET inventory without changing it:
+
+```powershell
+.\eng\api-surface.ps1
+```
+
+Use `-Update` only after reviewing the upstream diff and classifying any undocumented or deprecated operation.
 
 ## Public API changes
 

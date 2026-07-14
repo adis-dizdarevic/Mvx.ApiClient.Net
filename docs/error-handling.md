@@ -38,6 +38,7 @@ The client validates obvious invalid input before sending requests:
 - Null or empty token identifiers.
 - Null or empty pair token identifiers.
 - Negative pagination values.
-- Empty field names.
+- Pagination limits above the API-wide maximum of 10,000.
+- Unsafe relative-directory path segments.
 
 Invalid local input throws standard argument exceptions. API failures throw `MvxApiException`.

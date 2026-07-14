@@ -171,6 +171,15 @@ dotnet pack src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj --configuration Relea
 
 Live API smoke tests are disabled by default. Set `MVX_API_LIVE_TESTS=true` to enable the integration test project against the public MultiversX API.
 
+Review upstream GET drift and regenerate the complete public API contract with:
+
+```powershell
+.\eng\api-surface.ps1
+.\eng\update-public-api.ps1
+```
+
+Operations marked deprecated or excluded in the approved upstream snapshot are intentionally not implemented. See `docs/endpoint-readiness.md` for the endpoint acceptance and model rules.
+
 ## Versioning
 
 This package follows semantic versioning. Public API changes are guarded by an approval-style public API baseline in the test project.

@@ -30,7 +30,7 @@ using Mvx.ApiClient.Net.Models.Network;
 
 ## xExchange
 
-The xExchange client wraps the current xExchange GET endpoints exposed by the public API.
+The xExchange client wraps the currently validated xExchange GET subset exposed by the public API.
 
 ```csharp
 var economics = await client.XExchange.GetEconomicsAsync();
@@ -53,6 +53,8 @@ using Mvx.ApiClient.Net.Models.XExchange;
 ```
 
 The upstream API still uses `/mex/*` paths for these endpoints. The public .NET API uses xExchange naming.
+
+Endpoint coverage is intentionally evidence-driven. The temporary `/mex-pairs` alias is upstream-deprecated and is not exposed. Additional documented operations, such as price charts, are added only after they satisfy the [endpoint readiness gate](endpoint-readiness.md).
 
 ## Endpoint coverage
 

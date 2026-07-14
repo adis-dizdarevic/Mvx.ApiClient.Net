@@ -3,6 +3,11 @@
 ## Unreleased
 
 - Prepared the next breaking release for `2.0.0`.
+- Added a reviewed snapshot of the complete upstream GET surface, weekly drift checks, and an automated gate that prevents deprecated or temporary operations from being exposed.
+- Added reusable complex-query serialization, secure path construction, JSON/text/binary response modes, arbitrary-precision amount handling, and forward-compatible response enums.
+- Replaced the type-name approval test with a complete public API contract snapshot covering members, nullability, defaults, constants, and enum values.
+- Expanded throttled opt-in mainnet tests to validate every currently implemented typed GET contract and report disabled live tests as skipped.
+- Standardized count endpoint results on `long` and documented the endpoint readiness, numeric, optional-field, and enum policies.
 - Removed typed response projections so every typed endpoint returns its complete documented response shape.
 - Switched financial response values to `decimal`, preserved optional xExchange pair farm flags, and exposed `Retry-After` on API exceptions.
 - Validated client configuration, preserved custom API base paths, and exposed HTTP client builder configuration for resilience and observability.

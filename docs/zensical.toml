@@ -17,6 +17,7 @@ nav = [
   { "Query Options" = "query-options.md" },
   { "Error Handling" = "error-handling.md" },
   { "Clients" = "clients.md" },
+  { "Endpoint Readiness" = "endpoint-readiness.md" },
   { "Release Checklist" = "release-checklist.md" },
   { "Contributing" = "contributing.md" }
 ]

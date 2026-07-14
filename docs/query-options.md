@@ -14,7 +14,9 @@ var pairs = await client.XExchange.GetPairsAsync(
     });
 ```
 
-`Limit` maps to the API's `size` parameter and `Offset` maps to `from`. Negative values are rejected before the request is sent.
+`Limit` maps to the API's `size` parameter and `Offset` maps to `from`. Negative values and limits above `Pagination.MaximumLimit` (`10_000`) are rejected before the request is sent. Endpoints that request expensive optional details can have a smaller effective limit.
+
+Endpoint-specific option types use the same internal query builder for invariant numbers, lowercase Booleans, explicitly mapped enums, and both comma-separated and repeated collections. This keeps complex filters consistent without turning `QueryOptions` into an unbounded property bag.
 
 ## Complete typed responses
 
