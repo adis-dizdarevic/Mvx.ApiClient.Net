@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <None Include="PublicApi.Shipped.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\eng\multiversx-get-surface.json" Link="multiversx-get-surface.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

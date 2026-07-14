@@ -71,7 +71,7 @@ public class XExchangeClientTest
         var result = await client.GetPairsCountAsync();
 
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/pairs/count");
-        await Assert.That(result).IsEqualTo(2);
+        await Assert.That(result).IsEqualTo(2L);
     }
 
     [Test]
@@ -153,7 +153,7 @@ public class XExchangeClientTest
         var result = await client.GetTokensCountAsync();
 
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/tokens/count");
-        await Assert.That(result).IsEqualTo(2);
+        await Assert.That(result).IsEqualTo(2L);
     }
 
     [Test]
@@ -197,7 +197,7 @@ public class XExchangeClientTest
         var result = await client.GetFarmsCountAsync();
 
         await Assert.That(handler.Requests.Single().Uri.PathAndQuery).IsEqualTo("/mex/farms/count");
-        await Assert.That(result).IsEqualTo(2);
+        await Assert.That(result).IsEqualTo(2L);
     }
 
     private static XExchangeClient CreateClient(HttpMessageHandler handler)

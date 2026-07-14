@@ -64,7 +64,7 @@ public sealed class DashboardService
         _client = client;
     }
 
-    public Task<int> GetPairCountAsync(CancellationToken cancellationToken)
+    public Task<long> GetPairCountAsync(CancellationToken cancellationToken)
     {
         return _client.XExchange.GetPairsCountAsync(cancellationToken);
     }

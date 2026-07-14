@@ -22,9 +22,9 @@ type interface Mvx.ApiClient.Net.IXExchangeClient
   method abstract System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Mvx.ApiClient.Net.Models.XExchange.XExchangeFarmDto>> GetFarmsAsync(Mvx.ApiClient.Net.QueryOptions? queryOptions = null, System.Threading.CancellationToken cancellationToken = default)
   method abstract System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Mvx.ApiClient.Net.Models.XExchange.XExchangePairDto>> GetPairsAsync(Mvx.ApiClient.Net.QueryOptions? queryOptions = null, System.Threading.CancellationToken cancellationToken = default)
   method abstract System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Mvx.ApiClient.Net.Models.XExchange.XExchangeTokenDto>> GetTokensAsync(Mvx.ApiClient.Net.QueryOptions? queryOptions = null, System.Threading.CancellationToken cancellationToken = default)
-  method abstract System.Threading.Tasks.Task<int> GetFarmsCountAsync(System.Threading.CancellationToken cancellationToken = default)
-  method abstract System.Threading.Tasks.Task<int> GetPairsCountAsync(System.Threading.CancellationToken cancellationToken = default)
-  method abstract System.Threading.Tasks.Task<int> GetTokensCountAsync(System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<long> GetFarmsCountAsync(System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<long> GetPairsCountAsync(System.Threading.CancellationToken cancellationToken = default)
+  method abstract System.Threading.Tasks.Task<long> GetTokensCountAsync(System.Threading.CancellationToken cancellationToken = default)
 type sealed class Mvx.ApiClient.Net.Models.Network.AboutDto : System.IEquatable<Mvx.ApiClient.Net.Models.Network.AboutDto>
   ctor (string? AppVersion, string? PluginsVersion, string Network, string Cluster, string Version, string IndexerVersion, string GatewayVersion, string ScamEngineVersion, Mvx.ApiClient.Net.Models.Network.FeaturesDto? Features)
   method  Mvx.ApiClient.Net.Models.Network.AboutDto <Clone>$()

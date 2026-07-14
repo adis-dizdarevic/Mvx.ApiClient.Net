@@ -36,7 +36,7 @@ public interface IXExchangeClient
     /// </summary>
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>The number of active xExchange liquidity pools.</returns>
-    Task<int> GetPairsCountAsync(CancellationToken cancellationToken = default);
+    Task<long> GetPairsCountAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns a list of tokens listed on xExchange.
@@ -59,7 +59,7 @@ public interface IXExchangeClient
     /// </summary>
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>The number of tokens listed on xExchange.</returns>
-    Task<int> GetTokensCountAsync(CancellationToken cancellationToken = default);
+    Task<long> GetTokensCountAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Returns a list of farms listed on xExchange.
@@ -74,5 +74,5 @@ public interface IXExchangeClient
     /// </summary>
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>The number of farms listed on xExchange.</returns>
-    Task<int> GetFarmsCountAsync(CancellationToken cancellationToken = default);
+    Task<long> GetFarmsCountAsync(CancellationToken cancellationToken = default);
 }

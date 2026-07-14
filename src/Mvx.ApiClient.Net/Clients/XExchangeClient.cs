@@ -34,9 +34,9 @@ internal sealed class XExchangeClient : IXExchangeClient
         return await _requestExecutor.GetAsync<XExchangePairDto>(path, null, cancellationToken);
     }
 
-    public async Task<int> GetPairsCountAsync(CancellationToken cancellationToken = default)
+    public async Task<long> GetPairsCountAsync(CancellationToken cancellationToken = default)
     {
-        return await _requestExecutor.GetAsync<int>(EndpointPaths.XExchangePairsCount, null, cancellationToken);
+        return await _requestExecutor.GetAsync<long>(EndpointPaths.XExchangePairsCount, null, cancellationToken);
     }
 
     public async Task<IReadOnlyList<XExchangeTokenDto>> GetTokensAsync(QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
@@ -54,9 +54,9 @@ internal sealed class XExchangeClient : IXExchangeClient
         return await _requestExecutor.GetAsync<XExchangeTokenDto>(path, null, cancellationToken);
     }
 
-    public async Task<int> GetTokensCountAsync(CancellationToken cancellationToken = default)
+    public async Task<long> GetTokensCountAsync(CancellationToken cancellationToken = default)
     {
-        return await _requestExecutor.GetAsync<int>(EndpointPaths.XExchangeTokensCount, null, cancellationToken);
+        return await _requestExecutor.GetAsync<long>(EndpointPaths.XExchangeTokensCount, null, cancellationToken);
     }
 
     public async Task<IReadOnlyList<XExchangeFarmDto>> GetFarmsAsync(QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
@@ -64,8 +64,8 @@ internal sealed class XExchangeClient : IXExchangeClient
         return await _requestExecutor.GetAsync<IReadOnlyList<XExchangeFarmDto>>(EndpointPaths.XExchangeFarms, queryOptions, cancellationToken);
     }
 
-    public async Task<int> GetFarmsCountAsync(CancellationToken cancellationToken = default)
+    public async Task<long> GetFarmsCountAsync(CancellationToken cancellationToken = default)
     {
-        return await _requestExecutor.GetAsync<int>(EndpointPaths.XExchangeFarmsCount, null, cancellationToken);
+        return await _requestExecutor.GetAsync<long>(EndpointPaths.XExchangeFarmsCount, null, cancellationToken);
     }
 }
