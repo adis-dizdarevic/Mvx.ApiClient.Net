@@ -20,10 +20,9 @@ The approved July 2026 snapshot contains 145 documented candidates, 12 operation
 
 ```powershell
 .\eng\api-surface.ps1 -Update
-python eng\generate-get-clients.py
 ```
 
-All 157 non-obsolete candidates in this snapshot are implemented. The generator performs repetitive surface work from `eng/multiversx-openapi.json`; reviewed overrides encode the live evidence that OpenAPI omits or describes incorrectly. A SHA-256 contract test prevents generated sources from drifting from that checked-in document.
+All 157 non-obsolete candidates in this snapshot are implemented in handwritten domain clients. OpenAPI remains an inventory and drift detector; it does not generate public methods, options, or models. `CompleteGetSurfaceTest` compares the reviewed snapshot with the compiled implementation and requires every approved operation ID and path to map exactly once.
 
 The 12 incomplete OpenAPI operations were resolved as follows:
 

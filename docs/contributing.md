@@ -16,14 +16,15 @@ Read [Endpoint Readiness](endpoint-readiness.md) before selecting an operation. 
 
 - Add the public interface in `src/Mvx.ApiClient.Net/Abstractions`.
 - Add the internal implementation in `src/Mvx.ApiClient.Net/Clients`.
-- Add response models in `src/Mvx.ApiClient.Net/Models/<Domain>`.
-- Add request paths in `EndpointPaths`.
+- Add response models as maintained files in `src/Mvx.ApiClient.Net/Models/Api` (or an established specialized model namespace).
+- Add endpoint-specific options in `src/Mvx.ApiClient.Net/Requests/<Domain>` with the matching domain namespace.
+- Add the reviewed route and operation ID directly to the method through `ApiOperationAttribute`.
 - Use `ApiRequestExecutor` for JSON, text, or buffered content responses.
 - Use `QueryParameters` and `ApiPath` for query and path construction.
-- Register the client in `ServiceCollectionExtensions`.
+- Register the client in `ApiClientRegistration`.
 - Add HTTP-handler unit tests.
 - Confirm the implemented path is present and not excluded in `eng/multiversx-get-surface.json`.
-- Regenerate the complete public contract with `.\eng\update-public-api.ps1`.
+- Refresh the complete public contract with `.\eng\update-public-api.ps1`.
 
 ## Test types
 
@@ -35,6 +36,7 @@ The scheduled upstream workflow runs:
 
 ```powershell
 .\eng\api-surface.ps1
+.\eng\handwritten-surface.ps1
 $env:MVX_API_LIVE_TESTS = "true"
 dotnet test tests/Mvx.ApiClient.Net.IntegrationTests/Mvx.ApiClient.Net.IntegrationTests.csproj --framework net10.0 --configuration Release
 ```

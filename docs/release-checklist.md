@@ -12,6 +12,7 @@ dotnet pack src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj --configuration Relea
 .\eng\package-smoke-test.ps1 -TargetFramework net8.0
 .\eng\package-smoke-test.ps1 -TargetFramework net10.0
 .\eng\api-surface.ps1
+.\eng\handwritten-surface.ps1
 .\eng\docs.ps1
 ```
 

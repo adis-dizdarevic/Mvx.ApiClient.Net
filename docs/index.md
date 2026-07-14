@@ -26,6 +26,7 @@ dotnet add package Mvx.ApiClient.Net
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
 using Mvx.ApiClient.Net;
+using Mvx.ApiClient.Net.Requests.Accounts;
 
 var services = new ServiceCollection();
 services.AddMvxApiClient(NetworkType.Mainnet);
@@ -35,7 +36,7 @@ var client = provider.GetRequiredService<IMvxApiClient>();
 
 var stats = await client.Network.GetStatsAsync();
 var accounts = await client.Accounts.GetAccountsAsync(
-    new AccountsGetAccountsOptions
+    new GetAccountsOptions
     {
         Pagination = new Pagination { Limit = 10 }
     });

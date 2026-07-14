@@ -19,19 +19,19 @@ var pairs = await client.XExchange.GetPairsAsync(
 Endpoint-specific option types use the same internal query builder for invariant numbers, lowercase Booleans, explicitly mapped enums, and both comma-separated and repeated collections. This keeps complex filters consistent without turning `QueryOptions` into an unbounded property bag.
 
 ```csharp
-using Mvx.ApiClient.Net.Requests.Api;
+using Mvx.ApiClient.Net.Requests.Tokens;
 
 var tokens = await client.Tokens.GetTokensAsync(
-    new TokensGetTokensOptions
+    new GetTokensOptions
     {
         Pagination = new Pagination { Limit = 20 },
         Search = "USDC",
-        Type = TokensGetTokensOptionsType.FungibleESDT,
-        Order = TokensGetTokensOptionsOrder.Desc
+        Type = GetTokensOptionsType.FungibleESDT,
+        Order = GetTokensOptionsOrder.Desc
     });
 ```
 
-Some upstream operations expose only `size` and no `from`; their generated options expose `Size` instead of `Pagination`, preventing the client from sending an unsupported offset. Collections and enums use their documented wire representation.
+Some upstream operations expose only `size` and no `from`; their handwritten options expose `Size` instead of `Pagination`, preventing the client from sending an unsupported offset. Collections and enums use their documented wire representation.
 
 ## Complete typed responses
 

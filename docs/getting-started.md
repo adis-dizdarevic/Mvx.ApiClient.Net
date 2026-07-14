@@ -88,5 +88,6 @@ Add the model namespace when using response types directly:
 ```csharp
 using Mvx.ApiClient.Net.Models.Network;
 using Mvx.ApiClient.Net.Models.Api;
-using Mvx.ApiClient.Net.Requests.Api;
+using Mvx.ApiClient.Net.Requests.Accounts;
+using Mvx.ApiClient.Net.Requests.Tokens;
 ```

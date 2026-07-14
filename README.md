@@ -100,15 +100,15 @@ var pairs = await client.XExchange.GetPairsAsync(
         }
     });
 
-using Mvx.ApiClient.Net.Requests.Api;
+using Mvx.ApiClient.Net.Requests.Accounts;
 
 var accounts = await client.Accounts.GetAccountsAsync(
-    new AccountsGetAccountsOptions
+    new GetAccountsOptions
     {
         Pagination = new Pagination { Limit = 25 },
         IsSmartContract = true,
-        Sort = AccountsGetAccountsOptionsSort.Balance,
-        Order = AccountsGetAccountsOptionsOrder.Desc
+        Sort = GetAccountsOptionsSort.Balance,
+        Order = GetAccountsOptionsOrder.Desc
     });
 ```
 
@@ -187,17 +187,20 @@ dotnet test Mvx.ApiClient.Net.slnx --configuration Release --no-build
 dotnet pack src/Mvx.ApiClient.Net/Mvx.ApiClient.Net.csproj --configuration Release --no-build
 .\eng\package-smoke-test.ps1 -TargetFramework net8.0
 .\eng\package-smoke-test.ps1 -TargetFramework net10.0
+.\eng\handwritten-surface.ps1
 ```
 
 Live API smoke tests are disabled by default. Set `MVX_API_LIVE_TESTS=true` to enable the integration test project against the public MultiversX API.
 
-Review upstream GET drift and regenerate the complete public API contract with:
+Review upstream GET drift and refresh the approved public API contract with:
 
 ```powershell
 .\eng\api-surface.ps1
-python eng\generate-get-clients.py
+.\eng\handwritten-surface.ps1
 .\eng\update-public-api.ps1
 ```
+
+OpenAPI is used only as an inventory and drift detector. Endpoint interfaces, implementations, request options, and response models are maintained as ordinary domain-oriented C# source files.
 
 Operations marked deprecated or excluded in the approved upstream snapshot are intentionally not implemented. See `docs/endpoint-readiness.md` for the endpoint acceptance and model rules.
 

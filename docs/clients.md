@@ -6,31 +6,31 @@
 
 | Root property | Interface | Area |
 | --- | --- | --- |
-| `Accounts` | `IAccountsClient` | Accounts, balances, roles, history, account transactions and transfers |
-| `Applications` | `IApplicationsClient` | Indexed applications |
-| `Blocks` | `IBlocksClient` | Blocks, latest block, and counts |
-| `Collections` | `ICollectionsClient` | NFT collections, ranks, accounts, transactions, and transfers |
+| `Accounts` | `IAccountClient` | Accounts, balances, roles, history, account transactions and transfers |
+| `Applications` | `IApplicationClient` | Indexed applications |
+| `Blocks` | `IBlockClient` | Blocks, latest block, and counts |
+| `Collections` | `ICollectionClient` | NFT collections, ranks, accounts, transactions, and transfers |
 | `Delegation` | `IDelegationClient` | Current and legacy global delegation data |
-| `Events` | `IEventsClient` | Indexed events |
-| `Identities` | `IIdentitiesClient` | Validator identities and avatars |
-| `Keys` | `IKeysClient` | Validator-key unbond periods |
+| `Events` | `IEventClient` | Indexed events |
+| `Identities` | `IIdentityClient` | Validator identities and avatars |
+| `Keys` | `IKeyClient` | Validator-key unbond periods |
 | `Marketplace` | `IMarketplaceClient` | Auctions and marketplace statistics |
-| `Miniblocks` | `IMiniblocksClient` | Miniblock list and details |
+| `Miniblocks` | `IMiniblockClient` | Miniblock list and details |
 | `Network` | `INetworkClient` | Stats, economics, constants, and deployment information |
-| `Nfts` | `INftsClient` | NFTs, holders, supply, media, transactions, and transfers |
-| `Nodes` | `INodesClient` | Nodes, auctions, counts, and version distribution |
+| `Nfts` | `INftClient` | NFTs, holders, supply, media, transactions, and transfers |
+| `Nodes` | `INodeClient` | Nodes, auctions, counts, and version distribution |
 | `Pool` | `IPoolClient` | Pending transaction pool |
-| `Providers` | `IProvidersClient` | Delegation providers, accounts, and avatars |
-| `Results` | `IResultsClient` | Smart-contract results |
-| `Rounds` | `IRoundsClient` | Round list and details |
-| `Shards` | `IShardsClient` | Shard status |
+| `Providers` | `IProviderClient` | Delegation providers, accounts, and avatars |
+| `Results` | `IResultClient` | Smart-contract results |
+| `Rounds` | `IRoundClient` | Round list and details |
+| `Shards` | `IShardClient` | Shard status |
 | `Stake` | `IStakeClient` | Global staking data |
-| `Tags` | `ITagsClient` | NFT tags |
-| `Tokens` | `ITokensClient` | ESDT tokens, supply, holders, media, transactions, and transfers |
-| `TransactionBatches` | `ITransactionBatchesClient` | Transaction-batch status |
-| `Transactions` | `ITransactionsClient` | Transactions, counts, details, and price-per-unit metadata |
-| `Transfers` | `ITransfersClient` | Global transfer history |
-| `Usernames` | `IUsernamesClient` | Username lookup |
+| `Tags` | `ITagClient` | NFT tags |
+| `Tokens` | `ITokenClient` | ESDT tokens, supply, holders, media, transactions, and transfers |
+| `TransactionBatches` | `ITransactionBatchClient` | Transaction-batch status |
+| `Transactions` | `ITransactionClient` | Transactions, counts, details, and price-per-unit metadata |
+| `Transfers` | `ITransferClient` | Global transfer history |
+| `Usernames` | `IUsernameClient` | Username lookup |
 | `WaitingList` | `IWaitingListClient` | Validator waiting list |
 | `DappConfig` | `IDappConfigClient` | Dapp configuration |
 | `Websocket` | `IWebsocketClient` | Websocket configuration |
@@ -40,12 +40,14 @@
 ## Examples
 
 ```csharp
-using Mvx.ApiClient.Net.Requests.Api;
+using Mvx.ApiClient.Net.Requests.Accounts;
+using Mvx.ApiClient.Net.Requests.Nfts;
+using Mvx.ApiClient.Net.Requests.Tokens;
 
 var latest = await client.Blocks.GetLatestBlockAsync();
 
 var tokens = await client.Tokens.GetTokensAsync(
-    new TokensGetTokensOptions
+    new GetTokensOptions
     {
         Pagination = new Pagination { Limit = 10 },
         Search = "USDC"
@@ -55,11 +57,11 @@ var token = await client.Tokens.GetTokenAsync(tokens[0].Identifier!);
 var supply = await client.Tokens.GetTokenSupplyAsync(tokens[0].Identifier!);
 
 var nfts = await client.Nfts.GetNftsAsync(
-    new NftsGetNftsOptions { Pagination = new Pagination { Limit = 10 } });
+    new GetNftsOptions { Pagination = new Pagination { Limit = 10 } });
 
 var transactions = await client.Accounts.GetAccountTransactionsAsync(
     "erd1...",
-    new AccountsGetAccountTransactionsOptions
+    new GetAccountTransactionsOptions
     {
         Pagination = new Pagination { Limit = 25 }
     });
