@@ -19,3 +19,23 @@ jobs:
       - name: Compare live GET surface with approved snapshot
         shell: pwsh
         run: ./eng/api-surface.ps1
+
+  ValidateCurrentTypedContracts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.x
+
+      - name: Restore locked dependencies
+        run: dotnet restore Mvx.ApiClient.Net.slnx --locked-mode
+
+      - name: Run throttled mainnet contract tests
+        env:
+          MVX_API_LIVE_TESTS: true
+        run: dotnet test tests/Mvx.ApiClient.Net.IntegrationTests/Mvx.ApiClient.Net.IntegrationTests.csproj --framework net10.0 --configuration Release --no-restore
