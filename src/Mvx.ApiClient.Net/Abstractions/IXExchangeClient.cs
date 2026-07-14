@@ -17,7 +17,7 @@ public interface IXExchangeClient
     /// <summary>
     /// Returns active liquidity pools available on xExchange.
     /// </summary>
-    /// <param name="queryOptions">Optional pagination and field selection settings.</param>
+    /// <param name="queryOptions">Optional pagination settings.</param>
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>The active xExchange liquidity pools returned by the API.</returns>
     Task<IReadOnlyList<XExchangePairDto>> GetPairsAsync(QueryOptions? queryOptions = null, CancellationToken cancellationToken = default);
@@ -41,7 +41,7 @@ public interface IXExchangeClient
     /// <summary>
     /// Returns a list of tokens listed on xExchange.
     /// </summary>
-    /// <param name="queryOptions">Optional pagination and field selection settings.</param>
+    /// <param name="queryOptions">Optional pagination settings.</param>
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>The xExchange tokens returned by the API.</returns>
     Task<IReadOnlyList<XExchangeTokenDto>> GetTokensAsync(QueryOptions? queryOptions = null, CancellationToken cancellationToken = default);
@@ -64,7 +64,7 @@ public interface IXExchangeClient
     /// <summary>
     /// Returns a list of farms listed on xExchange.
     /// </summary>
-    /// <param name="queryOptions">Optional pagination and field selection settings.</param>
+    /// <param name="queryOptions">Optional pagination settings.</param>
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>The xExchange farms returned by the API.</returns>
     Task<IReadOnlyList<XExchangeFarmDto>> GetFarmsAsync(QueryOptions? queryOptions = null, CancellationToken cancellationToken = default);

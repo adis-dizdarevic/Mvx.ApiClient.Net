@@ -15,7 +15,7 @@ internal sealed class ApiRequestExecutor
 
     public async Task<T> GetAsync<T>(string requestPath, QueryOptions? queryOptions = null, CancellationToken cancellationToken = default)
     {
-        var requestUri = BuildRequestUri(_httpClient.BaseAddress!, requestPath, queryOptions);
+        var requestUri = BuildRequestUri(_httpClient.BaseAddress!, requestPath, QueryParameters.From(queryOptions));
         var response = await _httpClient.GetFromJsonAsync<T>(requestUri, JsonSerializerOptions, cancellationToken);
 
         if (response is null)
@@ -28,38 +28,22 @@ internal sealed class ApiRequestExecutor
 
     internal static Uri BuildRequestUri(Uri baseAddress, string requestPath, QueryOptions? queryOptions = null)
     {
-        Validate(queryOptions);
-
-        var queryDictionary = new Dictionary<string, string>();
-
-        if (queryOptions?.Pagination?.Limit is not null)
-        {
-            queryDictionary.Add("size", queryOptions.Pagination.Limit.Value.ToString());
-        }
-
-        if (queryOptions?.Pagination?.Offset is not null)
-        {
-            queryDictionary.Add("from", queryOptions.Pagination.Offset.Value.ToString());
-        }
-
-        var queryString = string.Join("&", queryDictionary.Select(param => $"{param.Key}={Uri.EscapeDataString(param.Value)}"));
-        var fullUri = string.IsNullOrEmpty(queryString) ? requestPath : $"{requestPath}?{queryString}";
-
-        return new Uri(baseAddress, fullUri);
+        return BuildRequestUri(baseAddress, requestPath, QueryParameters.From(queryOptions));
     }
 
-    private static void Validate(QueryOptions? queryOptions)
+    internal static Uri BuildRequestUri(Uri baseAddress, string requestPath, QueryParameters? queryParameters)
     {
-        if (queryOptions?.Pagination?.Limit < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(queryOptions), "Pagination limit cannot be negative.");
-        }
+        ArgumentNullException.ThrowIfNull(baseAddress);
+        ArgumentException.ThrowIfNullOrWhiteSpace(requestPath);
 
-        if (queryOptions?.Pagination?.Offset < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(queryOptions), "Pagination offset cannot be negative.");
-        }
+        var queryString = queryParameters is null
+            ? string.Empty
+            : string.Join("&", queryParameters.Values.Select(parameter =>
+                $"{Uri.EscapeDataString(parameter.Key)}={Uri.EscapeDataString(parameter.Value)}"));
+        var separator = requestPath.Contains('?', StringComparison.Ordinal) ? "&" : "?";
+        var fullUri = string.IsNullOrEmpty(queryString) ? requestPath : $"{requestPath}{separator}{queryString}";
 
+        return new Uri(baseAddress, fullUri);
     }
 
     private static JsonSerializerOptions JsonSerializerOptions { get; } = new()
