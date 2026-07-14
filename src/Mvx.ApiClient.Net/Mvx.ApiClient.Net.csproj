@@ -9,6 +9,7 @@
     <Title>MultiversX API Client for .NET</Title>
     <PackageTags>multiversx;mvx;egld;api-client;blockchain</PackageTags>
     <PackageId>Mvx.ApiClient.Net</PackageId>
+    <VersionPrefix>2.0.0</VersionPrefix>
     <PackageProjectUrl>https://github.com/adis-dizdarevic/Mvx.ApiClient.Net</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/adis-dizdarevic/Mvx.ApiClient.Net.git</RepositoryUrl>

@@ -100,8 +100,10 @@ Task<IReadOnlyList<XExchangePairDto>> pairs = client.XExchange.GetPairsAsync(new
 {
     Pagination = new Pagination { Limit = 25 }
 });
+Task<long> pairCount = client.XExchange.GetPairsCountAsync();
+Type contentResponse = typeof(MvxApiContent);
 
-Console.WriteLine($"{client.NetworkType}: {stats.GetType().Name}, {pairs.GetType().Name}");
+Console.WriteLine($"{client.NetworkType}: {stats.GetType().Name}, {pairs.GetType().Name}, {pairCount.GetType().Name}, {contentResponse.Name}");
 "@ | Set-Content -Path "Program.cs" -Encoding UTF8
 
     Invoke-DotNet restore --configfile nuget.config
