@@ -78,13 +78,14 @@ internal sealed class ApiRequestExecutor
             throw new ArgumentException("Request path must be relative so the configured API base path is preserved.", nameof(requestPath));
         }
 
-        if (requestPath.Contains("#", StringComparison.Ordinal))
+        if (requestPath.Contains("#", StringComparison.Ordinal)
+            || requestPath.Contains("\\", StringComparison.Ordinal))
         {
-            throw new ArgumentException("Request path cannot contain a URI fragment.", nameof(requestPath));
+            throw new ArgumentException("Request path cannot contain a URI fragment or backslash.", nameof(requestPath));
         }
 
         var pathOnly = requestPath.Split('?', 2)[0];
-        if (pathOnly.Split('/').Any(segment => segment is "." or ".."))
+        if (pathOnly.Split('/').Any(segment => Uri.UnescapeDataString(segment) is "." or ".."))
         {
             throw new ArgumentException("Request path cannot contain relative directory segments.", nameof(requestPath));
         }

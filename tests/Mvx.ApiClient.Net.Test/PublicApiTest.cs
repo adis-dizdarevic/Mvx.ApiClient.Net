@@ -81,6 +81,43 @@ public class PublicApiTest
         await Assert.That(typeof(XExchangePairDto).GetProperty(nameof(XExchangePairDto.HasFarms))?.PropertyType).IsEqualTo(typeof(bool?));
     }
 
+    [Test]
+    public async Task PublicApi_ResponseEnums_ProvideZeroValuedUnknownFallback()
+    {
+        var responseEnums = typeof(IMvxApiClient).Assembly
+            .GetExportedTypes()
+            .Where(type => type.IsEnum && type.Namespace?.Contains(".Models.", StringComparison.Ordinal) == true)
+            .ToArray();
+
+        foreach (var enumType in responseEnums)
+        {
+            var unknownValue = Enum.GetNames(enumType)
+                .SingleOrDefault(name => string.Equals(name, "Unknown", StringComparison.Ordinal));
+
+            await Assert.That(unknownValue).IsNotNull()
+                .Because($"response enum {enumType.FullName} must tolerate new upstream values");
+            await Assert.That(Convert.ToInt64(Enum.Parse(enumType, unknownValue!))).IsEqualTo(0L)
+                .Because($"response enum {enumType.FullName}.Unknown must be the default value");
+        }
+    }
+
+    [Test]
+    public async Task PublicApi_CountMethods_ReturnInt64()
+    {
+        var countMethods = typeof(IMvxApiClient).Assembly
+            .GetExportedTypes()
+            .Where(type => type.IsInterface && type.Name.EndsWith("Client", StringComparison.Ordinal))
+            .SelectMany(type => type.GetMethods())
+            .Where(method => method.Name.EndsWith("CountAsync", StringComparison.Ordinal))
+            .ToArray();
+
+        foreach (var method in countMethods)
+        {
+            await Assert.That(method.ReturnType).IsEqualTo(typeof(Task<long>))
+                .Because($"{method.DeclaringType?.Name}.{method.Name} must support high-volume counts");
+        }
+    }
+
     private static string FindRepositoryRoot()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

@@ -89,6 +89,8 @@ public class ApiRequestExecutorTest
     [Arguments("/accounts")]
     [Arguments("https://malicious.example/accounts")]
     [Arguments("../accounts")]
+    [Arguments("%2e%2e/accounts")]
+    [Arguments("accounts\\details")]
     [Arguments("accounts#fragment")]
     public async Task BuildRequestUri_WithUnsafeRequestPath_ThrowsArgumentException(string requestPath)
     {
