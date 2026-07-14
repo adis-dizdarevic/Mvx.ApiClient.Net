@@ -5,7 +5,7 @@ namespace Mvx.ApiClient.Net;
 /// <summary>
 /// Client for retrieving information about the current MultiversX network.
 /// </summary>
-public partial interface INetworkClient
+public interface INetworkClient
 {
     /// <summary>
     /// Returns general network statistics.

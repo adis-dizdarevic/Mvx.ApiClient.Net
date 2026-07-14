@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
 
         RegisterClient<IXExchangeClient, XExchangeClient>(services, baseAddress, options);
         RegisterClient<INetworkClient, NetworkClient>(services, baseAddress, options);
-        GeneratedApiRegistration.Register(services, baseAddress, options);
+        ApiClientRegistration.Register(services, baseAddress, options);
 
         services.AddTransient<IMvxApiClient>(provider =>
         {

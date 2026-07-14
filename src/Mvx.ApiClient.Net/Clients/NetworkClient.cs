@@ -3,7 +3,7 @@ using Mvx.ApiClient.Net.Models.Network;
 
 namespace Mvx.ApiClient.Net.Clients;
 
-internal sealed partial class NetworkClient : INetworkClient
+internal sealed class NetworkClient : INetworkClient
 {
     private readonly ApiRequestExecutor _requestExecutor;
 

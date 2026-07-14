@@ -82,8 +82,12 @@ try {
     @"
 using Microsoft.Extensions.DependencyInjection;
 using Mvx.ApiClient.Net;
+using Mvx.ApiClient.Net.Models.Api;
 using Mvx.ApiClient.Net.Models.Network;
 using Mvx.ApiClient.Net.Models.XExchange;
+using Mvx.ApiClient.Net.Requests.Accounts;
+using Mvx.ApiClient.Net.Requests.Tokens;
+using Mvx.ApiClient.Net.Requests.Transactions;
 
 var services = new ServiceCollection();
 services.AddMvxApiClient(options =>
@@ -101,9 +105,22 @@ Task<IReadOnlyList<XExchangePairDto>> pairs = client.XExchange.GetPairsAsync(new
     Pagination = new Pagination { Limit = 25 }
 });
 Task<long> pairCount = client.XExchange.GetPairsCountAsync();
+ITransactionClient transactionClient = provider.GetRequiredService<ITransactionClient>();
+Task<IReadOnlyList<Account>> accounts = client.Accounts.GetAccountsAsync(new GetAccountsOptions
+{
+    Pagination = new Pagination { Limit = 10 }
+});
+Task<IReadOnlyList<TokenDetailed>> tokens = client.Tokens.GetTokensAsync(new GetTokensOptions
+{
+    Pagination = new Pagination { Limit = 10 }
+});
+Task<IReadOnlyList<Transaction>> transactions = transactionClient.GetTransactionsAsync(new GetTransactionsOptions
+{
+    Pagination = new Pagination { Limit = 10 }
+});
 Type contentResponse = typeof(MvxApiContent);
 
-Console.WriteLine($"{client.NetworkType}: {stats.GetType().Name}, {pairs.GetType().Name}, {pairCount.GetType().Name}, {contentResponse.Name}");
+Console.WriteLine($"{client.NetworkType}: {stats.GetType().Name}, {pairs.GetType().Name}, {pairCount.GetType().Name}, {accounts.GetType().Name}, {tokens.GetType().Name}, {transactions.GetType().Name}, {contentResponse.Name}");
 "@ | Set-Content -Path "Program.cs" -Encoding UTF8
 
     Invoke-DotNet restore --configfile nuget.config

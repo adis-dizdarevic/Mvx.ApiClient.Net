@@ -1,10 +1,11 @@
 using System.Globalization;
 using Mvx.ApiClient.Net.Infrastructure;
 using Mvx.ApiClient.Net.Models.XExchange;
+using Mvx.ApiClient.Net.Models.Api;
 
 namespace Mvx.ApiClient.Net.Clients;
 
-internal sealed partial class XExchangeClient : IXExchangeClient
+internal sealed class XExchangeClient : IXExchangeClient
 {
     private readonly ApiRequestExecutor _requestExecutor;
 
@@ -76,5 +77,21 @@ internal sealed partial class XExchangeClient : IXExchangeClient
     public async Task<long> GetFarmsCountAsync(CancellationToken cancellationToken = default)
     {
         return await _requestExecutor.GetInt64Async(EndpointPaths.XExchangeFarmsCount, null, cancellationToken);
+    }
+
+[ApiOperation("/mex/tokens/prices/hourly/{identifier}", "MexController_getTokenPricesHourResolution")]
+    public async Task<IReadOnlyList<MexTokenChart>> GetTokenHourlyPricesAsync(string identifier, CancellationToken cancellationToken = default)
+    {
+        var path = $"mex/tokens/prices/hourly/{ApiPath.EscapeRequired(identifier.ToString(), nameof(identifier))}";
+        QueryParameters? query = null;
+        return await _requestExecutor.GetJsonAsync<IReadOnlyList<MexTokenChart>>(path, query, cancellationToken);
+    }
+
+    [ApiOperation("/mex/tokens/prices/daily/{identifier}", "MexController_getTokenPricesDayResolution")]
+    public async Task<IReadOnlyList<MexTokenChart>> GetTokenDailyPricesAsync(string identifier, CancellationToken cancellationToken = default)
+    {
+        var path = $"mex/tokens/prices/daily/{ApiPath.EscapeRequired(identifier.ToString(), nameof(identifier))}";
+        QueryParameters? query = null;
+        return await _requestExecutor.GetJsonAsync<IReadOnlyList<MexTokenChart>>(path, query, cancellationToken);
     }
 }

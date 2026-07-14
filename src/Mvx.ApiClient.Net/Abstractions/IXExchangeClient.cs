@@ -1,11 +1,12 @@
 using Mvx.ApiClient.Net.Models.XExchange;
+using Mvx.ApiClient.Net.Models.Api;
 
 namespace Mvx.ApiClient.Net;
 
 /// <summary>
 /// Client for retrieving information about xExchange.
 /// </summary>
-public partial interface IXExchangeClient
+public interface IXExchangeClient
 {
     /// <summary>
     /// Returns xExchange economics details.
@@ -75,4 +76,16 @@ public partial interface IXExchangeClient
     /// <param name="cancellationToken">A token that can cancel the request.</param>
     /// <returns>The number of farms listed on xExchange.</returns>
     Task<long> GetFarmsCountAsync(CancellationToken cancellationToken = default);
+
+/// <summary>xExchange token prices hourly.</summary>
+    /// <param name="identifier">The identifier value.</param>
+    /// <param name="cancellationToken">A token that can cancel the request.</param>
+    /// <returns>The response returned by the MultiversX API.</returns>
+    Task<IReadOnlyList<MexTokenChart>> GetTokenHourlyPricesAsync(string identifier, CancellationToken cancellationToken = default);
+
+    /// <summary>xExchange token prices daily.</summary>
+    /// <param name="identifier">The identifier value.</param>
+    /// <param name="cancellationToken">A token that can cancel the request.</param>
+    /// <returns>The response returned by the MultiversX API.</returns>
+    Task<IReadOnlyList<MexTokenChart>> GetTokenDailyPricesAsync(string identifier, CancellationToken cancellationToken = default);
 }
