@@ -1,0 +1,21 @@
+name: Upstream API Drift
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 5 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  CheckGetSurface:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compare live GET surface with approved snapshot
+        shell: pwsh
+        run: ./eng/api-surface.ps1
