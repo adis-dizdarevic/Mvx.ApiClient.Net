@@ -20,6 +20,11 @@ jobs:
         shell: pwsh
         run: ./eng/api-surface.ps1
 
+      - name: Verify generated GET clients match approved OpenAPI
+        run: |
+          python3 eng/generate-get-clients.py
+          git diff --exit-code
+
   ValidateCurrentTypedContracts:
     runs-on: ubuntu-latest
 
